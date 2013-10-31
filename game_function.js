@@ -1,55 +1,50 @@
 goog.provide('game_function');
 
-//var checkArray = null;
-var chgBoard = null;
-
 // calc_board에서 터진 것들을 -1로 바꿔준다.
 game_function.findMatchedBlocks = function() {
 	var isFound = false; 
 	var end;
-	/*
-	checkArray = null;
-	checkArray = new Array(BOARD_SIZE);
-	for (var i = 0; i < BOARD_SIZE; i++)
-		checkArray[i] = new Array(BOARD_SIZE);
-	*/
+
 	// horizontally check.
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		for (var k = 0; k < BOARD_SIZE; k++) {
+			end = k; // k 이상 j 이하가 모두 같은 puzzle type이다.
 			for(var j = k+1; j < BOARD_SIZE; j++) {
-				if (calc_board[i][j] != calc_board[i][k]) {
+				if (calc_board[i][j] == calc_board[i][k])
 					end = j;
+				else
 					break;
-				}
-				else if (j == BOARD_SIZE-1)
-					end = BOARD_SIZE;
 			}
-			// put result to checkArray.
-			for (var j = k; j < end; j++) {
-				calc_board[i][j] = (end - k >= 3) ? -1 : calc_board[i][j];
-				//checkArray[i][j] = isIt;
-				isFound = (calc_board[i][j] == -1 || isFound) ? true : false;
-			} 
+			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
+			for (var j = k; j <= end; j++) {
+				calc_board[i][j] = (end - k + 1 >= 3) ? -calc_board[i][j] : calc_board[i][j];
+				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
+			}
+			if (end - k + 1 >= 3)
+				k = end;
 		}
 	}
 	
 	// vertically check.
 	for (var j = 0; j < BOARD_SIZE; j++) {
 		for (var k = 0; k < BOARD_SIZE; k++) {
+			end = k; // k 이상 j 이하가 모두 같은 puzzle type이다.
 			for(var i = k+1; i < BOARD_SIZE; i++) {
-				if (calc_board[i][j] != calc_board[i][k]) {
+				var ij = (calc_board[i][j] < 0) ? -calc_board[i][j] : calc_board[i][j];
+				var kj = (calc_board[k][j] < 0) ? -calc_board[k][j] : calc_board[k][j];
+				//if (calc_board[i][j] != calc_board[k][j]) {
+				if (ij == kj)
 					end = i;
+				else
 					break;
-				}
-				else if (i == BOARD_SIZE-1)
-					end = BOARD_SIZE;
 			}
-			// put result to checkArray.
-			for (var i = k; i < end; i++) {
-				calc_board[i][j] = (end - k >= 3) ? -1 : calc_board[i][j];
-				//checkArray[i][j] = isIt;
-				isFound = (calc_board[i][j] == -1 || isFound) ? true : false;
+			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
+			for (var i = k; i <= end; i++) {
+				calc_board[i][j] = (end - k + 1 >= 3 && calc_board[i][j] > 0) ? -calc_board[i][j] : calc_board[i][j];
+				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
 			}
+			if (end - k + 1 >= 3)
+				k = end;
 		}
 	}
 	
@@ -87,12 +82,12 @@ game_function.fillElementsAndDrop = function() {
 	
 	for (var j = 0; j < BOARD_SIZE; j++) {
 		for (var i = BOARD_SIZE-2; i >= 0; i--) {
-			if (calc_board[i][j] == -1)
+			if (calc_board[i][j] < 0)
 				continue;
 			
 			pos = -1;
 			for (var k = i+1; k < BOARD_SIZE; k++) {
-				if (calc_board[k][j] != -1) {
+				if (calc_board[k][j] > 0) {
 					pos = k-1;
 					break;
 				}
@@ -103,7 +98,7 @@ game_function.fillElementsAndDrop = function() {
 				board[pos][j] = board[i][j];
 				calc_board[pos][j] = calc_board[i][j];
 				board[i][j] = null;
-				calc_board[i][j] = -1;
+				calc_board[i][j] *= -1;
 				retArray.push({'row' : i, 'col' : j, 'drop' : pos - i});
 			}
 		}
