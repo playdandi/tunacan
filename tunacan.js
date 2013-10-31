@@ -40,6 +40,8 @@ tunacan.start = function() {
 	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(720, 1280).setFill("#000000");
 	var mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(63*BOARD_SIZE, 63*BOARD_SIZE).setPosition(DEFAULT_X, DEFAULT_Y);
 	
+	res.init();
+	/*
 	var icon_image = new lime.fill.Image("assets/puzzle_icon.png");
 	icons[BOARDELEM_COW] = new lime.fill.Frame(icon_image.getImageElement(), 63*0, 0, 63, 63);
 	icons[BOARDELEM_CABBAGE] = new lime.fill.Frame(icon_image.getImageElement(), 63*1, 0, 63, 63);
@@ -47,6 +49,7 @@ tunacan.start = function() {
 	icons[BOARDELEM_OLIVE] = new lime.fill.Frame(icon_image.getImageElement(), 63*3, 0, 63, 63);
 	icons[BOARDELEM_CHEESE] = new lime.fill.Frame(icon_image.getImageElement(), 63*4, 0, 63, 63);
 	icons[BOARDELEM_TOMATO] = new lime.fill.Frame(icon_image.getImageElement(), 63*5, 0, 63, 63);
+	*/
 	
 	layer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0,0);
 	layer.appendChild(rect);
@@ -57,12 +60,15 @@ tunacan.start = function() {
 		calc_board[i] = new Array(BOARD_SIZE);
 		for(var j = 0 ; j < BOARD_SIZE ; j++)
 		{
-			var icon_index = Math.floor(Math.random() * 6)+1;
-			board[i][j] = new lime.Sprite().setFill(icons[icon_index]).setAnchorPoint(0, 0);
+			//var icon_index = Math.floor(Math.random() * 6)+1;
+			var img = res.createImageByRandom();
+			var icon_index = img.type;
+			board[i][j] = img.image;
+			//board[i][j] = new lime.Sprite().setFill(img.image).setAnchorPoint(0, 0);
 			calc_board[i][j] = icon_index;
 			layer.appendChild(board[i][j].setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
 		}
-		console.log(calc_board[i][0], calc_board[i][1], calc_board[i][2], calc_board[i][3], calc_board[i][4], calc_board[i][5], calc_board[i][6]);
+		//console.log(calc_board[i][0], calc_board[i][1], calc_board[i][2], calc_board[i][3], calc_board[i][4], calc_board[i][5], calc_board[i][6]);
 	}
 	
 	layer.setMask(mask);
@@ -87,7 +93,8 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 	{
 		case 1: //left
 		{
-			new_icon = new lime.Sprite().setFill(icons[calc_board[y][0]]).setAnchorPoint(0, 0);
+			new_icon = res.createImage(calc_board[y][0]).image;
+			//new_icon = new lime.Sprite().setFill(frames[calc_board[y][0]]).setAnchorPoint(0, 0);
 			layer.appendChild(new_icon.setPosition(BOARD_SIZE*63+DEFAULT_X, y*63+DEFAULT_Y));
 			for(var i = 0 ; i < BOARD_SIZE ; i++)
 			{
@@ -111,13 +118,23 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				var next_x = Math.floor(Math.random() * 7);
 				var next_y = Math.floor(Math.random() * 7);
 				var next_direct = Math.floor(Math.random() * 4)+1;
-				scroll(next_x, next_y, next_direct);
+				
+				res = game_function.findMatchedBlocks();
+				if(res)
+				{
+					game_function.fillElementsAndDrop();
+				}
+				else
+				{
+					scroll(next_x, next_y, next_direct);
+				}
 			});
 			break;
 		}
 		case 2: //right
 		{
-			new_icon = new lime.Sprite().setFill(icons[calc_board[y][BOARD_SIZE-1]]).setAnchorPoint(0, 0);
+			new_icon = res.createImage(calc_board[y][BOARD_SIZE-1]).image;
+			//new_icon = new lime.Sprite().setFill(icons[calc_board[y][BOARD_SIZE-1]]).setAnchorPoint(0, 0);
 			layer.appendChild(new_icon.setPosition(-63+DEFAULT_X, y*63+DEFAULT_Y));
 			for(var i = 0 ; i < BOARD_SIZE ; i++)
 			{
@@ -141,13 +158,23 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				var next_x = Math.floor(Math.random() * 7);
 				var next_y = Math.floor(Math.random() * 7);
 				var next_direct = Math.floor(Math.random() * 4)+1;
-				scroll(next_x, next_y, next_direct);
+				
+				res = game_function.findMatchedBlocks();
+				if(res)
+				{
+					game_function.fillElementsAndDrop();
+				}
+				else
+				{
+					scroll(next_x, next_y, next_direct);
+				}
 			});
 			break;
 		}
 		case 3: //up
 		{
-			new_icon = new lime.Sprite().setFill(icons[calc_board[0][x]]).setAnchorPoint(0, 0);
+			new_icon = res.createImage(calc_board[0][x]).image;
+			//new_icon = new lime.Sprite().setFill(icons[calc_board[0][x]]).setAnchorPoint(0, 0);
 			layer.appendChild(new_icon.setPosition(x*63+DEFAULT_X, BOARD_SIZE*63+DEFAULT_Y));
 			for(var i = 0 ; i < BOARD_SIZE ; i++)
 			{
@@ -171,13 +198,23 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				var next_x = Math.floor(Math.random() * 7);
 				var next_y = Math.floor(Math.random() * 7);
 				var next_direct = Math.floor(Math.random() * 4)+1;
-				scroll(next_x, next_y, next_direct);
+				
+				res = game_function.findMatchedBlocks();
+				if(res)
+				{
+					game_function.fillElementsAndDrop();
+				}
+				else
+				{
+					scroll(next_x, next_y, next_direct);
+				}
 			});
 			break;
 		}
 		case 4: //down
 		{
-			new_icon = new lime.Sprite().setFill(icons[calc_board[BOARD_SIZE-1][x]]).setAnchorPoint(0, 0);
+			new_icon = res.createImage(calc_board[BOARD_SIZE-1][x]).image;
+			//new_icon = new lime.Sprite().setFill(icons[calc_board[BOARD_SIZE-1][x]]).setAnchorPoint(0, 0);
 			layer.appendChild(new_icon.setPosition(x*63+DEFAULT_X, -63+DEFAULT_Y));
 			for(var i = 0 ; i < BOARD_SIZE ; i++)
 			{
@@ -201,7 +238,16 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				var next_x = Math.floor(Math.random() * 7);
 				var next_y = Math.floor(Math.random() * 7);
 				var next_direct = Math.floor(Math.random() * 4)+1;
-				scroll(next_x, next_y, next_direct);
+				
+				res = game_function.findMatchedBlocks();
+				if(res)
+				{
+					game_function.fillElementsAndDrop();
+				}
+				else
+				{
+					scroll(next_x, next_y, next_direct);
+				}
 			});
 			break;
 		}

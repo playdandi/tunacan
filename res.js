@@ -9,19 +9,24 @@ goog.require('lime.Label');
 goog.require('lime.fill.Image');
 goog.require('lime.fill.Frame');
 
-var frames = new Array();
+var frames = new Array(7);
 
 res.init = function() {
-	var resImg = new lime.fill.Image('../puzzle_icon.png');
+	var resImg = new lime.fill.Image('assets/puzzle_icon.png');
 	var resImgElem = resImg.getImageElement();
 	
-	for (var i = 0; i < 6; i++)
-		frames.push( new lime.fill.Frame(resImgElem, 63*i, 0, 63, 63) );
+	for (var i = 1; i <= 6; i++)
+		frames[i] = new lime.fill.Frame(resImgElem, 63*i, 0, 63, 63);
 };
 
 res.createImageByRandom = function () {
-	var index = res.getRandomNumber(6);
+	var index = res.getRandomNumber(6) + 1;
 	
+	return {'type' : index, 'image' : new lime.Sprite().setFill(frames[index]).setAnchorPoint(0, 0)};
+	//return new lime.Sprite().setFill( frames[index] ).setAnchorPoint(0, 0);
+};
+
+res.createImage = function (index) {	
 	return {'type' : index, 'image' : new lime.Sprite().setFill(frames[index]).setAnchorPoint(0, 0)};
 	//return new lime.Sprite().setFill( frames[index] ).setAnchorPoint(0, 0);
 };
