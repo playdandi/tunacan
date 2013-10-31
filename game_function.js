@@ -48,7 +48,6 @@ game_function.findMatchedBlocks = function() {
 		}
 	}
 	
-	//return {'array' : checkArray, 'isFound' : isFound};
 	return isFound;
 };
 
@@ -106,7 +105,7 @@ game_function.fillElementsAndDrop = function() {
 	return retArray;
 };
 
-
+/*
 function loglog(fake_calc_board, tt) {
 	console.log("=======", tt, " th", "==================");
 	for (var ii = 0; ii < BOARD_SIZE; ii++) {
@@ -117,3 +116,4 @@ function loglog(fake_calc_board, tt) {
 	}
 	console.log("=======================================");
 }
+*/
