@@ -13,6 +13,8 @@ goog.require('lime.fill.Frame');
 goog.require('lime.Node');
 goog.require('lime.animation.MoveBy');
 goog.require('lime.animation.Spawn');
+goog.require('lime.animation.FadeTo');
+goog.require('lime.animation.ScaleTo');
 
 //define
 var BOARDELEM_COW = 1;
@@ -84,6 +86,103 @@ tunacan.start = function() {
 	scroll(next_x, next_y, next_direct);
 };
 
+function drop()
+{
+	retArray = game_function.fillElementsAndDrop();
+	if(retArray.length > 0)
+	{
+		var drop_action = new Array();
+		var new_icon = new Array(), new_icon_type = new Array(), new_icon_count = 0;
+		for(var i = 0 ; i < retArray.length ; i++)
+		{
+			if(retArray[i].row >= 0)
+			{
+				drop_action.push(new lime.animation.MoveBy(0, 63*retArray[i].drop).setDuration(0.3));
+				board[retArray[i].row][retArray[i].col].runAction(drop_action[i]);
+			}
+			else
+			{
+				new_icon[new_icon_count] = retArray[i].img;
+				new_icon_type[new_icon_count] = retArray[i].type;
+				layer.appendChild(new_icon[new_icon_count].setPosition(retArray[i].col*63+DEFAULT_X, retArray[i].row*63+DEFAULT_Y));
+				drop_action.push(new lime.animation.MoveBy(0, 63*retArray[i].drop).setDuration(0.3));
+				new_icon[new_icon_count].runAction(drop_action[i]);
+				new_icon_count++;
+			}
+		}
+		goog.events.listen(drop_action[0], lime.animation.Event.STOP, function(){
+			new_icon_count = 0;
+			for(var i = 0 ; i < retArray.length ; i++)
+			{
+				if(retArray[i].row >= 0)
+				{
+					board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
+					board[retArray[i].row+retArray[i].drop][retArray[i].col] = board[retArray[i].row][retArray[i].col];
+					calc_board[board[retArray[i].row+retArray[i].drop][retArray[i].col]] = calc_board[retArray[i].row][retArray[i].col];
+				}
+				else
+				{
+					board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
+					board[retArray[i].row+retArray[i].drop][retArray[i].col] = new_icon[new_icon_count];
+					calc_board[board[retArray[i].row+retArray[i].drop][retArray[i].col]] = new_icon_type[new_icon_count];
+					new_icon_count++;
+				}
+			}
+			var next_x = Math.floor(Math.random() * 7);
+			var next_y = Math.floor(Math.random() * 7);
+			var next_direct = Math.floor(Math.random() * 4)+1;
+			scroll(next_x, next_y, next_direct);			
+		});
+	}
+	else
+	{
+		var next_x = Math.floor(Math.random() * 7);
+		var next_y = Math.floor(Math.random() * 7);
+		var next_direct = Math.floor(Math.random() * 4)+1;
+		scroll(next_x, next_y, next_direct);
+	}
+}
+
+function bomb()
+{
+	result = game_function.findMatchedBlocks();
+	if(result)
+	{
+		console.log("true");
+		//터트리는 연출
+		var bomb_action = new Array();
+		var coord = new Array();
+		for(var y = 0 ; y < BOARD_SIZE ; y++)
+		{
+			for(var x = 0 ; x < BOARD_SIZE ; x++)
+			{
+				if(calc_board[y][x] < 0)
+				{
+					console.log("in!", y, x);
+					bomb_action.push(new lime.animation.Spawn(new lime.animation.ScaleTo(1.2), new lime.animation.FadeTo(0)));
+					board[y][x].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
+					board[y][x].runAction(bomb_action[bomb_action.length-1]);
+					coord.push({'x':x, 'y':y});
+				}
+			}
+		}
+		goog.events.listen(bomb_action[0], lime.animation.Event.STOP, function(){
+			for(var i = 0 ; i < coord.length ; i++)
+			{
+				board[coord[i].y][coord[i].x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
+			}
+			drop();				
+		});
+	}
+	else
+	{
+		var next_x = Math.floor(Math.random() * 7);
+		var next_y = Math.floor(Math.random() * 7);
+		var next_direct = Math.floor(Math.random() * 4)+1;
+		scroll(next_x, next_y, next_direct);
+	}
+}
+
 function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 {
 	var new_icon;
@@ -114,20 +213,8 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				}
 				board[y][BOARD_SIZE-1] = new_icon;
 				calc_board[y][BOARD_SIZE-1] = temp;
-				
-				var next_x = Math.floor(Math.random() * 7);
-				var next_y = Math.floor(Math.random() * 7);
-				var next_direct = Math.floor(Math.random() * 4)+1;
-				
-				res = game_function.findMatchedBlocks();
-				if(res)
-				{
-					game_function.fillElementsAndDrop();
-				}
-				else
-				{
-					scroll(next_x, next_y, next_direct);
-				}
+							
+				bomb();		
 			});
 			break;
 		}
@@ -155,19 +242,7 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				board[y][0] = new_icon;
 				calc_board[y][0] = temp;
 				
-				var next_x = Math.floor(Math.random() * 7);
-				var next_y = Math.floor(Math.random() * 7);
-				var next_direct = Math.floor(Math.random() * 4)+1;
-				
-				res = game_function.findMatchedBlocks();
-				if(res)
-				{
-					game_function.fillElementsAndDrop();
-				}
-				else
-				{
-					scroll(next_x, next_y, next_direct);
-				}
+				bomb();	
 			});
 			break;
 		}
@@ -199,15 +274,7 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				var next_y = Math.floor(Math.random() * 7);
 				var next_direct = Math.floor(Math.random() * 4)+1;
 				
-				res = game_function.findMatchedBlocks();
-				if(res)
-				{
-					game_function.fillElementsAndDrop();
-				}
-				else
-				{
-					scroll(next_x, next_y, next_direct);
-				}
+				bomb();	
 			});
 			break;
 		}
@@ -239,15 +306,7 @@ function scroll(x, y, direct) //direct 1: left, 2: right, 3: up, 4: down
 				var next_y = Math.floor(Math.random() * 7);
 				var next_direct = Math.floor(Math.random() * 4)+1;
 				
-				res = game_function.findMatchedBlocks();
-				if(res)
-				{
-					game_function.fillElementsAndDrop();
-				}
-				else
-				{
-					scroll(next_x, next_y, next_direct);
-				}
+				bomb();	
 			});
 			break;
 		}
