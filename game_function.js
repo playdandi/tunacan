@@ -77,6 +77,17 @@ game_function.fillElementsAndDrop = function() {
 			newImgEachColumn[j][i] = res.createImageByRandom();
 	}
 	*/
+	/*
+	console.log("=============================");
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		str = '';
+		for( var j = 0; j < BOARD_SIZE; j++)
+			str += calc_board[i][j] + " ";
+		console.log(str);
+	}
+	console.log("=============================");
+	//return;
+	*/
 	
 	var retArray = new Array();
 	
@@ -85,7 +96,7 @@ game_function.fillElementsAndDrop = function() {
 			if (calc_board[i][j] < 0)
 				continue;
 			
-			pos = -1;
+			pos = -1;			
 			for (var k = i+1; k < BOARD_SIZE; k++) {
 				if (calc_board[k][j] > 0) {
 					pos = k-1;
@@ -98,20 +109,21 @@ game_function.fillElementsAndDrop = function() {
 				board[pos][j] = board[i][j];
 				calc_board[pos][j] = calc_board[i][j];
 				board[i][j] = null;
-				calc_board[i][j] *= -1;
+				calc_board[i][j] = 0; // 텅 빈 위치.
 				retArray.push({'row' : i, 'col' : j, 'drop' : pos - i});
 			}
 		}
 		
 		// 각 column마다 남는 공간만큼 image를 추가시킨다.
 		// 새로 만든 image를 위에서부터 순서대로 넣자.
-		var newLength = BOARD_SIZE;
+		var newLength = 0;
 		for (var i = 0; i < BOARD_SIZE; i++) {
-			if (calc_board[i][j] < 0) {
+			if (calc_board[i][j] != 0) {
 				newLength = i;
 				break;
 			}
 		}
+		//console.log("newLength : ", newLength);
 		for (var i = 0; i < newLength; i++) {
 			var newImg = res.createImageByRandom();
 			board[i][j] = newImg.image;
