@@ -2,7 +2,8 @@ goog.provide('game_function');
 
 // calc_board에서 터진 것들을 -1로 바꿔준다.
 game_function.findMatchedBlocks = function() {
-	var isFound = false; 
+	var isFound = false;
+	var numOfFound = 0; 
 	var end;
 
 	// horizontally check.
@@ -20,8 +21,10 @@ game_function.findMatchedBlocks = function() {
 				calc_board[i][j] = (end - k + 1 >= 3) ? -calc_board[i][j] : calc_board[i][j];
 				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
 			}
-			if (end - k + 1 >= 3)
+			if (end - k + 1 >= 3) {
+				numOfFound += (end - k + 1);
 				k = end;
+			}
 		}
 	}
 	
@@ -43,12 +46,14 @@ game_function.findMatchedBlocks = function() {
 				calc_board[i][j] = (end - k + 1 >= 3 && calc_board[i][j] > 0) ? -calc_board[i][j] : calc_board[i][j];
 				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
 			}
-			if (end - k + 1 >= 3)
+			if (end - k + 1 >= 3) {
+				numOfFound += (end - k + 1);
 				k = end;
+			}
 		}
 	}
 	
-	return isFound;
+	return {'isFound' : isFound, 'numOfFound' : numOfFound};
 };
 
 
