@@ -34,6 +34,7 @@ var DURATION_TIME = 0.5;
 var board = new Array(BOARD_SIZE), calc_board = new Array(BOARD_SIZE);
 var icons = new Array(7);
 var layer;
+var lock = false;
 
 // entry point
 tunacan.start = function() {
@@ -72,62 +73,65 @@ tunacan.start = function() {
 	director.replaceScene(scene);
 		
 	allowUserForceDrag(mask);
+	bomb(0, 0, 0);
 };
 
 function allowUserForceDrag(shape){ 
 	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e){
-		var st_pos = this.localToParent(e.position); //need parent coordinate system
-		
-		//console.log(st_pos);
-		var st_x_idx, st_y_idx;
-		
-		st_x_idx = Math.floor((st_pos.x-DEFAULT_X)/63);
-		st_y_idx = Math.floor((st_pos.y-DEFAULT_Y)/63);
-		console.log("st_x:", st_x_idx, "st_y:", st_y_idx); 
-		
-		// ends my input
-		e.swallow(['mouseup', 'touchend'], function(e){
-			var ed_pos = this.localToParent(e.position);
-			var ed_x_idx, ed_y_idx;
-			ed_x_idx = Math.floor((ed_pos.x-DEFAULT_X)/63);
-			ed_y_idx = Math.floor((ed_pos.y-DEFAULT_Y)/63);
-			console.log("ed_x:", ed_x_idx, "ed_y:", ed_y_idx); 
-			if(Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
-			{
-				if(ed_x_idx-st_x_idx > 0) //right
+		if(lock == false)
+		{
+			var st_pos = this.localToParent(e.position); //need parent coordinate system
+			
+			//console.log(st_pos);
+			var st_x_idx, st_y_idx;
+			
+			st_x_idx = Math.floor((st_pos.x-DEFAULT_X)/63);
+			st_y_idx = Math.floor((st_pos.y-DEFAULT_Y)/63);
+			//console.log("st_x:", st_x_idx, "st_y:", st_y_idx); 
+			
+			// ends my input
+			e.swallow(['mouseup', 'touchend'], function(e){
+				var ed_pos = this.localToParent(e.position);
+				var ed_x_idx, ed_y_idx;
+				ed_x_idx = Math.floor((ed_pos.x-DEFAULT_X)/63);
+				ed_y_idx = Math.floor((ed_pos.y-DEFAULT_Y)/63);
+				//console.log("ed_x:", ed_x_idx, "ed_y:", ed_y_idx); 
+				if(Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
 				{
-					scroll(st_x_idx, st_y_idx, 2, true);
+					if(ed_x_idx-st_x_idx > 0) //right
+					{
+						scroll(st_x_idx, st_y_idx, 2, true);
+					}
+					else //left
+					{
+						scroll(st_x_idx, st_y_idx, 1, true);
+					}
 				}
-				else //left
+				if(Math.abs(ed_y_idx-st_y_idx) > 0 && Math.abs(ed_pos.y-st_pos.y) > Math.abs(ed_pos.x-st_pos.x)) //up or down
 				{
-					scroll(st_x_idx, st_y_idx, 1, true);
-				}
-			}
-			if(Math.abs(ed_y_idx-st_y_idx) > 0 && Math.abs(ed_pos.y-st_pos.y) > Math.abs(ed_pos.x-st_pos.x)) //up or down
-			{
-				if(ed_y_idx-st_y_idx > 0) //down
-				{
-					scroll(st_x_idx, st_y_idx, 4, true);
-				}
-				else //up
-				{
-					scroll(st_x_idx, st_y_idx, 3, true);
+					if(ed_y_idx-st_y_idx > 0) //down
+					{
+						scroll(st_x_idx, st_y_idx, 4, true);
+					}
+					else //up
+					{
+						scroll(st_x_idx, st_y_idx, 3, true);
+					}
+					
 				}
 				
-			}
-			
-		});
-		// allows it to be dragged around
-		e.swallow(['mousemove', 'touchmove'], function(e){
-			//var pos = this.localToParent(e.position);
-			//mouseJoint.SetTarget(new box2d.Vec2(pos.x, pos.y));
-		});
-		
+			});
+			// allows it to be dragged around
+			e.swallow(['mousemove', 'touchmove'], function(e){
+				//var pos = this.localToParent(e.position);
+				//mouseJoint.SetTarget(new box2d.Vec2(pos.x, pos.y));
+			});
+		}		
 	});
 }
 
 function drop()
-{
+{	
 	retArray = game_function.fillElementsAndDrop();
 	
 	var new_icon = new Array(), new_icon_type = new Array(), new_icon_count = 0;
@@ -151,6 +155,7 @@ function drop()
 						new_icon_count++;
 					}
 				}
+				bomb(0, 0, 0);
 			}
 		});
 		
@@ -169,7 +174,8 @@ function drop()
 
 function bomb(x, y, direct)
 {
-	result = game_function.findMatchedBlocks();
+	lock = true;
+	
 	var result = game_function.findMatchedBlocks();
 	if (result.isFound)
 	{
@@ -177,6 +183,8 @@ function bomb(x, y, direct)
 		//var bomb_action = new Array();
 		var coord = new Array();
 		var destroyed = 0;
+		
+		console.log("result.numOfFind:",result.numOfFound);
 		
 		for(var y = 0 ; y < BOARD_SIZE ; y++)
 		{
@@ -208,7 +216,7 @@ function bomb(x, y, direct)
 			}
 		}
 	}
-	else
+	else if(direct != 0)
 	{
 		if(direct == 1)
 		{
@@ -243,10 +251,14 @@ function bomb(x, y, direct)
 			scroll(x, y+1, 3, false);
 		}
 	}
+	
+	lock = false;
+	//console.log("lock:", lock);
 }
 
 function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: down
 {
+	
 	var new_icon;
 	board[y][x].setOpacity(0.5);
 	switch(direct)
@@ -398,6 +410,7 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 			break;
 		}
 	}
+	
 }
 
 //this is required for outside access after code is compiled in ADVANCED_COMPILATIONS mode
