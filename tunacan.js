@@ -28,8 +28,8 @@ tunacan.start = function() {
 	
 	res.init();
 	
-	bgLayer.appendChild(rect);
 	layer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0,0);
+	bgLayer.appendChild(rect);
 	
 	boardInit();
 	
@@ -45,6 +45,9 @@ tunacan.start = function() {
 };
 
 function boardInit() {
+	// layer init
+	layer.removeAllChildren();
+	
 	board = null;
 	calc_board = null;
 	board = new Array(BOARD_SIZE);
