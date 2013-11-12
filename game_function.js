@@ -1,5 +1,8 @@
 goog.provide('game_function');
 
+//var hint_direction;
+//var hint_line;
+
 // calc_board에서 터진 것들을 -1로 바꿔준다.
 game_function.findMatchedBlocks = function() {
 	var isFound = false;
@@ -61,7 +64,6 @@ game_function.findMatchedBlocks = function() {
 
 game_function.fillElementsAndDrop = function() {
 	var fake_calc_board = calc_board;
-	//loglog(fake_calc_board, 'hahaa');
 	var retArray = new Array();
 	
 	for (var j = 0; j < BOARD_SIZE; j++) {
@@ -81,9 +83,7 @@ game_function.fillElementsAndDrop = function() {
 			pos = (pos == -1) ? BOARD_SIZE-1 : pos; // 최종적으로 떨어질 위치.
 			
 			if (pos - i > 0) { // 1 이상이란 말은, 1칸 이상 떨어뜨려야 한다는 말이므로, return array에 추가.
-				//board[pos][j] = board[i][j];
 				fake_calc_board[pos][j] = fake_calc_board[i][j];
-				//board[i][j] = null;
 				fake_calc_board[i][j] = 0; // 텅 빈 위치.
 				retArray.push({'row' : i, 'col' : j, 'drop' : pos - i});
 			}
@@ -96,11 +96,9 @@ game_function.fillElementsAndDrop = function() {
 			if (fake_calc_board[i][j] == 0)
 				newLength++;
 		}
-		//loglog(fake_calc_board, j);
-		//console.log("newLength : ", newLength);
+
 		for (var i = 0; i < newLength; i++) {
 			var newImg = res.createImageByRandom();
-			//board[i][j] = newImg.image;
 			fake_calc_board[i][j] = newImg.type;
 			retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'img' : newImg.image, 'type' : newImg.type});
 		}
@@ -108,7 +106,6 @@ game_function.fillElementsAndDrop = function() {
 	
 	// 이동시킬 아이템 (새로운 아이템 포함)의 좌표와 이동할 칸 수를 합쳐 array로 보낸다.
 	// 또한 새로운 board도 보내면 좋을 것 같다.
-	//console.log(retArray);
 	return retArray;
 };
 
@@ -121,8 +118,13 @@ game_function.isBoardUseless = function() {
 			check_board[i][j] = calc_board[i][j];
 	}
 	
+	hint_direction = null; // direction for hint.
+	hint_line = null; // n-th line for hint.
+	
 	// horizontally move & check
+	hint_direction = 0;
 	for (var i = 0; i < BOARD_SIZE; i++) {
+		hint_line = i;
 		// left
 		moveLeft(i, check_board);
 		if (checkMatchedBlocks(check_board))
@@ -137,7 +139,9 @@ game_function.isBoardUseless = function() {
 	}
 	
 	// vertically move & check
+	hint_direction = 1;
 	for (var j = 0; j < BOARD_SIZE; j++) {
+		hint_line = j;
 		// up
 		moveUp(j, check_board);
 		if (checkMatchedBlocks(check_board))

@@ -17,42 +17,25 @@ goog.require('lime.animation.FadeTo');
 goog.require('lime.animation.ScaleTo');
 goog.require('lime.animation.RotateBy');
 
-//define
-var BOARDELEM_COW = 1;
-var BOARDELEM_CABBAGE = 2;
-var BOARDELEM_PEPPER = 3;
-var BOARDELEM_OLIVE = 4;
-var BOARDELEM_CHEESE = 5;
-var BOARDELEM_TOMATO = 6;
-
-var BOARD_SIZE = 7;
-var DEFAULT_X = (720-(63*BOARD_SIZE))/2;
-var DEFAULT_Y = (1280-(63*BOARD_SIZE))/2;
-
-var DURATION_TIME = 0.2;
-
-//global variables
-var board;
-var calc_board;
-var layer;
-var lock;
 
 // entry point
 tunacan.start = function() {
 	var director = new lime.Director(document.body, 720, 1280);
 	var scene = new lime.Scene();
+	var bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(720, 1280).setFill("#000000");
 	var mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(63*BOARD_SIZE, 63*BOARD_SIZE).setPosition(DEFAULT_X, DEFAULT_Y);
 	
 	res.init();
 	
+	bgLayer.appendChild(rect);
 	layer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0,0);
-	layer.appendChild(rect);
 	
 	boardInit();
 	
 	layer.setMask(mask);
 	
+	scene.appendChild(bgLayer);
 	scene.appendChild(mask);
 	scene.appendChild(layer);
 	director.makeMobileWebAppCapable();	

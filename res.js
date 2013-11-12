@@ -3,6 +3,8 @@ goog.provide('res');
 goog.require('lime.fill.Image');
 goog.require('lime.fill.Frame');
 
+var frameWidth = 63;
+var frameHeight = 63;
 var frames = new Array(7);
 
 res.init = function() {
@@ -10,7 +12,7 @@ res.init = function() {
 	var resImgElem = resImg.getImageElement();
 	
 	for (var i = 1; i <= 6; i++)
-		frames[i] = new lime.fill.Frame(resImgElem, 63*(i-1), 0, 63, 63);
+		frames[i] = new lime.fill.Frame(resImgElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
 };
 
 res.createImageByRandom = function () {
@@ -26,4 +28,5 @@ res.createImage = function (index) {
 res.getRandomNumber = function(max) { // return integer between (0 <= value < max).
 	return Math.floor(Math.random() * max);
 };
+
 
