@@ -28,13 +28,31 @@ var BOARD_SIZE = 7;
 var DEFAULT_X = (720-(63*BOARD_SIZE))/2;
 var DEFAULT_Y = (1280-(63*BOARD_SIZE))/2;
 
-var DURATION_TIME = 0.5;
+var DURATION_TIME = 0.1;
 
 //global variables
-var board = new Array(BOARD_SIZE), calc_board = new Array(BOARD_SIZE);
-var icons = new Array(7);
+var board;
+var calc_board;
 var layer;
 var lock;
+
+function boardInit() {
+	board = null;
+	calc_board = null;
+	board = new Array(BOARD_SIZE);
+	calc_board = new Array(BOARD_SIZE);
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		board[i] = new Array(BOARD_SIZE);
+		calc_board[i] = new Array(BOARD_SIZE);
+		for (var j = 0; j < BOARD_SIZE; j++) {
+			var img = res.createImageByRandom();
+			var icon_index = img.type;
+			board[i][j] = img.image;
+			calc_board[i][j] = icon_index;
+			layer.appendChild(board[i][j].setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
+		}
+	}
+}
 
 // entry point
 tunacan.start = function() {
@@ -48,22 +66,7 @@ tunacan.start = function() {
 	layer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0,0);
 	layer.appendChild(rect);
 	
-	for(var i = 0 ; i < BOARD_SIZE ; i++)
-	{
-		board[i] = new Array(BOARD_SIZE);
-		calc_board[i] = new Array(BOARD_SIZE);
-		for(var j = 0 ; j < BOARD_SIZE ; j++)
-		{
-			//var icon_index = Math.floor(Math.random() * 6)+1;
-			var img = res.createImageByRandom();
-			var icon_index = img.type;
-			board[i][j] = img.image;
-			//board[i][j] = new lime.Sprite().setFill(img.image).setAnchorPoint(0, 0);
-			calc_board[i][j] = icon_index;
-			layer.appendChild(board[i][j].setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
-		}
-		//console.log(calc_board[i][0], calc_board[i][1], calc_board[i][2], calc_board[i][3], calc_board[i][4], calc_board[i][5], calc_board[i][6]);
-	}
+	boardInit();
 	
 	layer.setMask(mask);
 	
@@ -73,6 +76,8 @@ tunacan.start = function() {
 	director.replaceScene(scene);
 		
 	allowUserForceDrag(mask);
+	
+	// start game
 	lock = true;
 	bomb(0, 0, 0);
 };
@@ -191,18 +196,14 @@ function bomb(x, y, direct)
 			{
 				if(calc_board[y][x] < 0)
 				{
-					var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.2), new lime.animation.FadeTo(0));
+					var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.2), new lime.animation.FadeTo(0)).setDuration(DURATION_TIME);
 					board[y][x].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
-					
 					coord.push({'x' : x, 'y' : y});
-					//goog.events.listen(bomb_action[0], lime.animation.Event.STOP, function() {
+					
 					goog.events.listen(anim, lime.animation.Event.STOP, function() {
 						destroyed++;
-						//console.log(destroyed + " (" + result.numOfFound + ")");
 						if (destroyed == result.numOfFound) {
-							//board[y][x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(x*63), DEFAULT_Y+(y*63));
-							for (var i = 0; i < coord.length; i++) {
-								//console.log(coord[i].x, coord[i].y);	
+							for (var i = 0; i < coord.length; i++) {	
 								board[coord[i].y][coord[i].x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
 							}
 							
@@ -252,6 +253,8 @@ function bomb(x, y, direct)
 	}
 	else {
 		// 스크롤을 한 상태도 아니고 , 폭탄이 터진 경우도 아니다.
+		if (game_function.isBoardUseless())
+			boardInit();
 		lock = false;
 	}
 }
