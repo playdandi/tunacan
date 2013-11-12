@@ -16,7 +16,7 @@ res.init = function() {
 	var resImgElem = resImg.getImageElement();
 	
 	for (var i = 1; i <= 6; i++)
-		frames[i] = new lime.fill.Frame(resImgElem, 63*i, 0, 63, 63);
+		frames[i] = new lime.fill.Frame(resImgElem, 63*(i-1), 0, 63, 63);
 };
 
 res.createImageByRandom = function () {
