@@ -6,9 +6,11 @@ goog.require('lime.fill.Frame');
 var frameWidth = 63;
 var frameHeight = 63;
 var frames = new Array(7);
+var fishing;
 
 res.init = function() {
 	var resImg = new lime.fill.Image('assets/puzzle_icon.png');
+	fishing = new lime.fill.Image('assets/fising.png');
 	var resImgElem = resImg.getImageElement();
 	
 	for (var i = 1; i <= 6; i++)

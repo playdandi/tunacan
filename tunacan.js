@@ -30,12 +30,17 @@ tunacan.start = function() {
 	
 	layer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0,0);
 	bgLayer.appendChild(rect);
+	var fishingImage = new lime.Sprite().setFill(fishing).setAnchorPoint(0, 0).setPosition(DEFAULT_X-300+10, DEFAULT_Y-300-130);
+	bgLayer.appendChild(fishingImage);
 	
+	game_info.init();
 	boardInit();
 	
 	layer.setMask(mask);
 	
 	scene.appendChild(bgLayer);
+	scene.appendChild(infoLayer);
+	
 	scene.appendChild(mask);
 	scene.appendChild(layer);
 	director.makeMobileWebAppCapable();	
@@ -200,7 +205,7 @@ function bomb(x, y, direct)
 		var coord = new Array();
 		var destroyed = 0;
 		
-		console.log("result.numOfFind:",result.numOfFound);
+		//console.log("result.numOfFind:",result.numOfFound);
 		
 		for(var y = 0 ; y < BOARD_SIZE ; y++)
 		{
@@ -212,9 +217,13 @@ function bomb(x, y, direct)
 					board[y][x].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
 					coord.push({'x' : x, 'y' : y});
 					
+					numOfGetPieces[-calc_board[y][x]]++;
 					goog.events.listen(anim, lime.animation.Event.STOP, function() {
 						destroyed++;
 						if (destroyed == result.numOfFound) {
+							game_info.updateScore(result.numOfFound);
+							game_info.updateCombo(1);
+							game_info.updateGauge(result.numOfFound);
 							for (var i = 0; i < coord.length; i++) {	
 								board[coord[i].y][coord[i].x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
 							}
@@ -268,6 +277,8 @@ function bomb(x, y, direct)
 		if (game_function.isBoardUseless())
 			boardInit();
 		lock = false;
+		
+		game_info.updateCombo(0);
 	}
 }
 
