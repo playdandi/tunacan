@@ -43,11 +43,13 @@ game_function.findMatchedBlocks = function() {
 			}
 			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
 			for (var i = k; i <= end; i++) {
+				if (end - k + 1 >= 3 && calc_board[i][j] > 0)
+					numOfFound++;
 				calc_board[i][j] = (end - k + 1 >= 3 && calc_board[i][j] > 0) ? -calc_board[i][j] : calc_board[i][j];
 				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
 			}
 			if (end - k + 1 >= 3) {
-				numOfFound += (end - k + 1);
+				//numOfFound += (end - k + 1);
 				k = end;
 			}
 		}
@@ -110,15 +112,98 @@ game_function.fillElementsAndDrop = function() {
 	return retArray;
 };
 
-/*
-function loglog(fake_calc_board, tt) {
-	console.log("=======", tt, " th", "==================");
-	for (var ii = 0; ii < BOARD_SIZE; ii++) {
-		str = '';
-		for(var jj = 0; jj < BOARD_SIZE; jj++)
-			str += fake_calc_board[ii][jj] + " ";
-		console.log(str);
+
+game_function.isBoardUseless = function() {
+	var check_board = new Array(BOARD_SIZE);
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		check_board[i] = new Array(BOARD_SIZE);
+		for (var j = 0; j < BOARD_SIZE; j++)
+			check_board[i][j] = calc_board[i][j];
 	}
-	console.log("=======================================");
+	
+	// horizontally move & check
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		// left
+		moveLeft(i, check_board);
+		if (checkMatchedBlocks(check_board))
+			return false;
+			
+		// right
+		moveRightTwice(i, check_board);
+		if (checkMatchedBlocks(check_board))
+			return false;
+		
+		moveLeft(i, check_board);
+	}
+	
+	// vertically move & check
+	for (var j = 0; j < BOARD_SIZE; j++) {
+		// up
+		moveUp(j, check_board);
+		if (checkMatchedBlocks(check_board))
+			return false;
+			
+		// down
+		moveDownTwice(j, check_board);
+		if (checkMatchedBlocks(check_board))
+			return false;
+		
+		moveUp(j, check_board);
+	}
+	
+	check_board = null;
+	return true;
+};
+
+function checkMatchedBlocks(check_board) {
+	// horizontally check
+	for (var i = 0; i < BOARD_SIZE; i++)
+		for (var j = 0; j < BOARD_SIZE-2; j++)
+			if (check_board[i][j] == check_board[i][j+1] && check_board[i][j] == check_board[i][j+2]) {
+				check_board = null;
+				return true;
+			}
+	
+	// vertically check
+	for (var j = 0; j < BOARD_SIZE; j++)
+		for (var i = 0; i < BOARD_SIZE-2; i++)
+			if (check_board[i][j] == check_board[i+1][j] && check_board[i][j] == check_board[i+2][j]) {
+				check_board = null;
+				return true;
+			}
+	
+	return false;
 }
-*/
+
+function moveLeft(i, check_board) {
+	temp = check_board[i][0];
+	for (var j = 1; j < BOARD_SIZE; j++)
+		check_board[i][j-1] = check_board[i][j];
+	check_board[i][BOARD_SIZE-1] = temp;
+}
+
+function moveRightTwice(i, check_board) {
+	temp1 = check_board[i][BOARD_SIZE-1];
+	temp2 = check_board[i][BOARD_SIZE-2];
+	for (var j = BOARD_SIZE-3; j >= 0; j--)
+		check_board[i][j+2] = check_board[i][j];
+	check_board[i][1] = temp1;
+	check_board[i][0] = temp2;
+}
+
+function moveUp(j, check_board) {
+	temp = check_board[0][j];
+	for (var i = 1; i < BOARD_SIZE; i++)
+		check_board[i-1][j] = check_board[i][j];
+	check_board[BOARD_SIZE-1][j] = temp;
+}
+
+function moveDownTwice(j, check_board) {
+	temp1 = check_board[BOARD_SIZE-1][j];
+	temp2 = check_board[BOARD_SIZE-2][j];
+	for (var i = BOARD_SIZE-3; i >= 0; i--)
+		check_board[i+2][j] = check_board[i][j];
+	check_board[1][j] = temp1;
+	check_board[0][j] = temp2;
+}
+
