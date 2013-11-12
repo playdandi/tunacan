@@ -34,7 +34,7 @@ var DURATION_TIME = 0.5;
 var board = new Array(BOARD_SIZE), calc_board = new Array(BOARD_SIZE);
 var icons = new Array(7);
 var layer;
-var lock = false;
+var lock;
 
 // entry point
 tunacan.start = function() {
@@ -73,6 +73,7 @@ tunacan.start = function() {
 	director.replaceScene(scene);
 		
 	allowUserForceDrag(mask);
+	lock = true;
 	bomb(0, 0, 0);
 };
 
@@ -173,9 +174,7 @@ function drop()
 }
 
 function bomb(x, y, direct)
-{
-	lock = true;
-	
+{	
 	var result = game_function.findMatchedBlocks();
 	if (result.isFound)
 	{
@@ -251,14 +250,15 @@ function bomb(x, y, direct)
 			scroll(x, y+1, 3, false);
 		}
 	}
-	
-	lock = false;
-	//console.log("lock:", lock);
+	else {
+		// 스크롤을 한 상태도 아니고 , 폭탄이 터진 경우도 아니다.
+		lock = false;
+	}
 }
 
 function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: down
 {
-	
+	lock = true;
 	var new_icon;
 	board[y][x].setOpacity(0.5);
 	switch(direct)
@@ -284,10 +284,10 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 						board[y][BOARD_SIZE-1] = new_icon;
 						calc_board[y][BOARD_SIZE-1] = temp;
 									
-						if(next_step)
-						{			
+						if (next_step)
 							bomb(x, y, direct);
-						}
+						else
+							lock = false;
 					}
 				});
 				if (i == BOARD_SIZE)
@@ -318,10 +318,10 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 						board[y][0] = new_icon;
 						calc_board[y][0] = temp;
 						
-						if(next_step)
-						{			
+						if (next_step)
 							bomb(x, y, direct);
-						}
+						else
+							lock = false;
 					}
 				});
 				if (i == BOARD_SIZE)
@@ -357,10 +357,10 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 						var next_y = Math.floor(Math.random() * 7);
 						var next_direct = Math.floor(Math.random() * 4)+1;
 						
-						if(next_step)
-						{			
+						if (next_step)
 							bomb(x, y, direct);
-						}
+						else
+							lock = false;
 					}	
 				});
 				if (i == BOARD_SIZE)
@@ -396,10 +396,10 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 						var next_y = Math.floor(Math.random() * 7);
 						var next_direct = Math.floor(Math.random() * 4)+1;
 						
-						if(next_step)
-						{			
+						if (next_step)
 							bomb(x, y, direct);
-						}
+						else
+							lock = false;
 					}	
 				});
 				if (i == BOARD_SIZE)
