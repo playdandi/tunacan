@@ -15,6 +15,7 @@ goog.require('lime.animation.MoveBy');
 goog.require('lime.animation.Spawn');
 goog.require('lime.animation.FadeTo');
 goog.require('lime.animation.ScaleTo');
+goog.require('lime.animation.RotateBy');
 
 //define
 var BOARDELEM_COW = 1;
@@ -28,31 +29,13 @@ var BOARD_SIZE = 7;
 var DEFAULT_X = (720-(63*BOARD_SIZE))/2;
 var DEFAULT_Y = (1280-(63*BOARD_SIZE))/2;
 
-var DURATION_TIME = 0.1;
+var DURATION_TIME = 0.2;
 
 //global variables
 var board;
 var calc_board;
 var layer;
 var lock;
-
-function boardInit() {
-	board = null;
-	calc_board = null;
-	board = new Array(BOARD_SIZE);
-	calc_board = new Array(BOARD_SIZE);
-	for (var i = 0; i < BOARD_SIZE; i++) {
-		board[i] = new Array(BOARD_SIZE);
-		calc_board[i] = new Array(BOARD_SIZE);
-		for (var j = 0; j < BOARD_SIZE; j++) {
-			var img = res.createImageByRandom();
-			var icon_index = img.type;
-			board[i][j] = img.image;
-			calc_board[i][j] = icon_index;
-			layer.appendChild(board[i][j].setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
-		}
-	}
-}
 
 // entry point
 tunacan.start = function() {
@@ -76,11 +59,54 @@ tunacan.start = function() {
 	director.replaceScene(scene);
 		
 	allowUserForceDrag(mask);
-	
-	// start game
-	lock = true;
-	bomb(0, 0, 0);
 };
+
+function boardInit() {
+	board = null;
+	calc_board = null;
+	board = new Array(BOARD_SIZE);
+	calc_board = new Array(BOARD_SIZE);
+	
+	var i, j;
+	var init = 0;
+	for(i = 0; i < BOARD_SIZE; i++)
+	{
+		board[i] = new Array(BOARD_SIZE);
+		calc_board[i] = new Array(BOARD_SIZE);
+		for(j = 0; j < BOARD_SIZE; j++)
+		{
+			var img = res.createImageByRandom();
+			var icon_index = img.type;
+			board[i][j] = img.image;
+						
+			calc_board[i][j] = icon_index;
+			layer.appendChild(board[i][j].setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
+			
+			var anim = new lime.animation.RotateBy(360).setDuration(1.5);
+			board[i][j].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(j*63)+63/2, DEFAULT_Y+(i*63)+63/2);
+			
+			goog.events.listen(anim, lime.animation.Event.STOP, function() {
+				init++;
+				if (init == BOARD_SIZE*BOARD_SIZE) 
+				{
+					var x, y;
+					for(y = 0 ; y < BOARD_SIZE ; y++)
+					{
+						for(x = 0 ; x < BOARD_SIZE ; x++)
+						{
+							board[y][x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(x*63), DEFAULT_Y+(y*63));							
+						}
+					}
+					
+					// start game					
+					lock = true;
+					bomb(0, 0, 0);
+				}
+			});
+			board[i][j].runAction(anim);
+		}
+	}
+}
 
 function allowUserForceDrag(shape){ 
 	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e){
@@ -196,7 +222,7 @@ function bomb(x, y, direct)
 			{
 				if(calc_board[y][x] < 0)
 				{
-					var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.2), new lime.animation.FadeTo(0)).setDuration(DURATION_TIME);
+					var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.5), new lime.animation.FadeTo(0)).setDuration(DURATION_TIME);
 					board[y][x].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
 					coord.push({'x' : x, 'y' : y});
 					
