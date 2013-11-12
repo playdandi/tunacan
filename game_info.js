@@ -38,11 +38,12 @@ var infoLayer;
 var scoreLabel;
 var comboLabel;
 var gaugeLabel;
+var getPieces;
 
 game_info.init = function() {
 	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(DEFAULT_X, DEFAULT_Y);
 	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+50);
-	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(50).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+100);
+	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(40).setAnchorPoint(1.0, 0).setPosition(frameWidth*BOARD_SIZE, frameHeight*BOARD_SIZE+50);
 	gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1.0, 1.0).setPosition(frameWidth*BOARD_SIZE, -20);
 	infoLayer.appendChild(scoreLabel);
 	infoLayer.appendChild(comboLabel);
@@ -53,10 +54,17 @@ game_info.init = function() {
 	game_info.updateScore(0);
 	game_info.updateCombo(0);
 	game_info.updateGauge(0);
-	
-	numOfGetPieces = new Array(numOfTypes);
+
+	// get pieces (퍼즐 피스 종류마다 얻은 개수 보여주는 것)	
+	getPieces = new Array(numOfTypes);
+	for (var i = 1; i < numOfTypes; i++) {
+		getPieces[i] = new lime.Label().setFontColor('#ffff00').setFontSize(20).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+70+i*20);
+		infoLayer.appendChild(getPieces[i]);
+	}
+	numOfGetPieces = new Array(numOfTypes); // 개수 초기화
 	for (var i = 0; i < numOfTypes; i++)
 		numOfGetPieces[i] = 0;
+	game_info.updateGetPieces();
 };
 
 game_info.updateScore = function(s) {
@@ -72,6 +80,22 @@ game_info.updateCombo = function(c) {
 game_info.updateGauge = function(g) {
 	gauge += g * 4;
 	gaugeLabel.setText(gauge);
+};
+
+game_info.updateGetPieces = function() {
+	for (var i = 1; i < numOfTypes; i++) {
+		str = '';
+		switch (i) {
+			case BOARDELEM_COW: str = 'COW'; break;
+			case BOARDELEM_CABBAGE: str = 'CABBAGE'; break;
+			case BOARDELEM_PEPPER: str = 'PEPPER'; break;
+			case BOARDELEM_OLIVE: str = 'OLIVE'; break;
+			case BOARDELEM_CHEESE: str = 'CHEESE'; break;
+			case BOARDELEM_TOMATO: str = 'TOMATO'; break; 
+		}
+		str += ' : ' + numOfGetPieces[i];
+		getPieces[i].setText(str);
+	}
 };
 
 

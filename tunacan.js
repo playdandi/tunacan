@@ -224,6 +224,8 @@ function bomb(x, y, direct)
 							game_info.updateScore(result.numOfFound);
 							game_info.updateCombo(1);
 							game_info.updateGauge(result.numOfFound);
+							game_info.updateGetPieces();
+							
 							for (var i = 0; i < coord.length; i++) {	
 								board[coord[i].y][coord[i].x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
 							}
