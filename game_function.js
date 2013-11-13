@@ -1,7 +1,5 @@
 goog.provide('game_function');
 
-//var hint_direction;
-//var hint_line;
 
 // calc_board에서 터진 것들을 -1로 바꿔준다.
 game_function.findMatchedBlocks = function() {
@@ -60,6 +58,43 @@ game_function.findMatchedBlocks = function() {
 	
 	return {'isFound' : isFound, 'numOfFound' : numOfFound};
 };
+
+var floodXY = null;
+game_function.findMatchedBlocksFloodFill = function() {
+	var isFound = false;
+	var numOfFound = 0;
+	
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		for (var j = 0; j < BOARD_SIZE; j++) {
+			if (calc_board[i][j] > 0) {
+				floodXY = new Array();
+				flood(i, j, calc_board[i][j], floodXY);
+				if (floodXY.length < 3) { // 원상태로 되돌리기.
+					for (var k = 0; k < floodXY.length; k++)
+						calc_board[floodXY[k].x][floodXY[k].y] *= -1;
+				}
+				else { // 3개 이상 붙어있을 때.
+					numOfFound += floodXY.length;
+					isFound = true;
+				}
+				floodXY = null;
+			}
+		}
+	}
+	
+	return {'isFound' : isFound, 'numOfFound' : numOfFound};
+};
+
+function flood(x, y, type) {
+	floodXY.push({'x' : x, 'y' : y});
+	calc_board[x][y] *= -1;
+	if (y > 0 && calc_board[x][y-1] == type && calc_board[x][y-1] > 0) flood(x, y-1, type);
+	if (y < BOARD_SIZE-1 && calc_board[x][y+1] == type && calc_board[x][y+1] > 0) flood(x, y+1, type);
+	if (x > 0 && calc_board[x-1][y] == type && calc_board[x-1][y] > 0) flood(x-1, y, type);
+	if (x < BOARD_SIZE-1 && calc_board[x+1][y] == type && calc_board[x+1][y] > 0) flood(x+1, y, type);
+}
+
+
 
 
 game_function.fillElementsAndDrop = function() {
