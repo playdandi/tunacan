@@ -23,7 +23,7 @@ tunacan.start = function() {
 	var director = new lime.Director(document.body, 720, 1280);
 	var scene = new lime.Scene();
 	var bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
-	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(720, 1280).setFill("#000000");
+	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(720, 1280).setFill("#231F20");
 	var mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(63*BOARD_SIZE, 63*BOARD_SIZE).setPosition(DEFAULT_X, DEFAULT_Y);
 	
 	res.init();
