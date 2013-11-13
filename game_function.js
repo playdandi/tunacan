@@ -167,6 +167,36 @@ game_function.isBoardUseless = function() {
 	hint_direction = null; // direction for hint.
 	hint_line = null; // n-th line for hint.
 	
+	// randomly take direction to be checked first.
+	var whichDirectionFirst = Math.floor(Math.random() * 2);
+	if (whichDirectionFirst == 0)
+	{
+		if(!checkHorizontally(check_board)) {
+			check_board = null;
+			return false;
+		}
+		if(!checkVertically(check_board)) {
+			check_board = null;
+			return false;
+		}
+	}
+	else
+	{
+		if(!checkVertically(check_board)) {
+			check_board = null;
+			return false;
+		}
+		if(!checkHorizontally(check_board)) {
+			check_board = null;
+			return false;
+		}
+	}
+	
+	check_board = null;
+	return true;
+};
+
+function checkHorizontally(check_board) {
 	// horizontally move & check
 	hint_direction = 0;
 	for (var i = 0; i < BOARD_SIZE; i++) {
@@ -183,7 +213,10 @@ game_function.isBoardUseless = function() {
 		
 		moveLeft(i, check_board);
 	}
-	
+	return true;
+}
+
+function checkVertically(check_board) {
 	// vertically move & check
 	hint_direction = 1;
 	for (var j = 0; j < BOARD_SIZE; j++) {
@@ -200,10 +233,8 @@ game_function.isBoardUseless = function() {
 		
 		moveUp(j, check_board);
 	}
-	
-	check_board = null;
 	return true;
-};
+}
 
 function checkMatchedBlocks(check_board) {
 	// horizontally check
