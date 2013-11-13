@@ -56,25 +56,25 @@ game_function.findMatchedBlocks = function() {
 };
 
 
-var floodXY = null;
+
+var numOfFound;
 game_function.findMatchedBlocksFloodFill = function() {
 	var isFound = false;
-	var numOfFound = 0;
+	numOfFound = 0;
 	
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		for (var j = 0; j < BOARD_SIZE; j++) {
 			if (board[i][j].type > 0) {
-				floodXY = new Array();
-				flood(i, j, board[i][j].type, floodXY);
-				if (floodXY.length < 3) { // 원상태로 되돌리기.
-					for (var k = 0; k < floodXY.length; k++)
-						board[floodXY[k].x][floodXY[k].y].type *= -1;
-				}
-				else { // 3개 이상 붙어있을 때.
-					numOfFound += floodXY.length;
+				// check 3-connected parts with direction for right, left, down, up.
+				var isValid1, isValid2, isValid3, isValid4;
+				isValid1 = j < BOARD_SIZE-2 && board[i][j].type == board[i][j+1].type && board[i][j].type == board[i][j+2].type;
+				isValid2 = j > 1 && board[i][j].type == board[i][j-1].type && board[i][j].type == board[i][j-2].type;
+				isValid3 = i < BOARD_SIZE-2 && board[i][j].type == board[i+1][j].type && board[i][j].type == board[i+2][j].type;
+				isValid4 = i > 1 && board[i][j].type == board[i-1][j].type && board[i][j].type == board[i-2][j].type;
+				if (isValid1 || isValid2 || isValid3 || isValid4) {
+					flood(i, j, board[i][j].type); // floodfill recursion.
 					isFound = true;
 				}
-				floodXY = null;
 			}
 		}
 	}
@@ -83,7 +83,7 @@ game_function.findMatchedBlocksFloodFill = function() {
 };
 
 function flood(x, y, type) {
-	floodXY.push({'x' : x, 'y' : y});
+	numOfFound++;
 	board[x][y].type *= -1;
 	if (y > 0 			 && board[x][y-1].type == type && board[x][y-1].type > 0) flood(x, y-1, type);
 	if (y < BOARD_SIZE-1 && board[x][y+1].type == type && board[x][y+1].type > 0) flood(x, y+1, type);
