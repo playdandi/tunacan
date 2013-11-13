@@ -255,7 +255,10 @@ function bomb(x, y, direct)
 			boardInit();
 		lock = false;
 		
-		//start timer
+		//start timer for hint
+		hintTime = 0.0;
+		showHint = false;
+		lime.scheduleManager.scheduleWithDelay(timer.updateHintTime, this, 100, 30);
 		
 		game_info.updateCombo(0); // init combo to 0.
 	}

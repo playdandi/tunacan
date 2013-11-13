@@ -38,12 +38,6 @@ var DURATION_TIME = 0.2;
 var layer;
 var lock;
 
-//timer progress
-var curTime, maxTime;
-var time_lbl;
-var time_left;
-
-
 
 goog.require('lime.Label');
 
