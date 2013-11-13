@@ -17,7 +17,6 @@ goog.require('lime.animation.FadeTo');
 goog.require('lime.animation.ScaleTo');
 goog.require('lime.animation.RotateBy');
 
-
 // entry point
 tunacan.start = function() {
 	var director = new lime.Director(document.body, 720, 1280);
@@ -33,7 +32,7 @@ tunacan.start = function() {
 	var fishingImage = new lime.Sprite().setFill(fishing).setAnchorPoint(0, 0).setPosition(DEFAULT_X-300+10, DEFAULT_Y-300-130);
 	bgLayer.appendChild(fishingImage);
 	
-    lime.scheduleManager.scheduleWithDelay(decreaseTime, this, 1000);
+    lime.scheduleManager.scheduleWithDelay(timer.decreaseTime, this, 1000);
 	
 	game_info.init();
 	boardInit();
@@ -51,14 +50,6 @@ tunacan.start = function() {
 	allowUserForceDrag(mask);
 };
 
-function decreaseTime()
-{
-    curTime--;
-    if (curTime < 1) {
-       // this.endGame();
-    }
-    time_left.setText(curTime);
-}
 
 function boardInit() 
 {

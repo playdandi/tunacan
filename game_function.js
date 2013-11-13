@@ -1,7 +1,6 @@
 goog.provide('game_function');
 
 
-// calc_board에서 터진 것들을 -1로 바꿔준다.
 game_function.findMatchedBlocks = function() {
 	var isFound = false;
 	var numOfFound = 0; 
