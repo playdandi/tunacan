@@ -1,5 +1,12 @@
 goog.provide('game_info');
 
+function piece() {
+	this.img;
+	this.type;
+	this.ingredient;
+	return this;
+}
+
 // puzzle pieces
 var numOfTypes = 6+1;
 var BOARDELEM_COW = 1;
@@ -9,6 +16,7 @@ var BOARDELEM_OLIVE = 4;
 var BOARDELEM_CHEESE = 5;
 var BOARDELEM_TOMATO = 6;
 var numOfGetPieces;
+var INGREDIENT_PROBABILITY = 10;
 
 // game
 var combo;
@@ -80,8 +88,6 @@ game_info.init = function() {
 	for (var i = 0; i < numOfTypes; i++)
 		numOfGetPieces[i] = 0;
 	game_info.updateGetPieces();
-	
-	
 };
 
 game_info.updateScore = function(s) {

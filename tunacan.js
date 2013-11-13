@@ -53,7 +53,6 @@ tunacan.start = function() {
 
 function decreaseTime()
 {
-	console.log("chk3");
     curTime--;
     if (curTime < 1) {
        // this.endGame();
@@ -67,99 +66,83 @@ function boardInit()
 	layer.removeAllChildren();
 	
 	board = null;
-	calc_board = null;
+	//calc_board = null;
 	board = new Array(BOARD_SIZE);
-	calc_board = new Array(BOARD_SIZE);
+	//calc_board = new Array(BOARD_SIZE);
 	
 	var i, j;
 	var init = 0;
-	for(i = 0; i < BOARD_SIZE; i++)
+	for (i = 0; i < BOARD_SIZE; i++)
 	{
 		board[i] = new Array(BOARD_SIZE);
-		calc_board[i] = new Array(BOARD_SIZE);
-		for(j = 0; j < BOARD_SIZE; j++)
+		//calc_board[i] = new Array(BOARD_SIZE);
+		for (j = 0; j < BOARD_SIZE; j++)
 		{
-			var img = res.createImageByRandom();
-			var icon_index = img.type;
-			board[i][j] = img.image;
-						
-			calc_board[i][j] = icon_index;
-			layer.appendChild(board[i][j].setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
+			// make new piece of puzzle.
+			board[i][j] = res.createPiece(0);
+
+			layer.appendChild(board[i][j].img.setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
 			
 			var anim = new lime.animation.RotateBy(360).setDuration(1.5);
-			board[i][j].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(j*63)+63/2, DEFAULT_Y+(i*63)+63/2);
+			board[i][j].img.setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(j*63)+63/2, DEFAULT_Y+(i*63)+63/2);
 			
-			goog.events.listen(anim, lime.animation.Event.STOP, function() {
+			goog.events.listen(anim, lime.animation.Event.STOP, function()
+			{
 				init++;
 				if (init == BOARD_SIZE*BOARD_SIZE) 
 				{
-					var x, y;
-					for(y = 0 ; y < BOARD_SIZE ; y++)
-					{
-						for(x = 0 ; x < BOARD_SIZE ; x++)
-						{
-							board[y][x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(x*63), DEFAULT_Y+(y*63));							
-						}
-					}
+					for(var y = 0 ; y < BOARD_SIZE ; y++)
+						for(var x = 0 ; x < BOARD_SIZE ; x++)
+							board[y][x].img.setAnchorPoint(0, 0).setPosition(DEFAULT_X+(x*63), DEFAULT_Y+(y*63));							
 					
-					// start game					
+					// start game		
 					lock = true;
 					bomb(0, 0, 0);
 				}
 			});
-			board[i][j].runAction(anim);
+			board[i][j].img.runAction(anim);
 		}
 	}
 }
 
 function allowUserForceDrag(shape)
 { 
-	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e){
-		if(lock == false)
+	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e)
+	{
+		if (lock == false)
 		{
 			var st_pos = this.localToParent(e.position); //need parent coordinate system
-			
-			//console.log(st_pos);
-			var st_x_idx, st_y_idx;
-			
+
+			var st_x_idx, st_y_idx;			
 			st_x_idx = Math.floor((st_pos.x-DEFAULT_X)/63);
-			st_y_idx = Math.floor((st_pos.y-DEFAULT_Y)/63);
-			//console.log("st_x:", st_x_idx, "st_y:", st_y_idx); 
+			st_y_idx = Math.floor((st_pos.y-DEFAULT_Y)/63); 
 			
 			// ends my input
-			e.swallow(['mouseup', 'touchend'], function(e){
+			e.swallow(['mouseup', 'touchend'], function(e)
+			{
 				var ed_pos = this.localToParent(e.position);
 				var ed_x_idx, ed_y_idx;
 				ed_x_idx = Math.floor((ed_pos.x-DEFAULT_X)/63);
 				ed_y_idx = Math.floor((ed_pos.y-DEFAULT_Y)/63);
-				//console.log("ed_x:", ed_x_idx, "ed_y:", ed_y_idx); 
-				if(Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
+				 
+				if (Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
 				{
-					if(ed_x_idx-st_x_idx > 0) //right
-					{
+					if (ed_x_idx-st_x_idx > 0) //right
 						scroll(st_x_idx, st_y_idx, 2, true);
-					}
 					else //left
-					{
 						scroll(st_x_idx, st_y_idx, 1, true);
-					}
 				}
-				if(Math.abs(ed_y_idx-st_y_idx) > 0 && Math.abs(ed_pos.y-st_pos.y) > Math.abs(ed_pos.x-st_pos.x)) //up or down
+				if (Math.abs(ed_y_idx-st_y_idx) > 0 && Math.abs(ed_pos.y-st_pos.y) > Math.abs(ed_pos.x-st_pos.x)) //up or down
 				{
-					if(ed_y_idx-st_y_idx > 0) //down
-					{
+					if (ed_y_idx-st_y_idx > 0) //down
 						scroll(st_x_idx, st_y_idx, 4, true);
-					}
 					else //up
-					{
 						scroll(st_x_idx, st_y_idx, 3, true);
-					}
-					
-				}
-				
+				}	
 			});
 			// allows it to be dragged around
-			e.swallow(['mousemove', 'touchmove'], function(e){
+			e.swallow(['mousemove', 'touchmove'], function(e)
+			{
 				//var pos = this.localToParent(e.position);
 				//mouseJoint.SetTarget(new box2d.Vec2(pos.x, pos.y));
 			});
@@ -169,42 +152,33 @@ function allowUserForceDrag(shape)
 
 function drop()
 {	
-	retArray = game_function.fillElementsAndDrop();
-	
-	var new_icon = new Array(), new_icon_type = new Array(), new_icon_count = 0;
+	var retArray = game_function.fillElementsAndDrop();
 	var dropped = 0;
 	
-	for (var i = 0; i < retArray.length; i++) {
-		var anim = new lime.animation.MoveBy(0, 63 * retArray[i].drop).setDuration(0.3);
-		goog.events.listen(anim, lime.animation.Event.STOP, function() {
+	for (var i = 0; i < retArray.length; i++)
+	{
+		var anim = new lime.animation.MoveBy(0, 63 * retArray[i].drop).setDuration(DURATION_TIME);
+		goog.events.listen(anim, lime.animation.Event.STOP, function()
+		{
 			dropped++;
-			if (dropped == retArray.length) {
-				new_icon_count = 0;
-				for (var i = 0; i < retArray.length; i++) {
-					if (retArray[i].row >= 0) {
-						board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
-						board[retArray[i].row+retArray[i].drop][retArray[i].col] = board[retArray[i].row][retArray[i].col];
-						calc_board[board[retArray[i].row+retArray[i].drop][retArray[i].col]] = calc_board[retArray[i].row][retArray[i].col];
-					} else {
-						board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
-						board[retArray[i].row+retArray[i].drop][retArray[i].col] = new_icon[new_icon_count];
-						calc_board[board[retArray[i].row+retArray[i].drop][retArray[i].col]] = new_icon_type[new_icon_count];
-						new_icon_count++;
-					}
-				}
-				bomb(0, 0, 0);
+			if (dropped == retArray.length)
+			{
+				bomb(0, 0, 0); // re-check if there is a piece to be bombed.
 			}
 		});
 		
-		if (retArray[i].row >= 0) {
-			board[retArray[i].row][retArray[i].col].runAction(anim);
+		if (retArray[i].row >= 0)
+		{
+			board[retArray[i].row][retArray[i].col].img.runAction(anim);
+			board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
+			board[retArray[i].row+retArray[i].drop][retArray[i].col] = board[retArray[i].row].slice(retArray[i].col, retArray[i].col+1)[0];
 		}
-		else {
-			new_icon[new_icon_count] = retArray[i].img;
-			new_icon_type[new_icon_count] = retArray[i].type;
-			layer.appendChild(new_icon[new_icon_count].setPosition(retArray[i].col * 63 + DEFAULT_X, retArray[i].row * 63 + DEFAULT_Y));
-			new_icon[new_icon_count].runAction(anim);
-			new_icon_count++;
+		else
+		{
+			layer.appendChild(retArray[i].piece.img.setPosition(retArray[i].col * 63 + DEFAULT_X, retArray[i].row * 63 + DEFAULT_Y));
+			retArray[i].piece.img.runAction(anim);
+			board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
+			board[retArray[i].row+retArray[i].drop][retArray[i].col] = retArray[i].piece;
 		}
 	}
 }
@@ -217,121 +191,113 @@ function bomb(x, y, direct)
 	else
 		result = game_function.findMatchedBlocksFloodFill();
 		
-	if (result.isFound)
+	if (result.isFound) // let's bomb!
 	{
-		//터트리는 연출
-		//var bomb_action = new Array();
 		var coord = new Array();
 		var destroyed = 0;
-		
-		//console.log("result.numOfFind:",result.numOfFound);
 		
 		for(var y = 0 ; y < BOARD_SIZE ; y++)
 		{
 			for(var x = 0 ; x < BOARD_SIZE ; x++)
 			{
-				if(calc_board[y][x] < 0)
+				if(board[y][x].type < 0) // the part to be bombed.
 				{
 					var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.5), new lime.animation.FadeTo(0)).setDuration(DURATION_TIME);
-					board[y][x].setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
+					board[y][x].img.setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
 					coord.push({'x' : x, 'y' : y});
 					
-					numOfGetPieces[-calc_board[y][x]]++;
-					goog.events.listen(anim, lime.animation.Event.STOP, function() {
+					numOfGetPieces[-board[y][x].type]++;
+					goog.events.listen(anim, lime.animation.Event.STOP, function()
+					{
 						destroyed++;
-						if (destroyed == result.numOfFound) {
+						if (destroyed == result.numOfFound) // if all animations are finished,
+						{
 							game_info.updateScore(result.numOfFound);
 							game_info.updateCombo(1);
 							game_info.updateGauge(result.numOfFound);
 							game_info.updateGetPieces();
 							
-							for (var i = 0; i < coord.length; i++) {	
-								board[coord[i].y][coord[i].x].setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
-							}
+							for (var i = 0; i < coord.length; i++)	
+								board[coord[i].y][coord[i].x].img.setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
 							
 							drop();
 						}
 					});
 					
-					board[y][x].runAction(anim);
+					board[y][x].img.runAction(anim);
 				}
 			}
 		}
 	}
-	else if(direct != 0)
+	
+	else if (direct != 0) // get scroll back.
 	{
-		if(direct == 1)
+		if (direct == 1)
 		{
-			if(x == 0)
-			{
+			if (x == 0)
 				x = BOARD_SIZE;
-			}
 			scroll(x-1, y, 2, false);
 		}
-		else if(direct == 2)
+		else if (direct == 2)
 		{
-			if(x == BOARD_SIZE-1)
-			{
+			if (x == BOARD_SIZE-1)
 				x = -1;
-			}
 			scroll(x+1, y, 1, false);
 		}
-		else if(direct == 3)
+		else if (direct == 3)
 		{
-			if(y == 0)
-			{
+			if (y == 0)
 				y = BOARD_SIZE;
-			}
 			scroll(x, y-1, 4, false);
 		}
-		else if(direct == 4)
+		else if (direct == 4)
 		{
-			if(y == BOARD_SIZE-1)
-			{
+			if (y == BOARD_SIZE-1)
 				y = -1;
-			}
 			scroll(x, y+1, 3, false);
 		}
 	}
-	else {
-		// 스크롤을 한 상태도 아니고 , 폭탄이 터진 경우도 아니다.
+	
+	else // finish the round (bomb done, drop done, and no pieces are bombbed).
+	{
 		if (game_function.isBoardUseless())
 			boardInit();
 		lock = false;
 		
 		//start timer
 		
-		game_info.updateCombo(0);
+		game_info.updateCombo(0); // init combo to 0.
 	}
 }
 
-function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: down
+function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: down
 {
 	lock = true;
 	var new_icon;
-	board[y][x].setOpacity(0.5);
+	
+	board[y][x].img.setOpacity(0.5);
+	
 	switch(direct)
 	{
-		case 1: //left
+		case 1: // left
 		{
-			new_icon = res.createImage(calc_board[y][0]).image;
-			layer.appendChild(new_icon.setPosition(BOARD_SIZE*63+DEFAULT_X, y*63+DEFAULT_Y));
+			new_icon = res.createPiece(board[y][0].type, board[y][0].ingredient);
+			layer.appendChild(new_icon.img.setPosition(BOARD_SIZE*63+DEFAULT_X, y*63+DEFAULT_Y));
 			var moved = 0;
-			for (var i = 0; i <= BOARD_SIZE ; i++) {
+			for (var i = 0; i <= BOARD_SIZE ; i++)
+			{
 				var anim = new lime.animation.MoveBy(-63, 0).setDuration(DURATION_TIME);
-				goog.events.listen(anim, lime.animation.Event.STOP, function() {
+				goog.events.listen(anim, lime.animation.Event.STOP, function()
+				{
 					moved++;
-					if (moved == BOARD_SIZE + 1) {
-						board[y][x].setOpacity(1);
-						var temp = calc_board[y][0];
-						board[y][0] = null;				
-						for(var i = 0 ; i < BOARD_SIZE-1 ; i++)
-						{
+					if (moved == BOARD_SIZE + 1)
+					{
+						board[y][x].img.setOpacity(1);
+						board[y][0] = null;
+						for (var i = 0; i < BOARD_SIZE-1; i++)
 							board[y][i] = board[y][i+1];
-							calc_board[y][i] = calc_board[y][i+1];
-						}
+						
 						board[y][BOARD_SIZE-1] = new_icon;
-						calc_board[y][BOARD_SIZE-1] = temp;
 									
 						if (next_step)
 							bomb(x, y, direct);
@@ -340,32 +306,31 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 					}
 				});
 				if (i == BOARD_SIZE)
-					new_icon.runAction(anim);
+					new_icon.img.runAction(anim);
 				else
-					board[y][i].runAction(anim);
+					board[y][i].img.runAction(anim);
 			}
 			break;
 		}
-		case 2: //right
+		case 2: // right
 		{
-			new_icon = res.createImage(calc_board[y][BOARD_SIZE-1]).image;
-			layer.appendChild(new_icon.setPosition(-63+DEFAULT_X, y*63+DEFAULT_Y));
+			new_icon = res.createPiece(board[y][BOARD_SIZE-1].type, board[y][BOARD_SIZE-1].ingredient);
+			layer.appendChild(new_icon.img.setPosition(-63+DEFAULT_X, y*63+DEFAULT_Y));
 			var moved = 0;
-			for (var i = 0 ; i <= BOARD_SIZE ; i++) {
+			for (var i = 0; i <= BOARD_SIZE; i++)
+			{
 				var anim = new lime.animation.MoveBy(63, 0).setDuration(DURATION_TIME);
-				goog.events.listen(anim, lime.animation.Event.STOP, function(){
+				goog.events.listen(anim, lime.animation.Event.STOP, function()
+				{
 					moved++;
-					if (moved == BOARD_SIZE + 1) {
-						board[y][x].setOpacity(1);
-						var temp = calc_board[y][BOARD_SIZE-1];
+					if (moved == BOARD_SIZE + 1)
+					{
+						board[y][x].img.setOpacity(1);
 						board[y][BOARD_SIZE-1] = null;
-						for(var i = BOARD_SIZE-1 ; i > 0 ; i--)
-						{
+						for (var i = BOARD_SIZE-1; i > 0; i--)
 							board[y][i] = board[y][i-1];
-							calc_board[y][i] = calc_board[y][i-1];
-						}
+
 						board[y][0] = new_icon;
-						calc_board[y][0] = temp;
 						
 						if (next_step)
 							bomb(x, y, direct);
@@ -374,37 +339,31 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 					}
 				});
 				if (i == BOARD_SIZE)
-					new_icon.runAction(anim);
+					new_icon.img.runAction(anim);
 				else
-					board[y][i].runAction(anim);
+					board[y][i].img.runAction(anim);
 			}
 			break;
 		}
 		case 3: //up
 		{
-			new_icon = res.createImage(calc_board[0][x]).image;
-			layer.appendChild(new_icon.setPosition(x*63+DEFAULT_X, BOARD_SIZE*63+DEFAULT_Y));			
+			new_icon = res.createPiece(board[0][x].type, board[0][x].ingredient);
+			layer.appendChild(new_icon.img.setPosition(x*63+DEFAULT_X, BOARD_SIZE*63+DEFAULT_Y));			
 			var moved = 0;
-			for(var i = 0 ; i <= BOARD_SIZE ; i++)
+			for (var i = 0; i <= BOARD_SIZE; i++)
 			{
 				var anim = new lime.animation.MoveBy(0, -63).setDuration(DURATION_TIME);
-				goog.events.listen(anim, lime.animation.Event.STOP, function(){
+				goog.events.listen(anim, lime.animation.Event.STOP, function()
+				{
 					moved++;
-					if (moved == BOARD_SIZE + 1) {
-						board[y][x].setOpacity(1);
-						var temp = calc_board[0][x];
+					if (moved == BOARD_SIZE + 1)
+					{
+						board[y][x].img.setOpacity(1);
 						board[0][x] = null;
-						for(var i = 0 ; i < BOARD_SIZE-1 ; i++)
-						{
+						for (var i = 0; i < BOARD_SIZE-1; i++)
 							board[i][x] = board[i+1][x];
-							calc_board[i][x] = calc_board[i+1][x];
-						}
-						board[BOARD_SIZE-1][x] = new_icon;
-						calc_board[BOARD_SIZE-1][x] = temp;
 						
-						var next_x = Math.floor(Math.random() * 7);
-						var next_y = Math.floor(Math.random() * 7);
-						var next_direct = Math.floor(Math.random() * 4)+1;
+						board[BOARD_SIZE-1][x] = new_icon;
 						
 						if (next_step)
 							bomb(x, y, direct);
@@ -413,37 +372,31 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 					}	
 				});
 				if (i == BOARD_SIZE)
-					new_icon.runAction(anim);
+					new_icon.img.runAction(anim);
 				else
-					board[i][x].runAction(anim);
+					board[i][x].img.runAction(anim);
 			}
 			break;
 		}
 		case 4: //down
 		{
-			new_icon = res.createImage(calc_board[BOARD_SIZE-1][x]).image;
-			layer.appendChild(new_icon.setPosition(x*63+DEFAULT_X, -63+DEFAULT_Y));
+			new_icon = res.createPiece(board[BOARD_SIZE-1][x].type, board[BOARD_SIZE-1][x].ingredient);
+			layer.appendChild(new_icon.img.setPosition(x*63+DEFAULT_X, -63+DEFAULT_Y));
 			var moved = 0;
-			for(var i = 0 ; i <= BOARD_SIZE ; i++)
+			for (var i = 0; i <= BOARD_SIZE; i++)
 			{
 				var anim = new lime.animation.MoveBy(0, 63).setDuration(DURATION_TIME);
-				goog.events.listen(anim, lime.animation.Event.STOP, function() {
+				goog.events.listen(anim, lime.animation.Event.STOP, function()
+				{
 					moved++;
-					if (moved == BOARD_SIZE + 1) {
-						board[y][x].setOpacity(1);
-						var temp = calc_board[BOARD_SIZE-1][x];
+					if (moved == BOARD_SIZE + 1)
+					{
+						board[y][x].img.setOpacity(1);
 						board[BOARD_SIZE-1][x] = null;
-						for(var i = BOARD_SIZE-1 ; i > 0 ; i--)
-						{
+						for (var i = BOARD_SIZE-1; i > 0; i--)
 							board[i][x] = board[i-1][x];
-							calc_board[i][x] = calc_board[i-1][x];
-						}
+							
 						board[0][x] = new_icon;
-						calc_board[0][x] = temp;
-						
-						var next_x = Math.floor(Math.random() * 7);
-						var next_y = Math.floor(Math.random() * 7);
-						var next_direct = Math.floor(Math.random() * 4)+1;
 						
 						if (next_step)
 							bomb(x, y, direct);
@@ -452,9 +405,9 @@ function scroll(x, y, direct, next_step) //direct 1: left, 2: right, 3: up, 4: d
 					}	
 				});
 				if (i == BOARD_SIZE)
-					new_icon.runAction(anim);
+					new_icon.img.runAction(anim);
 				else
-					board[i][x].runAction(anim);
+					board[i][x].img.runAction(anim);
 			}
 			break;
 		}

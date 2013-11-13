@@ -17,16 +17,15 @@ res.init = function() {
 		frames[i] = new lime.fill.Frame(resImgElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
 };
 
-res.createImageByRandom = function () {
-	var index = res.getRandomNumber(6) + 1;
-	
-	return {'type' : index, 'image' : new lime.Sprite().setFill(frames[index]).setAnchorPoint(0, 0)};
+res.createPiece = function(index, ingredient) {
+	index = (index > 0) ? index : res.getRandomNumber(6) + 1;
+	var p = new piece();
+	p.img = new lime.Sprite().setFill(frames[index]).setAnchorPoint(0, 0);
+	p.type = index;
+	p.ingredient = (Math.floor(Math.random() * 100) < INGREDIENT_PROBABILITY) ? true : false;
+	return p;
 };
 
-res.createImage = function (index) {	
-	return {'type' : index, 'image' : new lime.Sprite().setFill(frames[index]).setAnchorPoint(0, 0)};
-};
-	
 res.getRandomNumber = function(max) { // return integer between (0 <= value < max).
 	return Math.floor(Math.random() * max);
 };

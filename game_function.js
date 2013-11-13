@@ -11,16 +11,16 @@ game_function.findMatchedBlocks = function() {
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		for (var k = 0; k < BOARD_SIZE; k++) {
 			end = k; // k 이상 j 이하가 모두 같은 puzzle type이다.
-			for(var j = k+1; j < BOARD_SIZE; j++) {
-				if (calc_board[i][j] == calc_board[i][k])
+			for (var j = k+1; j < BOARD_SIZE; j++) {
+				if (board[i][j].type == board[i][k].type)
 					end = j;
 				else
 					break;
 			}
 			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
 			for (var j = k; j <= end; j++) {
-				calc_board[i][j] = (end - k + 1 >= 3) ? -calc_board[i][j] : calc_board[i][j];
-				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
+				board[i][j].type = (end - k + 1 >= 3) ? -board[i][j].type : board[i][j].type;
+				isFound = (board[i][j].type < 0 || isFound) ? true : false;
 			}
 			if (end - k + 1 >= 3) {
 				numOfFound += (end - k + 1);
@@ -33,10 +33,9 @@ game_function.findMatchedBlocks = function() {
 	for (var j = 0; j < BOARD_SIZE; j++) {
 		for (var k = 0; k < BOARD_SIZE; k++) {
 			end = k; // k 이상 j 이하가 모두 같은 puzzle type이다.
-			for(var i = k+1; i < BOARD_SIZE; i++) {
-				var ij = (calc_board[i][j] < 0) ? -calc_board[i][j] : calc_board[i][j];
-				var kj = (calc_board[k][j] < 0) ? -calc_board[k][j] : calc_board[k][j];
-				//if (calc_board[i][j] != calc_board[k][j]) {
+			for (var i = k+1; i < BOARD_SIZE; i++) {
+				var ij = (board[i][j].type < 0) ? -board[i][j].type : board[i][j].type;
+				var kj = (board[k][j].type < 0) ? -board[k][j].tyoe : board[k][j].type;
 				if (ij == kj)
 					end = i;
 				else
@@ -44,20 +43,19 @@ game_function.findMatchedBlocks = function() {
 			}
 			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
 			for (var i = k; i <= end; i++) {
-				if (end - k + 1 >= 3 && calc_board[i][j] > 0)
+				if (end - k + 1 >= 3 && board[i][j].type > 0)
 					numOfFound++;
-				calc_board[i][j] = (end - k + 1 >= 3 && calc_board[i][j] > 0) ? -calc_board[i][j] : calc_board[i][j];
-				isFound = (calc_board[i][j] < 0 || isFound) ? true : false;
+				board[i][j].type = (end - k + 1 >= 3 && board[i][j].type > 0) ? -board[i][j].type : board[i][j].type;
+				isFound = (board[i][j].type < 0 || isFound) ? true : false;
 			}
-			if (end - k + 1 >= 3) {
-				//numOfFound += (end - k + 1);
+			if (end - k + 1 >= 3)
 				k = end;
-			}
 		}
 	}
 	
 	return {'isFound' : isFound, 'numOfFound' : numOfFound};
 };
+
 
 var floodXY = null;
 game_function.findMatchedBlocksFloodFill = function() {
@@ -66,12 +64,12 @@ game_function.findMatchedBlocksFloodFill = function() {
 	
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		for (var j = 0; j < BOARD_SIZE; j++) {
-			if (calc_board[i][j] > 0) {
+			if (board[i][j].type > 0) {
 				floodXY = new Array();
-				flood(i, j, calc_board[i][j], floodXY);
+				flood(i, j, board[i][j].type, floodXY);
 				if (floodXY.length < 3) { // 원상태로 되돌리기.
 					for (var k = 0; k < floodXY.length; k++)
-						calc_board[floodXY[k].x][floodXY[k].y] *= -1;
+						board[floodXY[k].x][floodXY[k].y].type *= -1;
 				}
 				else { // 3개 이상 붙어있을 때.
 					numOfFound += floodXY.length;
@@ -87,18 +85,23 @@ game_function.findMatchedBlocksFloodFill = function() {
 
 function flood(x, y, type) {
 	floodXY.push({'x' : x, 'y' : y});
-	calc_board[x][y] *= -1;
-	if (y > 0 && calc_board[x][y-1] == type && calc_board[x][y-1] > 0) flood(x, y-1, type);
-	if (y < BOARD_SIZE-1 && calc_board[x][y+1] == type && calc_board[x][y+1] > 0) flood(x, y+1, type);
-	if (x > 0 && calc_board[x-1][y] == type && calc_board[x-1][y] > 0) flood(x-1, y, type);
-	if (x < BOARD_SIZE-1 && calc_board[x+1][y] == type && calc_board[x+1][y] > 0) flood(x+1, y, type);
+	board[x][y].type *= -1;
+	if (y > 0 			 && board[x][y-1].type == type && board[x][y-1].type > 0) flood(x, y-1, type);
+	if (y < BOARD_SIZE-1 && board[x][y+1].type == type && board[x][y+1].type > 0) flood(x, y+1, type);
+	if (x > 0 			 && board[x-1][y].type == type && board[x-1][y].type > 0) flood(x-1, y, type);
+	if (x < BOARD_SIZE-1 && board[x+1][y].type == type && board[x+1][y].type > 0) flood(x+1, y, type);
 }
 
 
 
-
 game_function.fillElementsAndDrop = function() {
-	var fake_calc_board = calc_board;
+	var fake_calc_board = new Array(BOARD_SIZE);
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		fake_calc_board[i] = new Array(BOARD_SIZE);
+		for (var j = 0; j < BOARD_SIZE; j++)
+			fake_calc_board[i][j] = board[i][j].type;
+	}
+	//var fake_calc_board = board;
 	var retArray = new Array();
 	
 	for (var j = 0; j < BOARD_SIZE; j++) {
@@ -108,7 +111,7 @@ game_function.fillElementsAndDrop = function() {
 				continue;
 			}
 				
-			pos = -1;			
+			pos = -1;
 			for (var k = i+1; k < BOARD_SIZE; k++) {
 				if (fake_calc_board[k][j] > 0) {
 					pos = k-1;
@@ -133,16 +136,25 @@ game_function.fillElementsAndDrop = function() {
 		}
 
 		for (var i = 0; i < newLength; i++) {
-			var newImg = res.createImageByRandom();
-			fake_calc_board[i][j] = newImg.type;
-			retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'img' : newImg.image, 'type' : newImg.type});
+			//var newPiece = piece();
+			//var newPiece = //res.createImageByRandom();
+			var newPiece = res.createPiece(0);
+			fake_calc_board[i][j] = newPiece.type;
+			//retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'img' : newImg.image, 'type' : newImg.type});
+			retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'piece' : newPiece});
 		}
 	}
 	
+	retArray.sort(cmp);
+		
 	// 이동시킬 아이템 (새로운 아이템 포함)의 좌표와 이동할 칸 수를 합쳐 array로 보낸다.
 	// 또한 새로운 board도 보내면 좋을 것 같다.
 	return retArray;
 };
+
+function cmp(a, b) {
+	return b.row - a.row;
+}
 
 
 game_function.isBoardUseless = function() {
@@ -150,7 +162,7 @@ game_function.isBoardUseless = function() {
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		check_board[i] = new Array(BOARD_SIZE);
 		for (var j = 0; j < BOARD_SIZE; j++)
-			check_board[i][j] = calc_board[i][j];
+			check_board[i][j] = board[i][j].type;
 	}
 	
 	hint_direction = null; // direction for hint.
