@@ -211,7 +211,12 @@ function drop()
 
 function bomb(x, y, direct)
 {	
-	var result = game_function.findMatchedBlocks();
+	var result;
+	if (combo < 2) // 현재콤보가 1이란 말은, 두번째로 검사하는 기준이란 뜻. 따라서 아래의 if문은 3번째 combo부터 floodfill 적용됨.
+		result = game_function.findMatchedBlocks();
+	else
+		result = game_function.findMatchedBlocksFloodFill();
+		
 	if (result.isFound)
 	{
 		//터트리는 연출
