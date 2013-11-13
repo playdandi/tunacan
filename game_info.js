@@ -65,6 +65,12 @@ game_info.init = function() {
 	//timer progress init
 	maxTime = 60;
 	curTime = 60;
+	tick = 0;
+	
+	//hint init
+	showHint = false;
+	hintTime = 0;
+	hintFlag = false;
 	
 	time_lbl = new lime.Label().setFontColor('#ffff00').setFontSize(24).setPosition(0, -30).setText('Time left:').setAnchorPoint(0, 0).setFontWeight(700);
     infoLayer.appendChild(time_lbl);

@@ -8,9 +8,11 @@ var frameHeight = 63;
 var frames = new Array(7);
 var framesIngre = new Array(7);
 var fishing;
+var hint;
 
 res.init = function() {
 	fishing = new lime.fill.Image('assets/fising.png');
+	hint = new lime.fill.Image('assets/hint.png');
 	
 	var resImg = new lime.fill.Image('assets/puzzle_icon.png');
 	var resImgElem = resImg.getImageElement();

@@ -31,8 +31,8 @@ tunacan.start = function() {
 	bgLayer.appendChild(rect);
 	var fishingImage = new lime.Sprite().setFill(fishing).setAnchorPoint(0, 0).setPosition(DEFAULT_X-300+10, DEFAULT_Y-300-130);
 	bgLayer.appendChild(fishingImage);
-	
-    lime.scheduleManager.scheduleWithDelay(timer.decreaseTime, this, 1000);
+		
+    lime.scheduleManager.scheduleWithDelay(timer.updateTime, this, 100);
 	
 	game_info.init();
 	boardInit();
@@ -53,6 +53,7 @@ tunacan.start = function() {
 
 function boardInit() 
 {
+	lock = true;
 	// layer init
 	layer.removeAllChildren();
 	
@@ -87,7 +88,7 @@ function boardInit()
 							board[y][x].img.setAnchorPoint(0, 0).setPosition(DEFAULT_X+(x*63), DEFAULT_Y+(y*63));							
 					
 					// start game		
-					lock = true;
+					//lock = true;
 					bomb(0, 0, 0);
 				}
 			});
@@ -197,7 +198,10 @@ function bomb(x, y, direct)
 					board[y][x].img.setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
 					coord.push({'x' : x, 'y' : y});
 					
-					numOfGetPieces[-board[y][x].type]++;
+					if(board[y][x].ingredient)
+					{
+						numOfGetPieces[-board[y][x].type]++;
+					}
 					goog.events.listen(anim, lime.animation.Event.STOP, function()
 					{
 						destroyed++;
@@ -252,14 +256,15 @@ function bomb(x, y, direct)
 	else // finish the round (bomb done, drop done, and no pieces are bombbed).
 	{
 		if (game_function.isBoardUseless())
+		{
 			boardInit();
-		lock = false;
-		
-		//start timer for hint
-		hintTime = 0.0;
-		showHint = false;
-		lime.scheduleManager.scheduleWithDelay(timer.updateHintTime, this, 100, 30);
-		
+		}
+		else
+		{
+			lock = false;
+		}
+		hintTime = 0;
+				
 		game_info.updateCombo(0); // init combo to 0.
 	}
 }
@@ -267,6 +272,7 @@ function bomb(x, y, direct)
 function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: down
 {
 	lock = true;
+	hintTime = 0;
 	var new_icon;
 	
 	board[y][x].img.setOpacity(0.5);
