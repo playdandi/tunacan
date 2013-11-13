@@ -30,6 +30,11 @@ var DURATION_TIME = 0.2;
 var layer;
 var lock;
 
+//timer progress
+var curTime, maxTime;
+var time_lbl;
+var time_left;
+
 
 
 goog.require('lime.Label');
@@ -54,6 +59,16 @@ game_info.init = function() {
 	game_info.updateScore(0);
 	game_info.updateCombo(0);
 	game_info.updateGauge(0);
+	
+	//timer progress init
+	maxTime = 60;
+	curTime = 60;
+	
+	time_lbl = new lime.Label().setFontColor('#ffff00').setFontSize(24).setPosition(0, -30).setText('Time left:').setAnchorPoint(0, 0).setFontWeight(700);
+    infoLayer.appendChild(time_lbl);
+    
+    time_left = new lime.Label().setFontColor('#ffff00').setFontSize(24).setPosition(120, -30).setText(maxTime).setAnchorPoint(0, 0).setFontWeight(700);
+    infoLayer.appendChild(time_left);
 
 	// get pieces (퍼즐 피스 종류마다 얻은 개수 보여주는 것)	
 	getPieces = new Array(numOfTypes);
@@ -65,6 +80,8 @@ game_info.init = function() {
 	for (var i = 0; i < numOfTypes; i++)
 		numOfGetPieces[i] = 0;
 	game_info.updateGetPieces();
+	
+	
 };
 
 game_info.updateScore = function(s) {
