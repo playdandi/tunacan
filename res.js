@@ -10,21 +10,39 @@ var framesIngre = new Array(7);
 var fishing;
 var hint;
 
+var totalResourceCnt = 4;
+var loadedResourceCnt;
+
 res.init = function() {
-	fishing = new lime.fill.Image('assets/fising.png');
-	hint = new lime.fill.Image('assets/hint.png');
-	
+	// load resources
+	loadedResourceCnt = 0;
 	var resImg = new lime.fill.Image('assets/puzzle_icon.png');
 	var resImgElem = resImg.getImageElement();
-	
 	var resImgIngre = new lime.fill.Image('assets/puzzle_icon_ingredient.png');
 	var resImgIngreElem = resImgIngre.getImageElement();
+	fishing = new lime.fill.Image('assets/fising.png');
+	hint = new lime.fill.Image('assets/hint.png');
+	// resource event listener
+	hint.addEventListener('load', resourceLoadComplete, false);
+	fishing.addEventListener('load', resourceLoadComplete, false);
+	resImg.addEventListener('load', resourceLoadComplete, false);
+	resImgIngre.addEventListener('load', resourceLoadComplete, false);
 	
 	for (var i = 1; i <= 6; i++) {
 		frames[i] = new lime.fill.Frame(resImgElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
 		framesIngre[i] = new lime.fill.Frame(resImgIngreElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
 	}
 };
+
+
+function resourceLoadComplete() {
+	loadedResourceCnt++;
+	if (loadedResourceCnt >= totalResourceCnt) {
+		// finish loading page & start puzzle.
+		console.log('resource loading done');
+		tunacan.puzzleStart();
+	}
+}
 
 res.createPiece = function(index, ingredient) {
 	index = (index > 0) ? index : res.getRandomNumber(6) + 1;

@@ -19,6 +19,11 @@ goog.require('lime.animation.RotateBy');
 
 // entry point
 tunacan.start = function() {
+	res.init();	
+};
+
+tunacan.puzzleStart = function() {
+	console.log('puzzleStart');
 	var director = new lime.Director(document.body, SCREENWIDTH, SCREENHEIGHT);
 	var scene = new lime.Scene();
 	
@@ -28,7 +33,7 @@ tunacan.start = function() {
 	puzzleLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
 	puzzleLayer.setMask(mask);
 	
-	res.init();
+	
 	game_info.init();
 	boardInit();
 	
