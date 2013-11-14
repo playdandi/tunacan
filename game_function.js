@@ -193,19 +193,14 @@ game_function.fillElementsAndDrop = function() {
 		}
 
 		for (var i = 0; i < newLength; i++) {
-			//var newPiece = piece();
-			//var newPiece = //res.createImageByRandom();
-			var newPiece = res.createPiece(0);
+			var newPiece = res.createPiece(0, null);
 			fake_calc_board[i][j] = newPiece.type;
-			//retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'img' : newImg.image, 'type' : newImg.type});
 			retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'piece' : newPiece});
 		}
 	}
 	
-	retArray.sort(cmp);
+	retArray.sort(cmp); // 큰 row부터 처리하도록 sort.
 		
-	// 이동시킬 아이템 (새로운 아이템 포함)의 좌표와 이동할 칸 수를 합쳐 array로 보낸다.
-	// 또한 새로운 board도 보내면 좋을 것 같다.
 	return retArray;
 };
 

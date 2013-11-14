@@ -27,20 +27,17 @@ tunacan.puzzleStart = function() {
 	var director = new lime.Director(document.body, SCREENWIDTH, SCREENHEIGHT);
 	var scene = new lime.Scene();
 	
-	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(SCREENWIDTH, SCREENHEIGHT).setFill("#231F20");
+	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(SCREENWIDTH, SCREENHEIGHT).setFill("#000000");
 	var mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(frameWidth*BOARD_SIZE, frameHeight*BOARD_SIZE).setPosition(PUZZLE_X, PUZZLE_Y);
 	
 	puzzleLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
 	puzzleLayer.setMask(mask);
-	
 	
 	game_info.init();
 	boardInit();
 	
 	bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	bgLayer.appendChild(rect);
-	var fishingImage = new lime.Sprite().setFill(fishing).setAnchorPoint(0, 0).setPosition(PUZZLE_X-300+10, PUZZLE_Y-300-130);
-	bgLayer.appendChild(fishingImage);
 		
     lime.scheduleManager.scheduleWithDelay(timer.updateTime, this, 100);
 	
@@ -73,7 +70,7 @@ function boardInit()
 		for (j = 0; j < BOARD_SIZE; j++)
 		{
 			// make new piece of puzzle.
-			board[i][j] = res.createPiece(0);
+			board[i][j] = res.createPiece(0, null);
 
 			puzzleLayer.appendChild(board[i][j].img.setPosition(j*frameWidth, i*frameHeight));
 			
@@ -201,7 +198,8 @@ function bomb(x, y, direct)
 					
 					if(board[y][x].ingredient)
 					{
-						numOfGetPieces[-board[y][x].type]++;
+						game_info.updateGetPieces(-board[y][x].type);
+						//numOfGetPieces[-board[y][x].type]++;
 					}
 					goog.events.listen(anim, lime.animation.Event.STOP, function()
 					{
@@ -210,8 +208,8 @@ function bomb(x, y, direct)
 						{
 							game_info.updateScore(result.numOfFound);
 							game_info.updateCombo(1);
-							game_info.updateGauge(result.numOfFound);
-							game_info.updateGetPieces();
+							//game_info.updateGauge(result.numOfFound);
+							//game_info.updateGetPieces();
 							
 							for (var i = 0; i < coord.length; i++)	
 								board[coord[i].y][coord[i].x].img.setAnchorPoint(0, 0).setPosition(coord[i].x * frameWidth, coord[i].y * frameHeight);

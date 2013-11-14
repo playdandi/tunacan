@@ -19,8 +19,8 @@ var numOfGetPieces;
 var INGREDIENT_PROBABILITY = 10;
 
 // screen
-var SCREENWIDTH = 480;
-var SCREENHEIGHT = 800;
+var SCREENWIDTH = 461;
+var SCREENHEIGHT = 768;
 
 // game info
 var combo;
@@ -32,14 +32,15 @@ var hint_line;
 var scoreLabel;
 var comboLabel;
 var gaugeLabel;
-var getPieces;
+//var getPieces;
 
 // board
 var BOARD_SIZE = 7;
-var PUZZLE_X = 0;//(720-(frameWidth*BOARD_SIZE))/2;
-var PUZZLE_Y = 0;//(1280-(frameHeight*BOARD_SIZE))/2;
+//var PUZZLE_X = 0;//(720-(frameWidth*BOARD_SIZE))/2;
+//var PUZZLE_Y = 0;//(1280-(frameHeight*BOARD_SIZE))/2;
 var PUZZLE_X = (SCREENWIDTH - (frameWidth * BOARD_SIZE)) / 2;
-var PUZZLE_Y = (SCREENHEIGHT - (frameHeight * BOARD_SIZE)) / 2;
+var PUZZLE_Y = SCREENHEIGHT - 100 - frameHeight * BOARD_SIZE;
+//var PUZZLE_Y = (SCREENHEIGHT - (frameHeight * BOARD_SIZE)) / 2;
 var board; // puzzle 2d array
 var DURATION_TIME = 0.2; // puzzle piece animation duration
 
@@ -56,19 +57,22 @@ var infoLayer;
 goog.require('lime.Label');
 
 game_info.init = function() {
-	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
-	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+50);
-	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(40).setAnchorPoint(1.0, 0).setPosition(frameWidth*BOARD_SIZE, frameHeight*BOARD_SIZE+50);
-	gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1.0, 1.0).setPosition(frameWidth*BOARD_SIZE, -20);
+	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
+	//heartLabel
+	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(1, 0).setPosition(PUZZLE_X+frameWidth*BOARD_SIZE, 20);
+	//info_window.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE);
+	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(40).setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE + 20);
+	//gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1, 1).setPosition(frameWidth*BOARD_SIZE, -20);
 	infoLayer.appendChild(scoreLabel);
+	//infoLayer.appendChild(info_window);
 	infoLayer.appendChild(comboLabel);
-	infoLayer.appendChild(gaugeLabel);
+	//infoLayer.appendChild(gaugeLabel);
 	score = 0;
 	combo = 0;
 	gauge = 0;
 	game_info.updateScore(0);
 	game_info.updateCombo(0);
-	game_info.updateGauge(0);
+	//game_info.updateGauge(0);
 	
 	//timer progress init
 	maxTime = 60;
@@ -87,15 +91,15 @@ game_info.init = function() {
     infoLayer.appendChild(time_left);
 
 	// get pieces (퍼즐 피스 종류마다 얻은 개수 보여주는 것)	
-	getPieces = new Array(numOfTypes);
+	/*getPieces = new Array(numOfTypes);
 	for (var i = 1; i < numOfTypes; i++) {
 		getPieces[i] = new lime.Label().setFontColor('#ffff00').setFontSize(20).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+70+i*20);
 		infoLayer.appendChild(getPieces[i]);
-	}
+	}*/
 	numOfGetPieces = new Array(numOfTypes); // 개수 초기화
 	for (var i = 0; i < numOfTypes; i++)
 		numOfGetPieces[i] = 0;
-	game_info.updateGetPieces();
+	//game_info.updateGetPieces();
 };
 
 game_info.updateScore = function(s) {
@@ -113,6 +117,11 @@ game_info.updateGauge = function(g) {
 	gaugeLabel.setText(gauge);
 };
 
+game_info.updateGetPieces = function(type) {
+	numOfGetPieces[type]++;
+};
+
+/*
 game_info.updateGetPieces = function() {
 	for (var i = 1; i < numOfTypes; i++) {
 		str = '';
@@ -128,6 +137,4 @@ game_info.updateGetPieces = function() {
 		getPieces[i].setText(str);
 	}
 };
-
-
-
+*/
