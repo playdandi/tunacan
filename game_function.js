@@ -4,6 +4,65 @@ goog.provide('game_function');
 game_function.findMatchedBlocks = function() {
 	var isFound = false;
 	var numOfFound = 0; 
+	var k;
+	
+	var checkArray = new Array(BOARD_SIZE);
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		checkArray[i] = new Array(BOARD_SIZE);
+		for (var j = 0; j < BOARD_SIZE; j++)
+			checkArray[i][j] = 0;
+	}
+		
+	// horizontally check
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		for (var j = 0; j < BOARD_SIZE-2; j++) {
+			k = j+1;
+			while (k < BOARD_SIZE && board[i][j].type == board[i][k].type)
+				k++;
+			if (k - j >= 3) { // 3개 이상 연결되어 있으면
+				for (var t = j; t < k; t++) {
+					if (checkArray[i][t] == 0) // 1이면 이미 예전에 추가했었으니, 다시 추가하면 안 된다.
+						numOfFound++;
+					checkArray[i][t] = 1;
+				}
+				isFound = true;
+				j = k-1;
+			}
+		}
+	}
+	
+	// vertically check
+	for (var j = 0; j < BOARD_SIZE; j++) {
+		for (var i = 0; i < BOARD_SIZE-2; i++) {
+			k = i+1;
+			while (k < BOARD_SIZE && board[i][j].type == board[k][j].type)
+				k++;
+			if (k - i >= 3) { // 3개 이상 연결되어 있으면
+				for (var t = i; t < k; t++) {
+					if (checkArray[t][j] == 0) // 1이면 이미 예전에 추가했었으니, 다시 추가하면 안 된다.
+						numOfFound++;
+					checkArray[t][j] = 1;
+				}
+				isFound = true;
+				i = k-1;
+			}
+		}
+	}
+	
+	// apply the area of bomb.
+	for (var i = 0; i < BOARD_SIZE; i++)
+		for (var j = 0; j < BOARD_SIZE; j++)
+			if (checkArray[i][j] == 1)
+				board[i][j].type *= -1;
+	
+	checkArray = null;
+	
+	return {'isFound' : isFound, 'numOfFound' : numOfFound};
+};
+/*
+game_function.findMatchedBlocks = function() {
+	var isFound = false;
+	var numOfFound = 0; 
 	var end;
 
 	// horizontally check.
@@ -54,7 +113,7 @@ game_function.findMatchedBlocks = function() {
 	
 	return {'isFound' : isFound, 'numOfFound' : numOfFound};
 };
-
+*/
 
 
 var numOfFound;
