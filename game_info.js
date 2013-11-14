@@ -63,7 +63,7 @@ game_info.init = function() {
 	//heartLabel
 	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(1, 0).setPosition(PUZZLE_X+frameWidth*BOARD_SIZE, 20);
 	//info_window.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE).setSize(50,50);
-	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREENWIDTH/2, PUZZLE_Y+frameHeight*BOARD_SIZE+50);
+	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREENWIDTH/2, PUZZLE_Y+frameHeight*BOARD_SIZE+50).setSize(frameWidth*BOARD_SIZE);
 	//gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1, 1).setPosition(frameWidth*BOARD_SIZE, -20);
 	infoLayer.appendChild(scoreLabel);
 	
