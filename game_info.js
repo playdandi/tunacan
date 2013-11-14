@@ -54,19 +54,24 @@ var infoLayer;
 
 
 
+goog.require('lime.Layer');
 goog.require('lime.Label');
+goog.require('lime.Sprite');
 
 game_info.init = function() {
 	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	//heartLabel
 	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(1, 0).setPosition(PUZZLE_X+frameWidth*BOARD_SIZE, 20);
-	//info_window.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE);
-	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(40).setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE + 20);
+	info_window.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE).setSize(50,50);
+	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREENWIDTH/2, PUZZLE_Y+frameHeight*BOARD_SIZE+50);
 	//gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1, 1).setPosition(frameWidth*BOARD_SIZE, -20);
 	infoLayer.appendChild(scoreLabel);
-	//infoLayer.appendChild(info_window);
+	
+	var outer = new lime.RoundedRect().setSize(frameWidth*BOARD_SIZE, 80).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE+10).setRadius(10);
+	var inner = new lime.RoundedRect().setSize(frameWidth*BOARD_SIZE-6, 74).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+3, PUZZLE_Y+frameHeight*BOARD_SIZE+13).setRadius(10);
+	infoLayer.appendChild(outer);
+	infoLayer.appendChild(inner);
 	infoLayer.appendChild(comboLabel);
-	//infoLayer.appendChild(gaugeLabel);
 	score = 0;
 	combo = 0;
 	gauge = 0;
@@ -114,21 +119,3 @@ game_info.updateGauge = function(g) {
 game_info.updateGetPieces = function(type) {
 	numOfGetPieces[type]++;
 };
-
-/*
-game_info.updateGetPieces = function() {
-	for (var i = 1; i < numOfTypes; i++) {
-		str = '';
-		switch (i) {
-			case BOARDELEM_COW: str = 'COW'; break;
-			case BOARDELEM_CABBAGE: str = 'CABBAGE'; break;
-			case BOARDELEM_PEPPER: str = 'PEPPER'; break;
-			case BOARDELEM_OLIVE: str = 'OLIVE'; break;
-			case BOARDELEM_CHEESE: str = 'CHEESE'; break;
-			case BOARDELEM_TOMATO: str = 'TOMATO'; break; 
-		}
-		str += ' : ' + numOfGetPieces[i];
-		getPieces[i].setText(str);
-	}
-};
-*/

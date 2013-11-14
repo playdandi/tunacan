@@ -10,7 +10,7 @@ var hintImg;
 var infoWindowImg;
 
 // resources cnt
-var totalResourceCnt = 4; // resource 개수
+var totalResourceCnt = 3; // resource 개수
 var loadedResourceCnt;
 
 // sprite or frames
@@ -28,13 +28,13 @@ res.init = function() {
 	resImg = new lime.fill.Image('assets/puzzle_icon.png');
 	resImgIngre = new lime.fill.Image('assets/puzzle_icon_ingredient.png');
 	hintImg = new lime.fill.Image('assets/hint.png');
-	infoWindowImg = new lime.fill.Image('assets/info_window.png');
+	//infoWindowImg = new lime.fill.Image('assets/info_window.png');
 	
 	// resource event listener
 	hintImg.addEventListener('load', resourceLoadComplete, false);
 	resImg.addEventListener('load', resourceLoadComplete, false);
 	resImgIngre.addEventListener('load', resourceLoadComplete, false);
-	infoWindowImg.addEventListener('load', resourceLoadComplete, false);
+	//infoWindowImg.addEventListener('load', resourceLoadComplete, false);
 };
 
 
@@ -46,7 +46,7 @@ function resourceLoadComplete() {
 		var resImgElem = resImg.getImageElement();
 		var resImgIngreElem = resImgIngre.getImageElement();
 		hint = new lime.Sprite().setFill(hintImg);
-		info_window = new lime.Sprite().setFill(infoWindowImg);
+		//info_window = new lime.Sprite().setFill(infoWindowImg);
 		
 		for (var i = 1; i <= 6; i++) {
 			frames[i] = new lime.fill.Frame(resImgElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
