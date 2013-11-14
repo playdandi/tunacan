@@ -9,6 +9,7 @@ var frames = new Array(7);
 var framesIngre = new Array(7);
 var fishing;
 var hint;
+var hintImage;
 
 var totalResourceCnt = 4;
 var loadedResourceCnt;
@@ -22,6 +23,8 @@ res.init = function() {
 	var resImgIngreElem = resImgIngre.getImageElement();
 	fishing = new lime.fill.Image('assets/fising.png');
 	hint = new lime.fill.Image('assets/hint.png');
+	hintImage = new lime.Sprite().setFill(hint);
+	
 	// resource event listener
 	hint.addEventListener('load', resourceLoadComplete, false);
 	fishing.addEventListener('load', resourceLoadComplete, false);

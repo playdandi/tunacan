@@ -44,8 +44,6 @@ tunacan.puzzleStart = function() {
 		
     lime.scheduleManager.scheduleWithDelay(timer.updateTime, this, 100);
 	
-	
-	
 	scene.appendChild(bgLayer);
 	scene.appendChild(infoLayer);
 	

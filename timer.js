@@ -9,7 +9,6 @@ var showHint;
 var hintTime;
 var hintFlag;
 
-var hintImage;
 
 timer.updateTime = function() {
 	
@@ -29,6 +28,7 @@ timer.updateTime = function() {
     
     //hint
     hintTime += tick;
+    console.log(hintTime);
     if (hintTime >= 3000)
     {
     	hintFlag = true;
@@ -39,15 +39,15 @@ timer.updateTime = function() {
 				
 		if (hint_direction == 0)
 		{
-			hintImage = new lime.Sprite().setFill(hint).setAnchorPoint(0, 0).setPosition(0, hint_line*frameHeight);
+			hintImage.setAnchorPoint(0, 0).setPosition(0, hint_line*frameHeight);
 		}
 		else
 		{
-			hintImage = new lime.Sprite().setFill(hint).setAnchorPoint(0, 1).setRotation(-90).setPosition(hint_line*frameWidth, 0);
+			hintImage.setAnchorPoint(0, 1).setRotation(-90).setPosition(hint_line*frameWidth, 0);
 		}		
 		puzzleLayer.appendChild(hintImage);
 		
-		lime.scheduleManager.scheduleWithDelay(timer.removeHintTime, this, 1000, 3);
+		lime.scheduleManager.scheduleWithDelay(timer.removeHintTime, this, 1000, 1);
 	}
 	
 };
