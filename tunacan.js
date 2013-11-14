@@ -266,11 +266,10 @@ function bomb(x, y, direct)
 		else
 		{
 			lock = false;
+			hintTime = 0;
+			comboTime = 0;
+			console.log('lock released');
 		}
-		hintTime = 0;
-		comboTime = 0;
-		console.log('lock released');
-		//game_info.updateCombo(0); // init combo to 0.
 	}
 }
 
