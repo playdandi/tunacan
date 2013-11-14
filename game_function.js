@@ -100,7 +100,6 @@ game_function.fillElementsAndDrop = function() {
 		for (var j = 0; j < BOARD_SIZE; j++)
 			fake_calc_board[i][j] = board[i][j].type;
 	}
-	//var fake_calc_board = board;
 	var retArray = new Array();
 	
 	for (var j = 0; j < BOARD_SIZE; j++) {

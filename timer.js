@@ -33,18 +33,19 @@ timer.updateTime = function() {
     {
     	hintFlag = true;
     }
-	if (showHint == false && hintFlag == true) {
+	if (showHint == false && hintFlag == true)
+	{
 		showHint = true;
 				
 		if (hint_direction == 0)
 		{
-			hintImage = new lime.Sprite().setFill(hint).setAnchorPoint(0, 0).setPosition(DEFAULT_X, DEFAULT_Y+hint_line*63);
+			hintImage = new lime.Sprite().setFill(hint).setAnchorPoint(0, 0).setPosition(0, hint_line*frameHeight);
 		}
 		else
 		{
-			hintImage = new lime.Sprite().setFill(hint).setAnchorPoint(0, 1).setRotation(-90).setPosition(DEFAULT_X+hint_line*63, DEFAULT_Y);
+			hintImage = new lime.Sprite().setFill(hint).setAnchorPoint(0, 1).setRotation(-90).setPosition(hint_line*frameWidth, 0);
 		}		
-		layer.appendChild(hintImage);
+		puzzleLayer.appendChild(hintImage);
 		
 		lime.scheduleManager.scheduleWithDelay(timer.removeHintTime, this, 1000, 3);
 	}
@@ -56,7 +57,7 @@ timer.setHintTime = function() {
 };
 
 timer.removeHintTime = function() {
-	layer.removeChild(hintImage);
+	puzzleLayer.removeChild(hintImage);
 	showHint = false;
 	hintFlag = false;
 	hintTime = 0;

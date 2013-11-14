@@ -19,31 +19,33 @@ goog.require('lime.animation.RotateBy');
 
 // entry point
 tunacan.start = function() {
-	var director = new lime.Director(document.body, 720, 1280);
+	var director = new lime.Director(document.body, SCREENWIDTH, SCREENHEIGHT);
 	var scene = new lime.Scene();
-	var bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
-	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(720, 1280).setFill("#231F20");
-	var mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(63*BOARD_SIZE, 63*BOARD_SIZE).setPosition(DEFAULT_X, DEFAULT_Y);
+	
+	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(SCREENWIDTH, SCREENHEIGHT).setFill("#231F20");
+	var mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(frameWidth*BOARD_SIZE, frameHeight*BOARD_SIZE).setPosition(PUZZLE_X, PUZZLE_Y);
+	
+	puzzleLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
+	puzzleLayer.setMask(mask);
 	
 	res.init();
+	game_info.init();
+	boardInit();
 	
-	layer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0,0);
+	bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	bgLayer.appendChild(rect);
-	var fishingImage = new lime.Sprite().setFill(fishing).setAnchorPoint(0, 0).setPosition(DEFAULT_X-300+10, DEFAULT_Y-300-130);
+	var fishingImage = new lime.Sprite().setFill(fishing).setAnchorPoint(0, 0).setPosition(PUZZLE_X-300+10, PUZZLE_Y-300-130);
 	bgLayer.appendChild(fishingImage);
 		
     lime.scheduleManager.scheduleWithDelay(timer.updateTime, this, 100);
 	
-	game_info.init();
-	boardInit();
 	
-	layer.setMask(mask);
 	
 	scene.appendChild(bgLayer);
 	scene.appendChild(infoLayer);
 	
 	scene.appendChild(mask);
-	scene.appendChild(layer);
+	scene.appendChild(puzzleLayer);
 	director.makeMobileWebAppCapable();	
 	director.replaceScene(scene);
 		
@@ -55,28 +57,25 @@ function boardInit()
 {
 	lock = true;
 	// layer init
-	layer.removeAllChildren();
+	puzzleLayer.removeAllChildren();
 	
 	board = null;
-	//calc_board = null;
 	board = new Array(BOARD_SIZE);
-	//calc_board = new Array(BOARD_SIZE);
 	
 	var i, j;
 	var init = 0;
 	for (i = 0; i < BOARD_SIZE; i++)
 	{
 		board[i] = new Array(BOARD_SIZE);
-		//calc_board[i] = new Array(BOARD_SIZE);
 		for (j = 0; j < BOARD_SIZE; j++)
 		{
 			// make new piece of puzzle.
 			board[i][j] = res.createPiece(0);
 
-			layer.appendChild(board[i][j].img.setPosition(j*63+DEFAULT_X, i*63+DEFAULT_Y));
+			puzzleLayer.appendChild(board[i][j].img.setPosition(j*frameWidth, i*frameHeight));
 			
 			var anim = new lime.animation.RotateBy(360).setDuration(1.5);
-			board[i][j].img.setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(j*63)+63/2, DEFAULT_Y+(i*63)+63/2);
+			board[i][j].img.setAnchorPoint(0.5, 0.5).setPosition(j*frameWidth+frameWidth/2, i*frameHeight+frameHeight/2);
 			
 			goog.events.listen(anim, lime.animation.Event.STOP, function()
 			{
@@ -85,10 +84,9 @@ function boardInit()
 				{
 					for(var y = 0 ; y < BOARD_SIZE ; y++)
 						for(var x = 0 ; x < BOARD_SIZE ; x++)
-							board[y][x].img.setAnchorPoint(0, 0).setPosition(DEFAULT_X+(x*63), DEFAULT_Y+(y*63));							
+							board[y][x].img.setAnchorPoint(0, 0).setPosition(x*frameWidth, y*frameHeight);
 					
-					// start game		
-					//lock = true;
+					// start game
 					bomb(0, 0, 0);
 				}
 			});
@@ -106,16 +104,16 @@ function allowUserForceDrag(shape)
 			var st_pos = this.localToParent(e.position); //need parent coordinate system
 
 			var st_x_idx, st_y_idx;			
-			st_x_idx = Math.floor((st_pos.x-DEFAULT_X)/63);
-			st_y_idx = Math.floor((st_pos.y-DEFAULT_Y)/63); 
+			st_x_idx = Math.floor((st_pos.x-PUZZLE_X)/frameWidth);
+			st_y_idx = Math.floor((st_pos.y-PUZZLE_Y)/frameHeight); 
 			
 			// ends my input
 			e.swallow(['mouseup', 'touchend'], function(e)
 			{
 				var ed_pos = this.localToParent(e.position);
 				var ed_x_idx, ed_y_idx;
-				ed_x_idx = Math.floor((ed_pos.x-DEFAULT_X)/63);
-				ed_y_idx = Math.floor((ed_pos.y-DEFAULT_Y)/63);
+				ed_x_idx = Math.floor((ed_pos.x-PUZZLE_X)/frameWidth);
+				ed_y_idx = Math.floor((ed_pos.y-PUZZLE_Y)/frameHeight);
 				 
 				if (Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
 				{
@@ -149,7 +147,7 @@ function drop()
 	
 	for (var i = 0; i < retArray.length; i++)
 	{
-		var anim = new lime.animation.MoveBy(0, 63 * retArray[i].drop).setDuration(DURATION_TIME);
+		var anim = new lime.animation.MoveBy(0, frameWidth * retArray[i].drop).setDuration(DURATION_TIME);
 		goog.events.listen(anim, lime.animation.Event.STOP, function()
 		{
 			dropped++;
@@ -167,7 +165,7 @@ function drop()
 		}
 		else
 		{
-			layer.appendChild(retArray[i].piece.img.setPosition(retArray[i].col * 63 + DEFAULT_X, retArray[i].row * 63 + DEFAULT_Y));
+			puzzleLayer.appendChild(retArray[i].piece.img.setPosition(retArray[i].col * frameWidth, retArray[i].row * frameHeight));
 			retArray[i].piece.img.runAction(anim);
 			board[retArray[i].row+retArray[i].drop][retArray[i].col] = null;
 			board[retArray[i].row+retArray[i].drop][retArray[i].col] = retArray[i].piece;
@@ -195,7 +193,7 @@ function bomb(x, y, direct)
 				if(board[y][x].type < 0) // the part to be bombed.
 				{
 					var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.5), new lime.animation.FadeTo(0)).setDuration(DURATION_TIME);
-					board[y][x].img.setAnchorPoint(0.5, 0.5).setPosition(DEFAULT_X+(x*63)+63/2, DEFAULT_Y+(y*63)+63/2);
+					board[y][x].img.setAnchorPoint(0.5, 0.5).setPosition(x*frameWidth+frameWidth/2, y*frameHeight+frameHeight/2);
 					coord.push({'x' : x, 'y' : y});
 					
 					if(board[y][x].ingredient)
@@ -213,7 +211,7 @@ function bomb(x, y, direct)
 							game_info.updateGetPieces();
 							
 							for (var i = 0; i < coord.length; i++)	
-								board[coord[i].y][coord[i].x].img.setAnchorPoint(0, 0).setPosition(DEFAULT_X+(coord[i].x*63), DEFAULT_Y+(coord[i].y*63));
+								board[coord[i].y][coord[i].x].img.setAnchorPoint(0, 0).setPosition(coord[i].x * frameWidth, coord[i].y * frameHeight);
 							
 							drop();
 						}
@@ -282,7 +280,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		case 1: // left
 		{
 			new_icon = res.createPiece(board[y][0].type, board[y][0].ingredient);
-			layer.appendChild(new_icon.img.setPosition(BOARD_SIZE*63+DEFAULT_X, y*63+DEFAULT_Y));
+			puzzleLayer.appendChild(new_icon.img.setPosition(BOARD_SIZE*frameWidth, y*frameHeight));
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE ; i++)
 			{
@@ -315,7 +313,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		case 2: // right
 		{
 			new_icon = res.createPiece(board[y][BOARD_SIZE-1].type, board[y][BOARD_SIZE-1].ingredient);
-			layer.appendChild(new_icon.img.setPosition(-63+DEFAULT_X, y*63+DEFAULT_Y));
+			puzzleLayer.appendChild(new_icon.img.setPosition(-frameWidth, y*frameHeight));
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE; i++)
 			{
@@ -348,7 +346,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		case 3: //up
 		{
 			new_icon = res.createPiece(board[0][x].type, board[0][x].ingredient);
-			layer.appendChild(new_icon.img.setPosition(x*63+DEFAULT_X, BOARD_SIZE*63+DEFAULT_Y));			
+			puzzleLayer.appendChild(new_icon.img.setPosition(x*frameWidth, BOARD_SIZE*frameHeight));			
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE; i++)
 			{
@@ -381,7 +379,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		case 4: //down
 		{
 			new_icon = res.createPiece(board[BOARD_SIZE-1][x].type, board[BOARD_SIZE-1][x].ingredient);
-			layer.appendChild(new_icon.img.setPosition(x*63+DEFAULT_X, -63+DEFAULT_Y));
+			puzzleLayer.appendChild(new_icon.img.setPosition(x*frameWidth, -frameHeight));
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE; i++)
 			{

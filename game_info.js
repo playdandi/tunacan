@@ -18,37 +18,45 @@ var BOARDELEM_TOMATO = 6;
 var numOfGetPieces;
 var INGREDIENT_PROBABILITY = 10;
 
-// game
+// screen
+var SCREENWIDTH = 480;
+var SCREENHEIGHT = 800;
+
+// game info
 var combo;
 var score;
 var gauge;
-
 var hint_direction;
 var hint_line;
 
-// board
-var BOARD_SIZE = 7;
-var DEFAULT_X = (720-(63*BOARD_SIZE))/2;
-var DEFAULT_Y = (1280-(63*BOARD_SIZE))/2;
-var board;
-var calc_board;
-
-//global variables
-var DURATION_TIME = 0.2;
-var layer;
-var lock;
-
-
-goog.require('lime.Label');
-
-var infoLayer;
 var scoreLabel;
 var comboLabel;
 var gaugeLabel;
 var getPieces;
 
+// board
+var BOARD_SIZE = 7;
+var PUZZLE_X = 0;//(720-(frameWidth*BOARD_SIZE))/2;
+var PUZZLE_Y = 0;//(1280-(frameHeight*BOARD_SIZE))/2;
+var PUZZLE_X = (SCREENWIDTH - (frameWidth * BOARD_SIZE)) / 2;
+var PUZZLE_Y = (SCREENHEIGHT - (frameHeight * BOARD_SIZE)) / 2;
+var board; // puzzle 2d array
+var DURATION_TIME = 0.2; // puzzle piece animation duration
+
+// lock
+var lock;
+
+// layer
+var bgLayer;
+var puzzleLayer;
+var infoLayer;
+
+
+
+goog.require('lime.Label');
+
 game_info.init = function() {
-	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(DEFAULT_X, DEFAULT_Y);
+	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
 	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+50);
 	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(40).setAnchorPoint(1.0, 0).setPosition(frameWidth*BOARD_SIZE, frameHeight*BOARD_SIZE+50);
 	gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1.0, 1.0).setPosition(frameWidth*BOARD_SIZE, -20);
