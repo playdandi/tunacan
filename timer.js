@@ -7,6 +7,9 @@ goog.require('lime.fill.LinearGradient');
 //timer progress
 var curTime, maxTime;
 
+var comboTime;
+var comboFlag;
+
 var showHint;
 var hintTime;
 var hintFlag;
@@ -62,15 +65,13 @@ timer.updateTime = function() {
 	}
 	
 	tick = 100;
-    curTime-=(tick/1000);
+    curTime -= (tick/1000);
     if (curTime < 1) {
        // this.endGame();
        curTime = maxTime;
     }
-    
-    //time_left.setText(curTime.toFixed(1));    
-    
-    //hint
+        
+    // hint
     hintTime += tick;
     if (hintTime >= 3000)
     {
@@ -82,7 +83,7 @@ timer.updateTime = function() {
 				
 		if (hint_direction == 0)
 		{
-			hint.setAnchorPoint(0, 0).setPosition(0, hint_line*frameHeight);
+			hint.setAnchorPoint(0, 0).setRotation(0).setPosition(0, hint_line*frameHeight);
 		}
 		else
 		{
@@ -93,6 +94,14 @@ timer.updateTime = function() {
 		lime.scheduleManager.scheduleWithDelay(timer.removeHintTime, this, 1000, 1);
 	}
 	
+	// combo
+	comboTime += tick;
+	if (comboTime >= 2000 && combo > 0) // combo가 0일 때는 굳이 이걸 실행할 이유가 없다.
+	{
+		console.log('combo canceled');
+		//comboFlag = true;
+		game_info.updateCombo(0); // init combo to 0.
+	}
 };
 
 timer.setHintTime = function() {

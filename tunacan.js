@@ -62,6 +62,9 @@ function boardInit()
 	board = null;
 	board = new Array(BOARD_SIZE);
 	
+	game_info.updateCombo(0); // init combo to 0.
+	game_info.updateScore(0); // init combo to 0.
+	
 	var i, j;
 	var init = 0;
 	for (i = 0; i < BOARD_SIZE; i++)
@@ -206,8 +209,8 @@ function bomb(x, y, direct)
 						destroyed++;
 						if (destroyed == result.numOfFound) // if all animations are finished,
 						{
-							game_info.updateScore(result.numOfFound);
 							game_info.updateCombo(1);
+							game_info.updateScore(result.numOfFound);
 							//game_info.updateGauge(result.numOfFound);
 							//game_info.updateGetPieces();
 							
@@ -250,6 +253,8 @@ function bomb(x, y, direct)
 				y = -1;
 			scroll(x, y+1, 3, false);
 		}
+		
+		game_info.updateCombo(0); // init combo to 0.
 	}
 	
 	else // finish the round (bomb done, drop done, and no pieces are bombbed).
@@ -263,8 +268,9 @@ function bomb(x, y, direct)
 			lock = false;
 		}
 		hintTime = 0;
-				
-		game_info.updateCombo(0); // init combo to 0.
+		comboTime = 0;
+		console.log('lock released');
+		//game_info.updateCombo(0); // init combo to 0.
 	}
 }
 
