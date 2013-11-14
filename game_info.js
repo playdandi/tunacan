@@ -83,13 +83,13 @@ game_info.init = function() {
 	showHint = false;
 	hintTime = 0;
 	hintFlag = false;
-	
+	/*
 	time_lbl = new lime.Label().setFontColor('#ffff00').setFontSize(24).setPosition(0, -30).setText('Time left:').setAnchorPoint(0, 0).setFontWeight(700);
     infoLayer.appendChild(time_lbl);
     
     time_left = new lime.Label().setFontColor('#ffff00').setFontSize(24).setPosition(120, -30).setText(maxTime).setAnchorPoint(0, 0).setFontWeight(700);
     infoLayer.appendChild(time_left);
-
+	*/
 	// get pieces (퍼즐 피스 종류마다 얻은 개수 보여주는 것)	
 	/*getPieces = new Array(numOfTypes);
 	for (var i = 1; i < numOfTypes; i++) {
