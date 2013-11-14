@@ -46,6 +46,7 @@ var DURATION_TIME = 0.2; // puzzle piece animation duration
 
 // lock
 var lock;
+var touchLock = false;
 
 // layer
 var bgLayer;

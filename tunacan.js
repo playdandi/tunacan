@@ -102,8 +102,13 @@ function allowUserForceDrag(shape)
 { 
 	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e)
 	{
+		if (touchLock)
+		{
+			return;
+		}
 		if (lock == false)
 		{
+			touchLock = true;
 			var st_pos = this.localToParent(e.position); //need parent coordinate system
 
 			var st_x_idx, st_y_idx;			
@@ -113,6 +118,7 @@ function allowUserForceDrag(shape)
 			// ends my input
 			e.swallow(['mouseup', 'touchend'], function(e)
 			{
+				touchLock = false;
 				var ed_pos = this.localToParent(e.position);
 				var ed_x_idx, ed_y_idx;
 				ed_x_idx = Math.floor((ed_pos.x-PUZZLE_X)/frameWidth);
