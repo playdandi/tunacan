@@ -99,6 +99,11 @@ game_info.init = function() {
 	for (var i = 0; i < numOfTypes; i++)
 		numOfGetPieces[i] = 0;
 	//game_info.updateGetPieces();
+	
+	//timer progress bar
+	timer.createProgressBar();
+	progressBar.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y-20);
+	infoLayer.appendChild(progressBar);
 };
 
 game_info.updateScore = function(s) {
