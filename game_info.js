@@ -53,8 +53,6 @@ var bgLayer;
 var puzzleLayer;
 var infoLayer;
 
-
-
 goog.require('lime.Layer');
 goog.require('lime.Label');
 goog.require('lime.Sprite');
@@ -63,8 +61,7 @@ game_info.init = function() {
 	infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	//heartLabel
 	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(1, 0).setPosition(PUZZLE_X+frameWidth*BOARD_SIZE, 20);
-	//info_window.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE).setSize(50,50);
-	comboLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREENWIDTH/2, PUZZLE_Y+frameHeight*BOARD_SIZE+50).setSize(frameWidth*BOARD_SIZE);
+	msgLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREENWIDTH/2, PUZZLE_Y+frameHeight*BOARD_SIZE+50).setSize(frameWidth*BOARD_SIZE).setMultiline(true);
 	//gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1, 1).setPosition(frameWidth*BOARD_SIZE, -20);
 	infoLayer.appendChild(scoreLabel);
 	
@@ -72,7 +69,7 @@ game_info.init = function() {
 	var inner = new lime.RoundedRect().setSize(frameWidth*BOARD_SIZE-6, 74).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+3, PUZZLE_Y+frameHeight*BOARD_SIZE+13).setRadius(10);
 	infoLayer.appendChild(outer);
 	infoLayer.appendChild(inner);
-	infoLayer.appendChild(comboLabel);
+	infoLayer.appendChild(msgLabel);
 	score = 0;
 	combo = 0;
 	gauge = 0;
@@ -113,8 +110,26 @@ game_info.updateScore = function(s) {
 };
 
 game_info.updateCombo = function(c) {
+	var msg = "";
 	combo = (c > 0) ? combo+1 : 0;
-	comboLabel.setText(combo + ' COMBO!');
+	msg = combo;
+	msg += " combo! \n";
+	
+	if(combo == 0) msg = combo_message[0];
+	else
+	{
+		if(combo < combo_message.length-1)
+		{
+			msg += combo_message[combo];
+		} 
+		else 
+		{
+			msg += combo_message[combo_message.length-1];
+		}
+	}
+	
+	msgLabel.setText(msg);
+	msg = null;
 };
 
 game_info.updateGauge = function(g) {
