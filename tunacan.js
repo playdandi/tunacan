@@ -62,33 +62,51 @@ function boardInit(x, y)
 	puzzleLayer.removeAllChildren();
 	
 	// get position of all special pieces.
-	var specialPieces = new Array(BOARD_SIZE);
-	//if (x != null && y != null) {
+	var specialPieces = new Array();
 	for (var i = 0; i < BOARD_SIZE; i++) {
-		specialPieces[i] = new Array(BOARD_SIZE);
 		for (var j = 0; j < BOARD_SIZE; j++) {
-			specialPieces[i][j] = null;
 			if (board != null && !(i == x && j == y) && board[i][j].type == PIECE_SPECIAL)
-				specialPieces[i][j] = board[i].slice(j, j+1)[0];
+				specialPieces.push(board[i].slice(j, j+1)[0]);
 		}
 	}
-	//}
 	
+	// initialize board.
 	board = null;
 	board = new Array(BOARD_SIZE);
-	
-	var i, j;
-	var init = 0;
-	for (i = 0; i < BOARD_SIZE; i++)
-	{
+	for (var i = 0; i < BOARD_SIZE; i++) {
 		board[i] = new Array(BOARD_SIZE);
-		for (j = 0; j < BOARD_SIZE; j++)
+		for (var j = 0; j < BOARD_SIZE; j++)
+			board[i][j] = null;
+	}
+		
+	
+	// positioning special pieces if exist.
+	for (var i = 0; i < specialPieces.length; i++) { 
+		while (1) {
+			row = Math.floor(Math.random() * BOARD_SIZE);
+			col = Math.floor(Math.random() * BOARD_SIZE);
+			if (board[row][col] == null) {
+				board[row][col] = specialPieces.slice(i, i+1)[0];
+				break;
+			}
+		}
+	}
+	specialPieces = null;
+	
+	// make all pieces.
+	var init = 0;
+	for (var i = 0; i < BOARD_SIZE; i++)
+	{
+		for (var j = 0; j < BOARD_SIZE; j++)
 		{
-			if (specialPieces[i][j] != null) // maintain special piece.
-				board[i][j] = specialPieces[i].slice(j, j+1)[0];
-			else // make new piece of puzzle.
+			if (board[i][j] == null) // make new piece of puzzle.
 				board[i][j] = res.createPiece(0, null, null);
-
+			/*
+			//if (specialPieces[i][j] != null) // maintain special piece.
+				board[i][j] = specialPieces[i].slice(j, j+1)[0];
+			else 
+				board[i][j] = res.createPiece(0, null, null);
+			*/
 			puzzleLayer.appendChild(board[i][j].img.setPosition(j*frameWidth, i*frameHeight));
 			
 			var anim = new lime.animation.RotateBy(360).setDuration(1.5);
