@@ -30,6 +30,7 @@ var score;
 var gauge;
 var hint_direction;
 var hint_line;
+var hint_coord;
 
 var scoreLabel;
 var msgLabel;
@@ -113,7 +114,7 @@ game_info.updateCombo = function(c) {
 	var msg = "";
 	combo = (c > 0) ? combo+1 : 0;
 	msg = combo;
-	msg += " combo! \n";
+	msg += " Combo! \n";
 	
 	if(combo == 0) msg = combo_message[0];
 	else

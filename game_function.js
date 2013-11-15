@@ -168,6 +168,7 @@ game_function.isBoardUseless = function() {
 	
 	hint_direction = null; // direction for hint.
 	hint_line = null; // n-th line for hint.
+	hint_coord = null; // row, col coordinates for hint (only for special piece).
 	
 	// randomly take direction to be checked first.
 	var whichDirectionFirst = Math.floor(Math.random() * 2);
@@ -191,6 +192,18 @@ game_function.isBoardUseless = function() {
 		if(!checkHorizontally(check_board)) {
 			check_board = null;
 			return false;
+		}
+	}
+	
+	// check special pieces.
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		for (var j = 0; j < BOARD_SIZE; j++) {
+			if (check_board[i][j].type == PIECE_SPECIAL) {
+				hint_direction = -1;
+				hint_coord = {'row' : i, 'col' : j};
+				check_board = null;
+				return false;
+			}
 		}
 	}
 	

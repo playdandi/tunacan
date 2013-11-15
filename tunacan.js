@@ -76,9 +76,6 @@ function boardInit(x, y)
 	board = null;
 	board = new Array(BOARD_SIZE);
 	
-	game_info.updateCombo(0); // init combo to 0.
-	game_info.updateScore(0); // init combo to 0.
-	
 	var i, j;
 	var init = 0;
 	for (i = 0; i < BOARD_SIZE; i++)
@@ -209,7 +206,7 @@ function drop()
 function bomb(x, y, direct)
 {	
 	var result;
-	if (direct == 'special')
+	if (direct == 'special') // special piece에 대한 기능 실행.
 		result = game_function.specialBomb(board[y][x].special, y, x);
 	else if (combo < 2) // 현재콤보가 1이란 말은, 두번째로 검사하는 기준이란 뜻. 따라서 아래의 if문은 3번째 combo부터 floodfill 적용됨.
 		result = game_function.findMatchedBlocks();
@@ -258,7 +255,7 @@ function bomb(x, y, direct)
 		}
 	}
 	
-	else if (direct != 0) // get scroll back.
+	else if (direct != 0 && direct != 'special') // get scroll back.
 	{
 		if (direct == 1)
 		{

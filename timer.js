@@ -73,14 +73,18 @@ timer.updateTime = function() {
 	{
 		showHint = true;
 				
-		if (hint_direction == 0)
+		if (hint_direction == 0) // horizontal
 		{
 			hint.setAnchorPoint(0, 0).setRotation(0).setPosition(0, hint_line*frameHeight);
 		}
-		else
+		else if (hint_direction == 1) // vertical
 		{
 			hint.setAnchorPoint(0, 1).setRotation(-90).setPosition(hint_line*frameWidth, 0);
-		}		
+		}
+		else // some point for special piece.
+		{
+			
+		}
 		puzzleLayer.appendChild(hint);
 		
 		lime.scheduleManager.scheduleWithDelay(timer.removeHintTime, this, 1000, 1);
