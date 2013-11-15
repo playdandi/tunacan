@@ -165,7 +165,6 @@ game_info.checkGauge = function() {
 					break;
 				}
 			}
-			console.log(x, y);
 			board[x][y].img.setFill(frames[PIECE_SPECIAL]);
 			board[x][y].type = PIECE_SPECIAL;
 			board[x][y].special = Math.floor(Math.random() * numOfSpecialTypes);

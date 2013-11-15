@@ -56,6 +56,7 @@ tunacan.puzzleStart = function() {
 
 function boardInit(x, y) 
 {
+	console.log('lock acquired - in boardInit(' + x + ', ' + y + ')');
 	lock = true;
 	// layer init
 	puzzleLayer.removeAllChildren();
@@ -86,7 +87,7 @@ function boardInit(x, y)
 			if (specialPieces[i][j] != null) // maintain special piece.
 				board[i][j] = specialPieces[i].slice(j, j+1)[0];
 			else // make new piece of puzzle.
-				board[i][j] = res.createPiece(0, null);
+				board[i][j] = res.createPiece(0, null, null);
 
 			puzzleLayer.appendChild(board[i][j].img.setPosition(j*frameWidth, i*frameHeight));
 			
@@ -122,6 +123,7 @@ function allowUserForceDrag(shape)
 		}
 		if (lock == false)
 		{
+			console.log('touchLock acquired - in allowUserForceDrag()');
 			touchLock = true;
 			var st_pos = this.localToParent(e.position); //need parent coordinate system
 
@@ -133,6 +135,7 @@ function allowUserForceDrag(shape)
 			e.swallow(['mouseup', 'touchend'], function(e)
 			{
 				touchLock = false;
+				console.log('touchLock released - in allowUserForceDrag()');
 				var ed_pos = this.localToParent(e.position);
 				var ed_x_idx, ed_y_idx;
 				ed_x_idx = Math.floor((ed_pos.x-PUZZLE_X)/frameWidth);
@@ -141,6 +144,8 @@ function allowUserForceDrag(shape)
 				if (st_x_idx == ed_x_idx && st_y_idx == ed_y_idx && board[st_y_idx][st_x_idx].type == PIECE_SPECIAL) {
 					// clicked special piece.
 					lock = true;
+					console.log('lock acquired - in allowUserForceDrag()');
+					console.log('special type : ', board[st_y_idx][st_x_idx].special);
 					bomb(st_x_idx, st_y_idx, 'special');
 				}
 				else {
@@ -212,7 +217,9 @@ function bomb(x, y, direct)
 		result = game_function.findMatchedBlocks();
 	else
 		result = game_function.findMatchedBlocksFloodFill();
-		
+	
+	console.log('bomb done. (isFound, numOfFound) : (' + result.isFound + ', ' + result.numOfFound + ')');
+	
 	if (result.isFound) // let's bomb!
 	{
 		var coord = new Array();
@@ -302,7 +309,7 @@ function bomb(x, y, direct)
 			hintTime = 0;
 			comboTime = 0;
 			lock = false;
-			console.log('lock released');
+			console.log('lock released - in bomb(' + x + ', ' + y + ', ' + direct + ')');
 		}
 	}
 }
@@ -310,6 +317,7 @@ function bomb(x, y, direct)
 function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: down
 {
 	lock = true;
+	console.log('lock acquired - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + next_step + ')');
 	hintTime = 0;
 	var new_icon;
 	
@@ -319,7 +327,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 	{
 		case 1: // left
 		{
-			new_icon = res.createPiece(board[y][0].type, board[y][0].ingredient);
+			new_icon = res.createPiece(board[y][0].type, board[y][0].ingredient, board[y][0].special);
 			puzzleLayer.appendChild(new_icon.img.setPosition(BOARD_SIZE*frameWidth, y*frameHeight));
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE ; i++)
@@ -339,8 +347,10 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 									
 						if (next_step)
 							bomb(x, y, direct);
-						else
+						else {
 							lock = false;
+							console.log('lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + next_step + ')');
+						}
 					}
 				});
 				if (i == BOARD_SIZE)
@@ -352,7 +362,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		}
 		case 2: // right
 		{
-			new_icon = res.createPiece(board[y][BOARD_SIZE-1].type, board[y][BOARD_SIZE-1].ingredient);
+			new_icon = res.createPiece(board[y][BOARD_SIZE-1].type, board[y][BOARD_SIZE-1].ingredient, board[y][BOARD_SIZE-1].special);
 			puzzleLayer.appendChild(new_icon.img.setPosition(-frameWidth, y*frameHeight));
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE; i++)
@@ -372,8 +382,10 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 						
 						if (next_step)
 							bomb(x, y, direct);
-						else
+						else {
 							lock = false;
+							console.log('lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + next_step + ')');
+						}
 					}
 				});
 				if (i == BOARD_SIZE)
@@ -385,7 +397,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		}
 		case 3: //up
 		{
-			new_icon = res.createPiece(board[0][x].type, board[0][x].ingredient);
+			new_icon = res.createPiece(board[0][x].type, board[0][x].ingredient, board[0][x].special);
 			puzzleLayer.appendChild(new_icon.img.setPosition(x*frameWidth, BOARD_SIZE*frameHeight));			
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE; i++)
@@ -405,8 +417,10 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 						
 						if (next_step)
 							bomb(x, y, direct);
-						else
+						else {
 							lock = false;
+							console.log('lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + next_step + ')');
+						}
 					}	
 				});
 				if (i == BOARD_SIZE)
@@ -418,7 +432,7 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 		}
 		case 4: //down
 		{
-			new_icon = res.createPiece(board[BOARD_SIZE-1][x].type, board[BOARD_SIZE-1][x].ingredient);
+			new_icon = res.createPiece(board[BOARD_SIZE-1][x].type, board[BOARD_SIZE-1][x].ingredient, board[BOARD_SIZE-1][x].special);
 			puzzleLayer.appendChild(new_icon.img.setPosition(x*frameWidth, -frameHeight));
 			var moved = 0;
 			for (var i = 0; i <= BOARD_SIZE; i++)
@@ -438,8 +452,10 @@ function scroll(x, y, direct, next_step) // direct 1: left, 2: right, 3: up, 4: 
 						
 						if (next_step)
 							bomb(x, y, direct);
-						else
+						else {
 							lock = false;
+							console.log('lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + next_step + ')');
+						}
 					}	
 				});
 				if (i == BOARD_SIZE)

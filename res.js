@@ -59,7 +59,7 @@ function resourceLoadComplete() {
 	}
 }
 
-res.createPiece = function(index, ingredient) {	
+res.createPiece = function(index, ingredient, special) {	
 	var p = new piece();
 	
 	// type
@@ -75,6 +75,8 @@ res.createPiece = function(index, ingredient) {
 		p.img = new lime.Sprite().setFill(framesIngre[index]).setAnchorPoint(0, 0);
 	else
 		p.img = new lime.Sprite().setFill(frames[index]).setAnchorPoint(0, 0);
+	// special type
+	p.special = special;
 		
 	return p;
 };

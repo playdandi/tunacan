@@ -142,7 +142,7 @@ game_function.fillElementsAndDrop = function() {
 		}
 
 		for (var i = 0; i < newLength; i++) {
-			var newPiece = res.createPiece(0, null);
+			var newPiece = res.createPiece(0, null, null);
 			fake_calc_board[i][j] = newPiece.type;
 			retArray.push({'row' : i-newLength, 'col' : j, 'drop' : newLength, 'piece' : newPiece});
 		}
