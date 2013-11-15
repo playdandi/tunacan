@@ -16,8 +16,8 @@ var loadedResourceCnt;
 // sprite or frames
 var hint;
 var info_window;
-var frames = new Array(7);
-var framesIngre = new Array(7);
+var frames = new Array(7+1);
+var framesIngre = new Array(7+1);
 var frameWidth = 63;
 var frameHeight = 63;
 
@@ -48,7 +48,7 @@ function resourceLoadComplete() {
 		hint = new lime.Sprite().setFill(hintImg);
 		//info_window = new lime.Sprite().setFill(infoWindowImg);
 		
-		for (var i = 1; i <= 6; i++) {
+		for (var i = 1; i <= 7; i++) {
 			frames[i] = new lime.fill.Frame(resImgElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
 			framesIngre[i] = new lime.fill.Frame(resImgIngreElem, frameWidth*(i-1), 0, frameWidth, frameHeight);
 		}

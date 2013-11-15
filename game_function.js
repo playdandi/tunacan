@@ -16,6 +16,8 @@ game_function.findMatchedBlocks = function() {
 	// horizontally check
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		for (var j = 0; j < BOARD_SIZE-2; j++) {
+			if (board[i][j].type == PIECE_SPECIAL) // special piece는 고려하지 않는다.
+				continue;
 			k = j+1;
 			while (k < BOARD_SIZE && board[i][j].type == board[i][k].type)
 				k++;
@@ -34,6 +36,8 @@ game_function.findMatchedBlocks = function() {
 	// vertically check
 	for (var j = 0; j < BOARD_SIZE; j++) {
 		for (var i = 0; i < BOARD_SIZE-2; i++) {
+			if (board[i][j].type == PIECE_SPECIAL) // special piece는 고려하지 않는다.
+				continue;
 			k = i+1;
 			while (k < BOARD_SIZE && board[i][j].type == board[k][j].type)
 				k++;
@@ -59,61 +63,6 @@ game_function.findMatchedBlocks = function() {
 	
 	return {'isFound' : isFound, 'numOfFound' : numOfFound};
 };
-/*
-game_function.findMatchedBlocks = function() {
-	var isFound = false;
-	var numOfFound = 0; 
-	var end;
-
-	// horizontally check.
-	for (var i = 0; i < BOARD_SIZE; i++) {
-		for (var k = 0; k < BOARD_SIZE; k++) {
-			end = k; // k 이상 j 이하가 모두 같은 puzzle type이다.
-			for (var j = k+1; j < BOARD_SIZE; j++) {
-				if (board[i][j].type == board[i][k].type)
-					end = j;
-				else
-					break;
-			}
-			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
-			for (var j = k; j <= end; j++) {
-				board[i][j].type = (end - k + 1 >= 3) ? -board[i][j].type : board[i][j].type;
-				isFound = (board[i][j].type < 0 || isFound) ? true : false;
-			}
-			if (end - k + 1 >= 3) {
-				numOfFound += (end - k + 1);
-				k = end;
-			}
-		}
-	}
-	
-	// vertically check.
-	for (var j = 0; j < BOARD_SIZE; j++) {
-		for (var k = 0; k < BOARD_SIZE; k++) {
-			end = k; // k 이상 j 이하가 모두 같은 puzzle type이다.
-			for (var i = k+1; i < BOARD_SIZE; i++) {
-				var ij = (board[i][j].type < 0) ? -board[i][j].type : board[i][j].type;
-				var kj = (board[k][j].type < 0) ? -board[k][j].tyoe : board[k][j].type;
-				if (ij == kj)
-					end = i;
-				else
-					break;
-			}
-			// calc_board type을 바꿔준다 (터질 퍼즐은 음수로).
-			for (var i = k; i <= end; i++) {
-				if (end - k + 1 >= 3 && board[i][j].type > 0)
-					numOfFound++;
-				board[i][j].type = (end - k + 1 >= 3 && board[i][j].type > 0) ? -board[i][j].type : board[i][j].type;
-				isFound = (board[i][j].type < 0 || isFound) ? true : false;
-			}
-			if (end - k + 1 >= 3)
-				k = end;
-		}
-	}
-	
-	return {'isFound' : isFound, 'numOfFound' : numOfFound};
-};
-*/
 
 
 var numOfFound;
@@ -123,7 +72,7 @@ game_function.findMatchedBlocksFloodFill = function() {
 	
 	for (var i = 0; i < BOARD_SIZE; i++) {
 		for (var j = 0; j < BOARD_SIZE; j++) {
-			if (board[i][j].type > 0) {
+			if (board[i][j].type > 0 && board[i][j].type != PIECE_SPECIAL) {
 				// check 3-connected parts with direction for right, left, down, up.
 				var isValid1, isValid2, isValid3, isValid4;
 				isValid1 = j < BOARD_SIZE-2 && board[i][j].type == board[i][j+1].type && board[i][j].type == board[i][j+2].type;
@@ -162,8 +111,8 @@ game_function.fillElementsAndDrop = function() {
 	var retArray = new Array();
 	
 	for (var j = 0; j < BOARD_SIZE; j++) {
-		for (var i = BOARD_SIZE-2; i >= 0; i--) {
-			if (fake_calc_board[i][j] <= 0) {
+		for (var i = BOARD_SIZE-1; i >= 0; i--) {
+			if (fake_calc_board[i][j] < 0) {
 				fake_calc_board[i][j] = 0;
 				continue;
 			}

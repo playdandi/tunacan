@@ -34,7 +34,8 @@ tunacan.puzzleStart = function() {
 	puzzleLayer.setMask(mask);
 	
 	game_info.init();
-	boardInit();
+	board = null;
+	boardInit(null, null);
 	
 	bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	bgLayer.appendChild(rect);
@@ -53,11 +54,24 @@ tunacan.puzzleStart = function() {
 };
 
 
-function boardInit() 
+function boardInit(x, y) 
 {
 	lock = true;
 	// layer init
 	puzzleLayer.removeAllChildren();
+	
+	// get position of all special pieces.
+	var specialPieces = new Array(BOARD_SIZE);
+	//if (x != null && y != null) {
+	for (var i = 0; i < BOARD_SIZE; i++) {
+		specialPieces[i] = new Array(BOARD_SIZE);
+		for (var j = 0; j < BOARD_SIZE; j++) {
+			specialPieces[i][j] = null;
+			if (board != null && !(i == x && j == y) && board[i][j].type == PIECE_SPECIAL)
+				specialPieces[i][j] = board[i].slice(j, j+1)[0];
+		}
+	}
+	//}
 	
 	board = null;
 	board = new Array(BOARD_SIZE);
@@ -72,8 +86,10 @@ function boardInit()
 		board[i] = new Array(BOARD_SIZE);
 		for (j = 0; j < BOARD_SIZE; j++)
 		{
-			// make new piece of puzzle.
-			board[i][j] = res.createPiece(0, null);
+			if (specialPieces[i][j] != null) // maintain special piece.
+				board[i][j] = specialPieces[i].slice(j, j+1)[0];
+			else // make new piece of puzzle.
+				board[i][j] = res.createPiece(0, null);
 
 			puzzleLayer.appendChild(board[i][j].img.setPosition(j*frameWidth, i*frameHeight));
 			
@@ -89,6 +105,7 @@ function boardInit()
 						for(var x = 0 ; x < BOARD_SIZE ; x++)
 							board[y][x].img.setAnchorPoint(0, 0).setPosition(x*frameWidth, y*frameHeight);
 					
+					specialPieces = null;
 					// start game
 					bomb(0, 0, 0);
 				}
@@ -123,20 +140,27 @@ function allowUserForceDrag(shape)
 				var ed_x_idx, ed_y_idx;
 				ed_x_idx = Math.floor((ed_pos.x-PUZZLE_X)/frameWidth);
 				ed_y_idx = Math.floor((ed_pos.y-PUZZLE_Y)/frameHeight);
-				 
-				if (Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
-				{
-					if (ed_x_idx-st_x_idx > 0) //right
-						scroll(st_x_idx, st_y_idx, 2, true);
-					else //left
-						scroll(st_x_idx, st_y_idx, 1, true);
+				
+				if (st_x_idx == ed_x_idx && st_y_idx == ed_y_idx && board[st_y_idx][st_x_idx].type == PIECE_SPECIAL) {
+					// clicked special piece.
+					lock = true;
+					bomb(st_x_idx, st_y_idx, 'special');
 				}
-				if (Math.abs(ed_y_idx-st_y_idx) > 0 && Math.abs(ed_pos.y-st_pos.y) > Math.abs(ed_pos.x-st_pos.x)) //up or down
-				{
-					if (ed_y_idx-st_y_idx > 0) //down
-						scroll(st_x_idx, st_y_idx, 4, true);
-					else //up
-						scroll(st_x_idx, st_y_idx, 3, true);
+				else {
+					if (Math.abs(ed_x_idx-st_x_idx) > 0 && Math.abs(ed_pos.x-st_pos.x) > Math.abs(ed_pos.y-st_pos.y)) //left or right
+					{
+						if (ed_x_idx-st_x_idx > 0) //right
+							scroll(st_x_idx, st_y_idx, 2, true);
+						else //left
+							scroll(st_x_idx, st_y_idx, 1, true);
+					}
+					if (Math.abs(ed_y_idx-st_y_idx) > 0 && Math.abs(ed_pos.y-st_pos.y) > Math.abs(ed_pos.x-st_pos.x)) //up or down
+					{
+						if (ed_y_idx-st_y_idx > 0) //down
+							scroll(st_x_idx, st_y_idx, 4, true);
+						else //up
+							scroll(st_x_idx, st_y_idx, 3, true);
+					}
 				}	
 			});
 			// allows it to be dragged around
@@ -150,7 +174,7 @@ function allowUserForceDrag(shape)
 }
 
 function drop()
-{	
+{		
 	var retArray = game_function.fillElementsAndDrop();
 	var dropped = 0;
 	
@@ -185,7 +209,9 @@ function drop()
 function bomb(x, y, direct)
 {	
 	var result;
-	if (combo < 2) // 현재콤보가 1이란 말은, 두번째로 검사하는 기준이란 뜻. 따라서 아래의 if문은 3번째 combo부터 floodfill 적용됨.
+	if (direct == 'special')
+		result = game_function.specialBomb(board[y][x].special, y, x);
+	else if (combo < 2) // 현재콤보가 1이란 말은, 두번째로 검사하는 기준이란 뜻. 따라서 아래의 if문은 3번째 combo부터 floodfill 적용됨.
 		result = game_function.findMatchedBlocks();
 	else
 		result = game_function.findMatchedBlocksFloodFill();
@@ -208,7 +234,6 @@ function bomb(x, y, direct)
 					if(board[y][x].ingredient)
 					{
 						game_info.updateGetPieces(-board[y][x].type);
-						//numOfGetPieces[-board[y][x].type]++;
 					}
 					goog.events.listen(anim, lime.animation.Event.STOP, function()
 					{
@@ -217,7 +242,7 @@ function bomb(x, y, direct)
 						{
 							game_info.updateCombo(1);
 							game_info.updateScore(result.numOfFound);
-							//game_info.updateGauge(result.numOfFound);
+							game_info.updateGauge(result.numOfFound);
 							//game_info.updateGetPieces();
 							
 							for (var i = 0; i < coord.length; i++)	
@@ -267,10 +292,11 @@ function bomb(x, y, direct)
 	{
 		if (game_function.isBoardUseless())
 		{
-			boardInit();
+			boardInit(null, null);
 		}
 		else
 		{
+			game_info.checkGauge();
 			lock = false;
 			hintTime = 0;
 			comboTime = 0;

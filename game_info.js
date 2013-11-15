@@ -3,18 +3,20 @@ goog.provide('game_info');
 function piece() {
 	this.img;
 	this.type;
+	this.special;
 	this.ingredient;
 	return this;
 }
 
 // puzzle pieces
-var numOfTypes = 6+1;
-var BOARDELEM_COW = 1;
-var BOARDELEM_CABBAGE = 2;
-var BOARDELEM_PEPPER = 3;
-var BOARDELEM_OLIVE = 4;
-var BOARDELEM_CHEESE = 5;
-var BOARDELEM_TOMATO = 6;
+var numOfTypes = 7;
+var PIECE_COW = 1;
+var PIECE_CABBAGE = 2;
+var PIECE_PEPPER = 3;
+var PIECE_OLIVE = 4;
+var PIECE_CHEESE = 5;
+var PIECE_TOMATO = 6;
+var PIECE_SPECIAL = 7;
 var numOfGetPieces;
 var INGREDIENT_PROBABILITY = 10;
 
@@ -30,17 +32,14 @@ var hint_direction;
 var hint_line;
 
 var scoreLabel;
-var comboLabel;
+var msgLabel;
 var gaugeLabel;
 //var getPieces;
 
 // board
 var BOARD_SIZE = 7;
-//var PUZZLE_X = 0;//(720-(frameWidth*BOARD_SIZE))/2;
-//var PUZZLE_Y = 0;//(1280-(frameHeight*BOARD_SIZE))/2;
 var PUZZLE_X = (SCREENWIDTH - (frameWidth * BOARD_SIZE)) / 2;
 var PUZZLE_Y = SCREENHEIGHT - 100 - frameHeight * BOARD_SIZE;
-//var PUZZLE_Y = (SCREENHEIGHT - (frameHeight * BOARD_SIZE)) / 2;
 var board; // puzzle 2d array
 var DURATION_TIME = 0.2; // puzzle piece animation duration
 
@@ -62,7 +61,7 @@ game_info.init = function() {
 	//heartLabel
 	scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(1, 0).setPosition(PUZZLE_X+frameWidth*BOARD_SIZE, 20);
 	msgLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREENWIDTH/2, PUZZLE_Y+frameHeight*BOARD_SIZE+50).setSize(frameWidth*BOARD_SIZE).setMultiline(true);
-	//gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(1, 1).setPosition(frameWidth*BOARD_SIZE, -20);
+	gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y-70);
 	infoLayer.appendChild(scoreLabel);
 	
 	var outer = new lime.RoundedRect().setSize(frameWidth*BOARD_SIZE, 80).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, PUZZLE_Y+frameHeight*BOARD_SIZE+10).setRadius(10);
@@ -70,12 +69,13 @@ game_info.init = function() {
 	infoLayer.appendChild(outer);
 	infoLayer.appendChild(inner);
 	infoLayer.appendChild(msgLabel);
+	infoLayer.appendChild(gaugeLabel);
 	score = 0;
 	combo = 0;
 	gauge = 0;
 	game_info.updateScore(0);
 	game_info.updateCombo(0);
-	//game_info.updateGauge(0);
+	game_info.updateGauge(0);
 	
 	//timer progress init
 	maxTime = 60;
@@ -93,8 +93,8 @@ game_info.init = function() {
 		getPieces[i] = new lime.Label().setFontColor('#ffff00').setFontSize(20).setAnchorPoint(0, 0).setPosition(0, frameHeight*BOARD_SIZE+70+i*20);
 		infoLayer.appendChild(getPieces[i]);
 	}*/
-	numOfGetPieces = new Array(numOfTypes); // 개수 초기화
-	for (var i = 0; i < numOfTypes; i++)
+	numOfGetPieces = new Array(numOfTypes+1); // 개수 초기화
+	for (var i = 0; i < numOfTypes+1; i++)
 		numOfGetPieces[i] = 0;
 	//game_info.updateGetPieces();
 	
@@ -133,8 +133,47 @@ game_info.updateCombo = function(c) {
 };
 
 game_info.updateGauge = function(g) {
-	gauge += g * 4;
-	gaugeLabel.setText(gauge);
+	gauge += g * 5;
+	gaugeLabel.setText(gauge);		
+};
+
+game_info.checkGauge = function() {
+	if (gauge >= 100) { // full gauge
+		var x, y, isExist;
+		var coord = new Array();
+		var numOfSpecialPieces = Math.floor(gauge / 100);
+
+		gauge -= (100 * numOfSpecialPieces);
+		gaugeLabel.setText(gauge);
+		
+		for (var i = 0; i < numOfSpecialPieces; i++) {
+			isExist = false;
+			while (1) {
+				x = Math.floor(Math.random() * BOARD_SIZE);
+				y = Math.floor(Math.random() * BOARD_SIZE);
+				if (board[x][y].type == PIECE_SPECIAL)
+					continue;
+				for (var j = 0; j < coord.length; j++) {
+					if (coord[j].x == x && coord[j].y == y) {
+						isExist = true;
+						break;
+					}
+				}
+				if (!isExist) {
+					coord.push({'x' : x, 'y' : y});
+					break;
+				}
+			}
+			console.log(x, y);
+			board[x][y].img.setFill(frames[PIECE_SPECIAL]);
+			board[x][y].type = PIECE_SPECIAL;
+			board[x][y].special = Math.floor(Math.random() * numOfSpecialTypes);
+			board[x][y].ingredient = false;
+		}
+		
+		x = y = isExist = null;
+		coord = null;
+	}
 };
 
 game_info.updateGetPieces = function(type) {
