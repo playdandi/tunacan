@@ -287,16 +287,21 @@ function bomb(x, y, direct)
 	
 	else // finish the round (bomb done, drop done, and no pieces are bombbed).
 	{
-		if (game_function.isBoardUseless())
+		if (direct == 'special' && !result.isFound) // special case : replace
+		{
+			console.log('row : ' + y + ' , col : ' + x);
+			boardInit(y, x);
+		}
+		else if (game_function.isBoardUseless())
 		{
 			boardInit(null, null);
 		}
-		else
+		else // 터뜨리는 행위가 중지된다. lock이 풀리는 부분.
 		{
 			game_info.checkGauge();
-			lock = false;
 			hintTime = 0;
 			comboTime = 0;
+			lock = false;
 			console.log('lock released');
 		}
 	}

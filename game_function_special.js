@@ -35,7 +35,7 @@ game_function.specialBomb = function(type, x, y) {
 
 function specialReplace(x, y) {
 	console.log('special : replace');
-	boardInit(x, y);
+	//boardInit(x, y);
 	//numOfFound++;
 }
 
