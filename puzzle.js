@@ -14,7 +14,7 @@ function puzzleGame()
 	var msgLabel;
 	var gaugeLabel;
 	
-	var board = new board(BOARD_SIZE);
+	var board = new boardInfo(BOARD_SIZE);
 }
 
 var puzzleGame;
