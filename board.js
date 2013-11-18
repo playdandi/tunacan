@@ -1,7 +1,12 @@
 goog.provide('board');
 
 goog.require('lime.Sprite');
-
+goog.require('lime.animation.MoveBy');
+goog.require('lime.animation.RotateBy');
+goog.require('lime.animation.ScaleTo');
+goog.require('lime.animation.FadeTo');
+goog.require('lime.animation.Spawn');
+	
 /*
  * each piece object of board.
  */
