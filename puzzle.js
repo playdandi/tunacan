@@ -114,6 +114,7 @@ puzzle.puzzleReleaseLock = function()
 	puzzleGame.comboTime = 0;
 	puzzleGame.hintTime = 0;
 	puzzleGame.lock = false;
+	puzzle.checkGauge();
 };
 
 puzzle.updateScore = function(s) 
