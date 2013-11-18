@@ -14,6 +14,10 @@ var INGREDIENT_PROBABILITY = 10;
 var SCREENWIDTH = 461;
 var SCREENHEIGHT = 768;
 
+// resources
+var TOTAL_RESOURCE_COUNT = 3;
+var FRAME_WIDTH = 63;
+var FRAME_HEIGHT = 63;
 
 // board
 var BOARD_SIZE = 7;
