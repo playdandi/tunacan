@@ -24,8 +24,8 @@ userInput.puzzleInputEvent = function(shape)
 			
 			var posStart = this.localToParent(e.position);
 			var colStart, rowStart;			
-			colStart = Math.floor((posStart.x-PUZZLE_X)/frameWidth);
-			rowStart = Math.floor((posStart.y-PUZZLE_Y)/frameHeight); 
+			colStart = Math.floor((posStart.x-PUZZLE_X)/FRAME_WIDTH);
+			rowStart = Math.floor((posStart.y-PUZZLE_Y)/FRAME_HEIGHT); 
 			
 			// ends user input
 			e.swallow(['mouseup', 'touchend'], function(e)
@@ -35,8 +35,8 @@ userInput.puzzleInputEvent = function(shape)
 				
 				var posEnd = this.localToParent(e.position);
 				var colEnd, rowEnd;
-				colEnd = Math.floor((posEnd.x-PUZZLE_X)/frameWidth);
-				rowEnd = Math.floor((posEnd.y-PUZZLE_Y)/frameHeight);
+				colEnd = Math.floor((posEnd.x-PUZZLE_X)/FRAME_WIDTH);
+				rowEnd = Math.floor((posEnd.y-PUZZLE_Y)/FRAME_HEIGHT);
 				
 				if (colStart == colEnd && rowStart == rowEnd && board[rowStart][colStart].type == PIECE_SPECIAL)
 				{
@@ -44,7 +44,7 @@ userInput.puzzleInputEvent = function(shape)
 					lock = true;
 					console.log('lock acquired - in allowUserForceDrag()');
 					console.log('special type : ', board[rowStart][colStart].special);
-					board.findBlocks('special', rowStart, colStart);
+					board.findBlocks('special', {'row' : rowStart, 'col' : colStart});
 				}
 				else {
 					if (Math.abs(colEnd-colStart) > 0 && Math.abs(posEnd.x-posStart.x) > Math.abs(posEnd.y-posStart.y))
@@ -52,12 +52,12 @@ userInput.puzzleInputEvent = function(shape)
 						if (colEnd-colStart > 0)
 						{
 							// right
-							board.moveLine(colStart, rowStart, 2, true);
+							board.moveLine(rowStart, colStart, 2, true);
 						}
 						else 
 						{
 							// left
-							board.moveLine(colStart, rowStart, 1, true);
+							board.moveLine(rowStart, colStart, 1, true);
 						}
 					}
 					else if (Math.abs(rowEnd-rowStart) > 0 && Math.abs(posEnd.y-posStart.y) > Math.abs(posEnd.x-posStart.x))
@@ -65,12 +65,12 @@ userInput.puzzleInputEvent = function(shape)
 						if (rowEnd-rowStart > 0)
 						{
 							// down
-							board.moveLine(colStart, rowStart, 4, true);
+							board.moveLine(rowStart, colStart, 4, true);
 						}
 						else 
 						{
 							// up
-							board.moveLine(colStart, rowStart, 3, true);
+							board.moveLine(rowStart, colStart, 3, true);
 						}
 					}
 				}	
