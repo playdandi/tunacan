@@ -1,23 +1,36 @@
 goog.provide('puzzle');
 
+// get requirements
+goog.require('lime.Director');
+goog.require('lime.Scene');
+goog.require('lime.Layer');
+goog.require('lime.Circle');
+goog.require('lime.RoundedRect');
+goog.require('lime.fill.Fill');
+
+// puzzle game object
+var puzzleGame;
+
 function puzzleGame()
 {
 	// game info
-	var combo;
-	var score;
-	var gauge;
-	var hint_direction;
-	var hint_line;
-	var hint_coord;
+	this.combo;
+	this.score;
+	this.gauge;
+	this.hint_direction;
+	this.hint_line;
+	this.hint_coord;
 	
-	var scoreLabel;
-	var msgLabel;
-	var gaugeLabel;
+	this.scoreLabel;
+	this.msgLabel;
+	this.gaugeLabel;
 	
-	var board = new boardInfo(BOARD_SIZE);
+	this.boardInfo = new boardInfo(BOARD_SIZE);
+	
+	return this;
 }
 
-var puzzleGame;
+
 
 puzzle.init = function()
 {
