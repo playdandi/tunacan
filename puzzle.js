@@ -25,7 +25,7 @@ function puzzleGame()
 	this.msgLabel;
 	this.gaugeLabel;
 	
-	this.boardInfo = new boardInfo(BOARD_SIZE);
+	this.board = null;
 	
 	return this;
 }
