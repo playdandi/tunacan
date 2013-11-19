@@ -130,24 +130,29 @@ puzzle.updateCombo = function(c)
 	printMessage = puzzleGame.combo;
 	printMessage += " Combo! \n";
 	
+	var comboMsgIdx = 0;
 	if (puzzleGame.combo == 0)
 	{
-		printMessage = combo_message[0];
+		comboMsgIdx = Math.floor(Math.random()*comboMessage[0].length);
+		printMessage = comboMessage[0][comboMsgIdx];
 	}
 	else
 	{
-		if (puzzleGame.combo < combo_message.length-1)
+		if (puzzleGame.combo < comboMessage.length-1)
 		{
-			printMessage += combo_message[puzzleGame.combo];
+			comboMsgIdx = Math.floor(Math.random()*comboMessage[puzzleGame.combo].length);
+			printMessage += comboMessage[puzzleGame.combo][comboMsgIdx];
 		} 
 		else 
 		{
-			printMessage += combo_message[combo_message.length-1];
+			comboMsgIdx = Math.floor(Math.random()*comboMessage[comboMessage.length-1].length);
+			printMessage += comboMessage[comboMessage.length-1][comboMsgIdx];
 		}
 	}
 	
 	puzzleGame.messageLabel.setText(printMessage);
 	printMessage = null;
+	comboMsgIdx = null;
 };
 
 puzzle.updateGauge = function(g) 
@@ -257,7 +262,6 @@ puzzle.updateTime = function()
 	
 	// combo
 	puzzleGame.comboTime += puzzleGame.tick;
-	console.log(puzzleGame.comboTime);
 	if (puzzleGame.comboTime >= 2000 && puzzleGame.combo > 0)
 	{
 		// combo가 0일 때는 굳이 이걸 실행할 이유가 없다.
@@ -282,31 +286,45 @@ function createInfoLayer()
 {
 	puzzleGame.infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
 	puzzleGame.scene.appendChild(puzzleGame.infoLayer);
+	
+	var outer, inner;
+	
+	//top animation Rect
+	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 175).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, 10).setRadius(5);
+	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 173).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, 11).setRadius(5);
+	puzzleGame.infoLayer.appendChild(outer);
+	puzzleGame.infoLayer.appendChild(inner);
+	
+	//score & gauge Rect
+	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 30).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, PUZZLE_Y-34).setRadius(5);
+	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 28).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, PUZZLE_Y-33).setRadius(5);
+	puzzleGame.infoLayer.appendChild(outer);
+	puzzleGame.infoLayer.appendChild(inner);	
 		
 	//score
-	puzzleGame.scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE, 20);
+	puzzleGame.scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, PUZZLE_Y-31);
 	puzzleGame.infoLayer.appendChild(puzzleGame.scoreLabel);
 	puzzle.updateScore(0);
 	
 	//gauge
-	puzzleGame.gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(30).setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y-70);
+	puzzleGame.gaugeLabel = new lime.Label().setFontColor('#ffff00').setFontSize(20).setAnchorPoint(0, 0).setPosition(PUZZLE_X+10, PUZZLE_Y-31);
 	puzzleGame.infoLayer.appendChild(puzzleGame.gaugeLabel);
 	puzzle.updateGauge(0);
 	
 	//info & combo
-	var outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 80).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+10).setRadius(10);
-	var inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-6, 74).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+3, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+13).setRadius(10);
+	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 65).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25).setRadius(5);
+	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 63).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+26).setRadius(5);
 	puzzleGame.infoLayer.appendChild(outer);
 	puzzleGame.infoLayer.appendChild(inner);	
-	puzzleGame.messageLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+50).setSize(FRAME_WIDTH*BOARD_SIZE).setMultiline(true);
+	puzzleGame.messageLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32).setSize(FRAME_WIDTH*BOARD_SIZE).setMultiline(true);
 	puzzleGame.infoLayer.appendChild(puzzleGame.messageLabel);
 	puzzle.updateCombo(0);
 	
 	//timer progress bar
 	createProgressBar();
-	puzzleGame.progressBar.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y-20);
+	puzzleGame.progressBar.setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+4);
 	puzzleGame.infoLayer.appendChild(puzzleGame.progressBar);
-	puzzle.setProgressBar(puzzleGame.currentTime/puzzleGame.maxTime);	
+	puzzle.setProgressBar(puzzleGame.currentTime/puzzleGame.maxTime);
 }
 
 function createBoardLayer()

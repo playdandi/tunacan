@@ -36,13 +36,41 @@ var DURATION_TIME = 0.2; // puzzle piece animation duration
 
 
 // combo random messages.
-var combo_message = new Array();		
-combo_message[0] = "참치 캔의 재료는 어디 있을까?";
-combo_message[1] = "하나 하나 잘 찾아봐~";
-combo_message[2] = "다음 재료는 어디 있을까?";
-combo_message[3] = "지금 부터 콤보 찬스!!";
-combo_message[4] = "우와 대단해!";
-combo_message[5] = "놀랍구나!";
-combo_message[6] = "이정도야?";
-combo_message[7] = "언제까지?";
-combo_message[8] = "할미새 사촌";
+var comboMessage = new Array();
+comboMessage[0] = new Array();
+comboMessage[0][0] = "A 참치 캔의 재료는 어디 있을까?";
+comboMessage[0][1] = "B 참치 캔의 재료는 어디 있을까?";
+comboMessage[0][2] = "C 참치 캔의 재료는 어디 있을까?";
+comboMessage[0][3] = "D 참치 캔의 재료는 어디 있을까?";
+
+comboMessage[1] = new Array();
+comboMessage[1][0] = "A 하나 하나 잘 찾아봐~";
+comboMessage[1][1] = "B 하나 하나 잘 찾아봐~";
+comboMessage[1][2] = "C 하나 하나 잘 찾아봐~";
+comboMessage[1][3] = "D 하나 하나 잘 찾아봐~";
+
+comboMessage[2] = new Array();
+comboMessage[2][0] = "다음 재료는 어디 있을까?";
+
+comboMessage[3] = new Array();
+comboMessage[3][0] = "지금 부터 콤보 찬스!!";
+
+comboMessage[4] = new Array();
+comboMessage[4][0] = "우와 대단해!";
+
+comboMessage[5] = new Array();
+comboMessage[5][0] = "놀랍구나!";
+
+comboMessage[6] = new Array();
+comboMessage[6][0] = "이정도야?";
+
+comboMessage[7] = new Array();
+comboMessage[7][0] = "언제까지?";
+
+comboMessage[8] = new Array();
+comboMessage[8][0] = "할미새 사촌";
+comboMessage[8][1] = "할미새 사촌에 사촌";
+comboMessage[8][2] = "할미새 사촌에 사촌에 사촌";
+comboMessage[8][3] = "할미새 사촌에 사촌에 사촌에 사촌";
+comboMessage[8][4] = "할미새 오촌";
+

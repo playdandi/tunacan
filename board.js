@@ -171,7 +171,6 @@ board.findBlocks = function(state, rowColObject)
 	if (state == 'special')
 	{
 		// special piece에 대한 기능 실
-		console.log(rowColObject.row, rowColObject.col);
 		result = board.findBlocksSpecial(rowColObject.row, rowColObject.col);
 		//result = board.findBlocksSpecial(puzzleGame.board[row][col].typeOfSpecial, row, col);
 	}
