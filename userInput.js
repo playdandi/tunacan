@@ -31,6 +31,8 @@ userInput.puzzleInputEvent = function(shape)
 				puzzleGame.touchLock = false;
 				console.log('touchLock released - in allowUserForceDrag()');
 				
+				puzzle.removeHintTime();
+				
 				var posEnd = this.localToParent(e.position);
 				var colEnd, rowEnd;
 				colEnd = Math.floor((posEnd.x-PUZZLE_X)/FRAME_WIDTH);
@@ -40,8 +42,6 @@ userInput.puzzleInputEvent = function(shape)
 				{
 					// clicked special piece.
 					puzzleGame.lock = true;
-					console.log('lock acquired - in allowUserForceDrag()');
-					console.log('special type : ', puzzleGame.board[rowStart][colStart].typeOfSpecial, ' /// ' , rowStart, colStart);
 					board.findBlocks('special', {'row' : rowStart, 'col' : colStart});
 				}
 				else {

@@ -198,22 +198,22 @@ board.findBlocks = function(state, rowColObject)
 		var obj = rowColObject;
 		if (obj.direction == 1)
 		{
-			obj.row = (obj.row == 0) ? BOARD_SIZE : obj.row;
+			obj.col = (obj.col == 0) ? BOARD_SIZE : obj.col;
 			board.moveLine(obj.row, obj.col-1, 2, false);
 		}
 		else if (obj.direction == 2)
 		{
-			obj.row = (obj.row == BOARD_SIZE-1) ? -1 : obj.row;
+			obj.col = (obj.col == BOARD_SIZE-1) ? -1 : obj.col;
 			board.moveLine(obj.row, obj.col+1, 1, false);
 		}
 		else if (obj.direction == 3)
 		{
-			obj.col = (obj.col == 0) ? BOARD_SIZE : obj.col;
+			obj.row = (obj.row == 0) ? BOARD_SIZE : obj.row;
 			board.moveLine(obj.row-1, obj.col, 4, false);
 		}
 		else if (obj.direction == 4)
 		{
-			obj.col = (obj.col == BOARD_SIZE-1) ? -1 : obj.col;
+			obj.row = (obj.row == BOARD_SIZE-1) ? -1 : obj.row;
 			board.moveLine(obj.row+1, obj.col, 3, false);
 		}
 		
@@ -332,68 +332,7 @@ board.drop = function()
 		}
 	}
 };
-/*
-function bomb(x, y, direct)
 
-	if(x = blah) {}
-	
-	else if (direct != 0 && direct != 'special') // get scroll back.
-	{
-		if (direct == 1)
-		{
-			if (x == 0)
-				x = BOARD_SIZE;
-			scroll(x-1, y, 2, false);
-		}
-		else if (direct == 2)
-		{
-			if (x == BOARD_SIZE-1)
-				x = -1;
-			scroll(x+1, y, 1, false);
-		}
-		else if (direct == 3)
-		{
-			if (y == 0)
-				y = BOARD_SIZE;
-			scroll(x, y-1, 4, false);
-		}
-		else if (direct == 4)
-		{
-			if (y == BOARD_SIZE-1)
-				y = -1;
-			scroll(x, y+1, 3, false);
-		}
-		
-		game_info.updateCombo(0); // init combo to 0.
-	}
-	
-	else // finish the round (bomb done, drop done, and no pieces are bombbed).
-	{
-		if (direct == 'special' && !result.isFound) // special case : replace
-		{
-			console.log('row : ' + y + ' , col : ' + x);
-			boardInit(y, x);
-		}
-		else if (game_function.isBoardUseless())
-		{
-			boardInit(null, null);
-		}
-		else // 터뜨리는 행위가 중지된다. puzzleGame.lock이 풀리는 부분.
-		{
-			game_info.checkGauge();
-			hintTime = 0;
-			comboTime = 0;
-			puzzleGame.lock = false;
-			console.log('puzzleGame.lock released - in bomb(' + x + ', ' + y + ', ' + direct + ')');
-		}
-	}
-}
-*/
-
-
-/*
- * 
- */
 board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: left, 2: right, 3: up, 4: down
 {	
 	puzzleGame.lock = true;

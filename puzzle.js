@@ -113,8 +113,8 @@ puzzle.puzzleReleaseLock = function()
 	console.log('puzzleReleaseLock');
 	puzzleGame.comboTime = 0;
 	puzzleGame.hintTime = 0;
-	puzzleGame.lock = false;
 	puzzle.checkGauge();
+	puzzleGame.lock = false;
 };
 
 puzzle.updateScore = function(s) 
@@ -257,6 +257,7 @@ puzzle.updateTime = function()
 	
 	// combo
 	puzzleGame.comboTime += puzzleGame.tick;
+	console.log(puzzleGame.comboTime);
 	if (puzzleGame.comboTime >= 2000 && puzzleGame.combo > 0)
 	{
 		// combo가 0일 때는 굳이 이걸 실행할 이유가 없다.
@@ -269,9 +270,12 @@ puzzle.updateTime = function()
 
 puzzle.removeHintTime = function()
 {
-	puzzleGame.puzzleLayer.removeChild(puzzleGame.resource.hint);
-	puzzleGame.hintFlag = false;
-	puzzleGame.hintTime = 0;
+	if (puzzleGame.hintFlag)
+	{
+		puzzleGame.puzzleLayer.removeChild(puzzleGame.resource.hint);
+		puzzleGame.hintFlag = false;
+		puzzleGame.hintTime = 0;
+	}
 };
 
 function createInfoLayer()
