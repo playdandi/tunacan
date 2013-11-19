@@ -100,7 +100,8 @@ board.create = function(row, col)
 					}
 					
 					// start puzzle game
-					puzzle.puzzleStart();
+					//puzzle.puzzleStart();
+					board.findBlocks(null, null);
 				}
 			});
 			

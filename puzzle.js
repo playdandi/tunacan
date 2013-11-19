@@ -100,7 +100,7 @@ puzzle.puzzleStart = function()
 	console.log('puzzleStart');
 	userInput.puzzleInputEvent(puzzleGame.mask);
 	lime.scheduleManager.scheduleWithDelay(puzzle.updateTime, this, puzzleGame.tick);
-	board.findBlocks(null, null);
+	//board.findBlocks(null, null);
 };
 
 puzzle.puzzleEnd = function()

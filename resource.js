@@ -62,6 +62,7 @@ function puzzleResourceLoadComplete()
 		
 		// finish loading page & start puzzle.
 		console.log('resource loading done');
+		puzzle.puzzleStart();
 		board.create();
 	}
 }
