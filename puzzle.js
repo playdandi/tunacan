@@ -57,7 +57,7 @@ function puzzleGame()
 	this.numOfGetPieces = new Array(NUM_OF_TYPES+1);
 	for (var i = 0; i < NUM_OF_TYPES+1; i++)
 	{
-		numOfGetPieces[i] = 0;
+		this.numOfGetPieces[i] = 0;
 	}
 	
 	return this;
@@ -89,7 +89,7 @@ puzzle.init = function()
 
 	//replace scene	
 	puzzleGame.director.makeMobileWebAppCapable();	
-	puzzleGame.director.replaceScene(scene);
+	puzzleGame.director.replaceScene(puzzleGame.scene);
 	
 	//next step
 	resource.puzzleResourceInit();
@@ -146,7 +146,7 @@ puzzle.updateCombo = function(c)
 		}
 	}
 	
-	messageLabel.setText(printMessage);
+	puzzleGame.messageLabel.setText(printMessage);
 	printMessage = null;
 };
 
@@ -161,7 +161,7 @@ puzzle.checkGauge = function()
 	// full gauge
 	if (puzzleGame.gauge >= 100)
 	{ 
-		var x, y, isExist;
+		var row, col, isExist;
 		var coord = new Array();
 		var numOfSpecialPieces = Math.floor(puzzleGame.gauge/100);
 
@@ -173,15 +173,15 @@ puzzle.checkGauge = function()
 			isExist = false;
 			while (1) 
 			{
-				x = Math.floor(Math.random()*BOARD_SIZE);
-				y = Math.floor(Math.random()*BOARD_SIZE);
-				if (puzzleGame.board[x][y].type == PIECE_SPECIAL)
+				row = Math.floor(Math.random()*BOARD_SIZE);
+				col = Math.floor(Math.random()*BOARD_SIZE);
+				if (puzzleGame.board[row][col].type == PIECE_SPECIAL)
 				{
 					continue;
 				}
 				for (var j = 0; j < coord.length; j++)
 				{
-					if (coord[j].x == x && coord[j].y == y)
+					if (coord[j].row == row && coord[j].col == col)
 					{
 						isExist = true;
 						break;
@@ -189,17 +189,17 @@ puzzle.checkGauge = function()
 				}
 				if (!isExist)
 				{
-					coord.push({'x' : x, 'y' : y});
+					coord.push({'row' : row, 'col' : col});
 					break;
 				}
 			}
-			puzzleGame.board[x][y].img.setFill(frames[PIECE_SPECIAL]);
-			puzzleGame.board[x][y].type = PIECE_SPECIAL;
-			puzzleGame.board[x][y].special = Math.floor(Math.random() * numOfSpecialTypes);
-			puzzleGame.board[x][y].ingredient = false;
+			puzzleGame.board[row][col].img.setFill(puzzleGame.resource.frames[PIECE_SPECIAL]);
+			puzzleGame.board[row][col].type = PIECE_SPECIAL;
+			puzzleGame.board[row][col].typeOfSpecial = Math.floor(Math.random()*NUM_OF_SPECIAL_TYPES);
+			puzzleGame.board[row][col].isIngredient = false;
 		}
 		
-		x = y = isExist = null;
+		row = col = isExist = null;
 		coord = null;
 	}
 };
@@ -236,15 +236,15 @@ puzzle.updateTime = function()
     if (puzzleGame.hintTime >= 3000 && !puzzleGame.hintFlag)
     {
     	puzzleGame.hintFlag = true;				
-		if (puzzleGame.hint_direction == 0)
+		if (puzzleGame.hintDirection == 0)
 		{
 			// horizontal
-			puzzleGame.resource.hint.setAnchorPoint(0, 0).setRotation(0).setPosition(0, puzzleGame.hint_line*FRAME_HEIGHT);
+			puzzleGame.resource.hint.setAnchorPoint(0, 0).setRotation(0).setPosition(0, puzzleGame.hintLine*FRAME_HEIGHT);
 		}
-		else if (puzzleGame.hint_direction == 1)
+		else if (puzzleGame.hintDirection == 1)
 		{
 			// vertical
-			puzzleGame.resource.hint.setAnchorPoint(0, 1).setRotation(-90).setPosition(puzzleGame.hint_line*FRAME_WIDTH, 0);
+			puzzleGame.resource.hint.setAnchorPoint(0, 1).setRotation(-90).setPosition(puzzleGame.hintLine*FRAME_WIDTH, 0);
 		}
 		else
 		{
@@ -305,7 +305,7 @@ function createInfoLayer()
 	puzzle.setProgressBar(puzzleGame.currentTime/puzzleGame.maxTime);	
 }
 
-function createPuzzleLayer()
+function createBoardLayer()
 {
 	puzzleGame.puzzleLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
 	puzzleGame.scene.appendChild(puzzleGame.puzzleLayer);

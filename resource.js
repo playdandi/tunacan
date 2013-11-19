@@ -52,7 +52,7 @@ function puzzleResourceLoadComplete()
 		// make Sprites or Frames
 		var resImgElem = puzzleGame.resource.resImg.getImageElement();
 		var resImgIngreElem = puzzleGame.resource.resImgIngre.getImageElement();
-		puzzleGame.resource.hint = new lime.Sprite().setFill(hintImg);
+		puzzleGame.resource.hint = new lime.Sprite().setFill(puzzleGame.resource.hintImg);
 		
 		for (var i = 1; i <= NUM_OF_TYPES; i++)
 		{

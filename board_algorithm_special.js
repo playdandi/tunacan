@@ -1,4 +1,4 @@
-board.findBlocksSpecial = function(type, row, col)
+board.findBlocksSpecial = function(row, col)
 {
 	var result;
 	var type = puzzleGame.board[row][col].typeOfSpecial;
@@ -35,8 +35,6 @@ board.findBlocksSpecial = function(type, row, col)
 function specialReplace(row, col)
 {
 	console.log('special : replace');
-	//boardInit(x, y);
-	//numOfFound++;
 	return {'isFound' : false, 'numOfFound' : 0};
 }
 
@@ -46,7 +44,7 @@ function specialSingleLine(row, col)
 	console.log('special : single line');
 	if (Math.floor(Math.random()*2) == 0)
 	{
-		// 세
+		// vertical
 		for (var i = 0 ; i < BOARD_SIZE ; i++)
 		{
 			if (puzzleGame.board[i][col].type != PIECE_SPECIAL)
@@ -58,7 +56,7 @@ function specialSingleLine(row, col)
 	}
 	else
 	{
-		// 가로
+		// horizontal
 		for (var j = 0 ; j < BOARD_SIZE ; j++)
 		{
 			if (puzzleGame.board[row][j].type != PIECE_SPECIAL)
@@ -127,7 +125,7 @@ function specialDoubleLine(row, col)
 				numOfFound++;
 			}
 		}
-		for (var i = row+1, j = col+1 ; rowi< BOARD_SIZE && j < BOARD_SIZE ; i++, j++)
+		for (var i = row+1, j = col+1 ; i < BOARD_SIZE && j < BOARD_SIZE ; i++, j++)
 		{
 			if (puzzleGame.board[i][j].type != PIECE_SPECIAL)
 			{
@@ -138,7 +136,7 @@ function specialDoubleLine(row, col)
 	}
 	
 	// 자기 자신 (row, col) 에 있는 special piece는 없앤다.
-	puzzleGame.board[x][y].type *= -1;
+	puzzleGame.board[row][col].type *= -1;
 	numOfFound++;
 	
 	return {'isFound' : true, 'numOfFound' : numOfFound};
@@ -217,8 +215,8 @@ function specialTotal(row, col)
 function specialExpandTime(row, col)
 {
 	console.log('special : expand time 5 sec');
-	curTime += 5;
-	curTime = (curTime > maxTime) ? maxTime : curTime;
+	puzzleGame.currentTime += 5;
+	puzzleGame.currentTime = (puzzleGame.currentTime > puzzleGame.maxTime) ? puzzleGame.maxTime : puzzleGame.currentTime;
 		
 	// 자기 자신 (row, col) 에 있는 special piece는 없앤다.
 	puzzleGame.board[row][col].type *= -1;

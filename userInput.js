@@ -7,20 +7,18 @@ goog.provide('userInput');
  */
 userInput.puzzleInputEvent = function(shape)
 { 
-	var board = puzzleGame.board;
-	
 	// click OR touch event.
 	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e)
 	{
-		if (touchLock)
+		if (puzzleGame.touchLock)
 		{
 			return;
 		}
 		
-		if (lock == false)
+		if (puzzleGame.lock == false)
 		{
 			console.log('touchLock acquired - in allowUserForceDrag()');
-			touchLock = true;
+			puzzleGame.touchLock = true;
 			
 			var posStart = this.localToParent(e.position);
 			var colStart, rowStart;			
@@ -30,7 +28,7 @@ userInput.puzzleInputEvent = function(shape)
 			// ends user input
 			e.swallow(['mouseup', 'touchend'], function(e)
 			{
-				touchLock = false;
+				puzzleGame.touchLock = false;
 				console.log('touchLock released - in allowUserForceDrag()');
 				
 				var posEnd = this.localToParent(e.position);
@@ -38,12 +36,12 @@ userInput.puzzleInputEvent = function(shape)
 				colEnd = Math.floor((posEnd.x-PUZZLE_X)/FRAME_WIDTH);
 				rowEnd = Math.floor((posEnd.y-PUZZLE_Y)/FRAME_HEIGHT);
 				
-				if (colStart == colEnd && rowStart == rowEnd && board[rowStart][colStart].type == PIECE_SPECIAL)
+				if (colStart == colEnd && rowStart == rowEnd && puzzleGame.board[rowStart][colStart].type == PIECE_SPECIAL)
 				{
 					// clicked special piece.
-					lock = true;
+					puzzleGame.lock = true;
 					console.log('lock acquired - in allowUserForceDrag()');
-					console.log('special type : ', board[rowStart][colStart].special);
+					console.log('special type : ', puzzleGame.board[rowStart][colStart].typeOfSpecial, ' /// ' , rowStart, colStart);
 					board.findBlocks('special', {'row' : rowStart, 'col' : colStart});
 				}
 				else {

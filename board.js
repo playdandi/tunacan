@@ -33,13 +33,13 @@ board.create = function(row, col)
 	{
 		for (var j = 0 ; j < BOARD_SIZE ; j++)
 		{
-			if (puzzleGame.board != null && !(i == row && j == col) && board[i][j].type == PIECE_SPECIAL)
+			if (puzzleGame.board != null && !(i == row && j == col) && puzzleGame.board[i][j].type == PIECE_SPECIAL)
 			{
-				specialPieces.push(board[i].slice(j, j+1)[0]);
+				specialPieces.push(puzzleGame.board[i].slice(j, j+1)[0]);
 			}
 		}
 	}
-	
+
 	// initialize board.	
 	puzzleGame.board = null;
 	puzzleGame.board = new Array(BOARD_SIZE);
@@ -67,7 +67,7 @@ board.create = function(row, col)
 		}
 	}
 	specialPieces = null;
-	
+
 	// make all pieces.
 	var init = 0;
 	for (var i = 0 ; i < BOARD_SIZE ; i++)
@@ -95,7 +95,7 @@ board.create = function(row, col)
 					{
 						for (var x = 0 ; x < BOARD_SIZE ; x++)
 						{
-							board[y][x].img.setAnchorPoint(0, 0).setPosition(x*FRAME_WIDTH, y*FRAME_HEIGHT);
+							puzzleGame.board[y][x].img.setAnchorPoint(0, 0).setPosition(x*FRAME_WIDTH, y*FRAME_HEIGHT);
 						}
 					}
 					
@@ -124,7 +124,8 @@ board.createPiece = function(type, isIngredient, typeOfSpecial)
 	p.type = (type != null) ? type : board.getRandomNumber(6)+1;
 	
 	// ingredient 
-	if (isIngredient != null) {
+	if (isIngredient != null) 
+	{
 		// moveLine 할 때는 기존의 piece를 그대로 들고 온다.
 		p.isIngredient = isIngredient;
 	}
@@ -136,11 +137,11 @@ board.createPiece = function(type, isIngredient, typeOfSpecial)
 	// image
 	if (p.isIngredient)
 	{
-		p.img = new lime.Sprite().setFill(framesIngre[p.type]).setAnchorPoint(0, 0);
+		p.img = new lime.Sprite().setFill(puzzleGame.resource.framesIngre[p.type]).setAnchorPoint(0, 0);
 	}
 	else
 	{
-		p.img = new lime.Sprite().setFill(frames[p.type]).setAnchorPoint(0, 0);
+		p.img = new lime.Sprite().setFill(puzzleGame.resource.frames[p.type]).setAnchorPoint(0, 0);
 	}
 	
 	// type of special piece
@@ -169,6 +170,7 @@ board.findBlocks = function(state, rowColObject)
 	if (state == 'special')
 	{
 		// special piece에 대한 기능 실
+		console.log(rowColObject.row, rowColObject.col);
 		result = board.findBlocksSpecial(rowColObject.row, rowColObject.col);
 		//result = board.findBlocksSpecial(puzzleGame.board[row][col].typeOfSpecial, row, col);
 	}
@@ -197,22 +199,22 @@ board.findBlocks = function(state, rowColObject)
 		if (obj.direction == 1)
 		{
 			obj.row = (obj.row == 0) ? BOARD_SIZE : obj.row;
-			moveLine(obj.row-1, obj.col, 2, false);
+			board.moveLine(obj.row, obj.col-1, 2, false);
 		}
 		else if (obj.direction == 2)
 		{
 			obj.row = (obj.row == BOARD_SIZE-1) ? -1 : obj.row;
-			moveLine(obj.row+1, obj.col, 1, false);
+			board.moveLine(obj.row, obj.col+1, 1, false);
 		}
 		else if (obj.direction == 3)
 		{
 			obj.col = (obj.col == 0) ? BOARD_SIZE : obj.col;
-			moveLine(obj.row, obj.col-1, 4, false);
+			board.moveLine(obj.row-1, obj.col, 4, false);
 		}
 		else if (obj.direction == 4)
 		{
 			obj.col = (obj.col == BOARD_SIZE-1) ? -1 : obj.col;
-			moveLine(obj.row, obj.col+1, 3, false);
+			board.moveLine(obj.row+1, obj.col, 3, false);
 		}
 		
 		// 콤보가 끊겼으니 0으로 바꾼다.
@@ -252,7 +254,7 @@ board.bomb = function(numOfFound)
 			if (puzzleGame.board[row][col].type < 0)
 			{		
 				var anim = new lime.animation.Spawn(new lime.animation.ScaleTo(1.5), new lime.animation.FadeTo(0)).setDuration(DURATION_TIME);
-				puzzleGame.board[row][col].img.setAnchorPoint(0.5, 0.5).setPosition(x*FRAME_WIDTH+FRAME_WIDTH/2, y*FRAME_HEIGHT+FRAME_HEIGHT/2);
+				puzzleGame.board[row][col].img.setAnchorPoint(0.5, 0.5).setPosition(col*FRAME_WIDTH+FRAME_WIDTH/2, row*FRAME_HEIGHT+FRAME_HEIGHT/2);
 				coord.push({'row' : row, 'col' : col});
 				
 				if (puzzleGame.board[row][col].isIngredient)
@@ -305,10 +307,10 @@ board.drop = function()
 		goog.events.listen(anim, lime.animation.Event.STOP, function()
 		{
 			dropped++;
-			if (dropped == retArray.length)
+			if (dropped == result.length)
 			{
 				//bomb(0, 0, 0); // re-check if there is a piece to be bombed.
-				board.findBpuzzleGame.locks(null, null, null);
+				board.findBlocks(null, null, null);
 			}
 		});
 		
@@ -316,14 +318,14 @@ board.drop = function()
 		if (result[i].row >= 0)
 		{
 			// 기존의 board에 남아있는 piece.
-			board[result[i].row][result[i].col].img.runAction(anim);
-			board[result[i].row+result[i].drop][result[i].col] = null;
-			board[result[i].row+result[i].drop][result[i].col] = board[result[i].row].slice(result[i].col, result[i].col+1)[0];
+			puzzleGame.board[result[i].row][result[i].col].img.runAction(anim);
+			puzzleGame.board[result[i].row+result[i].drop][result[i].col] = null;
+			puzzleGame.board[result[i].row+result[i].drop][result[i].col] = puzzleGame.board[result[i].row].slice(result[i].col, result[i].col+1)[0];
 		}
 		else
 		{
 			// 새로 추가된 piece.
-			puzzleLayer.appendChild(result[i].piece.img.setPosition(result[i].col*FRAME_WIDTH, result[i].row*FRAME_HEIGHT));
+			puzzleGame.puzzleLayer.appendChild(result[i].piece.img.setPosition(result[i].col*FRAME_WIDTH, result[i].row*FRAME_HEIGHT));
 			result[i].piece.img.runAction(anim);
 			puzzleGame.board[result[i].row+result[i].drop][result[i].col] = null;
 			puzzleGame.board[result[i].row+result[i].drop][result[i].col] = result[i].piece;
@@ -393,21 +395,19 @@ function bomb(x, y, direct)
  * 
  */
 board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: left, 2: right, 3: up, 4: down
-{
-	var board = puzzleGame.board;
-	
+{	
 	puzzleGame.lock = true;
-	console.log('puzzleGame.lock acquired - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + isForBomb + ')');
+	console.log('puzzleGame.lock acquired - in scroll()');
 	puzzleGame.hintTime = 0;
 	
 	var new_icon;
 	
-	board[curRow][curCol].img.setOpacity(0.5);
+	puzzleGame.board[curRow][curCol].img.setOpacity(0.5);
 	
 	switch(direction)
 	{
 		case 1: // left
-			new_icon = board.createPiece(board[curRow][0].type, board[curRow][0].isIngredient, board[curRow][0].typeOfSpecial);
+			new_icon = board.createPiece(puzzleGame.board[curRow][0].type, puzzleGame.board[curRow][0].isIngredient, puzzleGame.board[curRow][0].typeOfSpecial);
 			puzzleGame.puzzleLayer.appendChild(new_icon.img.setPosition(BOARD_SIZE*FRAME_WIDTH, curRow*FRAME_HEIGHT));
 			var moved = 0;
 			for (var col = 0 ; col <= BOARD_SIZE ; col++)
@@ -421,14 +421,14 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 					if (moved == BOARD_SIZE+1)
 					{
 						// 한 칸씩 옮긴다.
-						board[curRow][curCol].img.setOpacity(1);
-						puzzleGame.puzzleLayer.removeChild(board[curRow][0]);
-						board[curRow][0] = null;
+						puzzleGame.board[curRow][curCol].img.setOpacity(1);
+						puzzleGame.puzzleLayer.removeChild(puzzleGame.board[curRow][0]);
+						puzzleGame.board[curRow][0] = null;
 						for (var col = 0 ; col < BOARD_SIZE-1 ; col++)
 						{
-							board[curRow][col] = board[curRow][col+1];
+							puzzleGame.board[curRow][col] = puzzleGame.board[curRow][col+1];
 						}
-						board[curRow][BOARD_SIZE-1] = new_icon;
+						puzzleGame.board[curRow][BOARD_SIZE-1] = new_icon;
 									
 						if (isForBomb)
 						{
@@ -449,13 +449,13 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 				}
 				else
 				{
-					board[curRow][col].img.runAction(anim);
+					puzzleGame.board[curRow][col].img.runAction(anim);
 				}
 			}
 			break;
 
 		case 2: // right
-			new_icon = board.createPiece(board[curRow][BOARD_SIZE-1].type, board[curRow][BOARD_SIZE-1].isIngredient, board[curRow][BOARD_SIZE-1].typeOfSpecial);
+			new_icon = board.createPiece(puzzleGame.board[curRow][BOARD_SIZE-1].type, puzzleGame.board[curRow][BOARD_SIZE-1].isIngredient, puzzleGame.board[curRow][BOARD_SIZE-1].typeOfSpecial);
 			puzzleGame.puzzleLayer.appendChild(new_icon.img.setPosition(-FRAME_WIDTH, curRow*FRAME_HEIGHT));
 			var moved = 0;
 			for (var col = 0 ; col <= BOARD_SIZE ; col++)
@@ -469,14 +469,14 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 					if (moved == BOARD_SIZE+1)
 					{
 						// 한 칸씩 옮긴다.
-						board[curRow][curCol].img.setOpacity(1);
-						puzzleGame.puzzleLayer.removeChild(board[curRow][BOARD_SIZE-1]);
-						board[curRow][BOARD_SIZE-1] = null;
+						puzzleGame.board[curRow][curCol].img.setOpacity(1);
+						puzzleGame.puzzleLayer.removeChild(puzzleGame.board[curRow][BOARD_SIZE-1]);
+						puzzleGame.board[curRow][BOARD_SIZE-1] = null;
 						for (var col = BOARD_SIZE-1 ; col > 0 ; col--)
 						{
-							board[curRow][col] = board[curRow][col-1];
+							puzzleGame.board[curRow][col] = puzzleGame.board[curRow][col-1];
 						}
-						board[curRow][0] = new_icon;
+						puzzleGame.board[curRow][0] = new_icon;
 						
 						if (isForBomb)
 						{
@@ -496,13 +496,13 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 				}
 				else
 				{
-					board[curRow][col].img.runAction(anim);
+					puzzleGame.board[curRow][col].img.runAction(anim);
 				}
 			}
 			break;
 
 		case 3: // up
-			new_icon = board.createPiece(board[0][curCol].type, board[0][curCol].isIngredient, board[0][curCol].typeOfSpecial);
+			new_icon = board.createPiece(puzzleGame.board[0][curCol].type, puzzleGame.board[0][curCol].isIngredient, puzzleGame.board[0][curCol].typeOfSpecial);
 			puzzleGame.puzzleLayer.appendChild(new_icon.img.setPosition(curCol*FRAME_WIDTH, BOARD_SIZE*FRAME_HEIGHT));			
 			var moved = 0;
 			for (var row = 0 ; row <= BOARD_SIZE ; row++)
@@ -516,14 +516,14 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 					if (moved == BOARD_SIZE+1)
 					{
 						// 한 칸씩 옮긴다.
-						board[curRow][curCol].img.setOpacity(1);
-						puzzleGame.puzzleLayer.removeChild(board[0][curCol]);
-						board[0][curCol] = null;
+						puzzleGame.board[curRow][curCol].img.setOpacity(1);
+						puzzleGame.puzzleLayer.removeChild(puzzleGame.board[0][curCol]);
+						puzzleGame.board[0][curCol] = null;
 						for (var row = 0 ; row < BOARD_SIZE-1 ; row++)
 						{
-							board[row][curCol] = board[row+1][curCol];
+							puzzleGame.board[row][curCol] = puzzleGame.board[row+1][curCol];
 						}
-						board[BOARD_SIZE-1][curCol] = new_icon;
+						puzzleGame.board[BOARD_SIZE-1][curCol] = new_icon;
 						
 						if (isForBomb)
 						{
@@ -544,13 +544,13 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 				}
 				else
 				{
-					board[row][curCol].img.runAction(anim);
+					puzzleGame.board[row][curCol].img.runAction(anim);
 				}
 			}
 			break;
 
 		case 4: //down
-			new_icon = board.createPiece(board[BOARD_SIZE-1][curCol].type, board[BOARD_SIZE-1][curCol].isIngredient, board[BOARD_SIZE-1][curCol].typeOfSpecial);
+			new_icon = board.createPiece(puzzleGame.board[BOARD_SIZE-1][curCol].type, puzzleGame.board[BOARD_SIZE-1][curCol].isIngredient, puzzleGame.board[BOARD_SIZE-1][curCol].typeOfSpecial);
 			puzzleGame.puzzleLayer.appendChild(new_icon.img.setPosition(curCol*FRAME_WIDTH, -FRAME_HEIGHT));
 			var moved = 0;
 			for (var row = 0 ; row <= BOARD_SIZE ; row++)
@@ -564,14 +564,14 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 					if (moved == BOARD_SIZE + 1)
 					{
 						// 한 칸씩 옮긴다.
-						board[curRow][curCol].img.setOpacity(1);
-						puzzleGame.puzzleLayer.removeChild(board[BOARD_SIZE-1][curCol]);
-						board[BOARD_SIZE-1][curCol] = null;
+						puzzleGame.board[curRow][curCol].img.setOpacity(1);
+						puzzleGame.puzzleLayer.removeChild(puzzleGame.board[BOARD_SIZE-1][curCol]);
+						puzzleGame.board[BOARD_SIZE-1][curCol] = null;
 						for (var row = BOARD_SIZE-1 ; row > 0 ; row--)
 						{
-							board[row][curCol] = board[row-1][curCol];
+							puzzleGame.board[row][curCol] = puzzleGame.board[row-1][curCol];
 						}
-						board[0][curCol] = new_icon;
+						puzzleGame.board[0][curCol] = new_icon;
 						
 						if (isForBomb)
 						{
@@ -592,7 +592,7 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 				}
 				else
 				{
-					board[row][curCol].img.runAction(anim);
+					puzzleGame.board[row][curCol].img.runAction(anim);
 				}
 			}
 			break;

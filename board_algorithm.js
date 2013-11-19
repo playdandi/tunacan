@@ -56,7 +56,7 @@ board.findBlocksBasic = function()
 	{
 		for (var row = 0 ; row < BOARD_SIZE-2 ; row++)
 		{
-			if (board[i][j].type == PIECE_SPECIAL)
+			if (board[row][col].type == PIECE_SPECIAL)
 			{
 				 // special piece는 고려하지 않는다.
 				continue;
@@ -127,7 +127,7 @@ board.findBlocksFloodFill = function()
 				if (isValid1 || isValid2 || isValid3 || isValid4)
 				{
 					// floodfill recursion.
-					numOfFound += flood(row, col, board[row][col].type, numOfFound);
+					numOfFound += flood(row, col, board[row][col].type);
 					isFound = true;
 				}
 			}
@@ -137,14 +137,14 @@ board.findBlocksFloodFill = function()
 	return {'isFound' : isFound, 'numOfFound' : numOfFound};
 };
 
-function flood(row, col, type)
+function flood(curRow, curCol, type)
 {
 	cnt = 0;
-	board[row][col].type *= -1;
-	if (col > 0 		   && board[row][col-1].type == type && board[row][col-1].type > 0) cnt += flood(row, col-1, type);
-	if (col < BOARD_SIZE-1 && board[row][col+1].type == type && board[row][col+1].type > 0) cnt += flood(row, col+1, type);
-	if (row > 0 		   && board[row-1][col].type == type && board[row-1][col].type > 0) cnt += flood(row-1, col, type);
-	if (row < BOARD_SIZE-1 && board[row+1][col].type == type && board[row+1][col].type > 0) cnt += flood(col+1, col, type);
+	puzzleGame.board[curRow][curCol].type *= -1;
+	if (curCol > 0 		      && puzzleGame.board[curRow][curCol-1].type == type && puzzleGame.board[curRow][curCol-1].type > 0) cnt += flood(curRow, curCol-1, type);
+	if (curCol < BOARD_SIZE-1 && puzzleGame.board[curRow][curCol+1].type == type && puzzleGame.board[curRow][curCol+1].type > 0) cnt += flood(curRow, curCol+1, type);
+	if (curRow > 0 		      && puzzleGame.board[curRow-1][curCol].type == type && puzzleGame.board[curRow-1][curCol].type > 0) cnt += flood(curRow-1, curCol, type);
+	if (curRow < BOARD_SIZE-1 && puzzleGame.board[curRow+1][curCol].type == type && puzzleGame.board[curRow+1][curCol].type > 0) cnt += flood(curRow+1, curCol, type);
 	return cnt + 1;
 }
 
@@ -163,7 +163,7 @@ board.getDroppingPieces = function()
 		boardType[row] = new Array(BOARD_SIZE);
 		for (var col = 0 ; col < BOARD_SIZE ; col++)
 		{
-			boardType[row][col] = board[row][col].type;
+			boardType[row][col] = puzzleGame.board[row][col].type;
 		}
 	}
 	
@@ -246,7 +246,7 @@ board.hasToBeReplaced = function()
 		boardType[row] = new Array(BOARD_SIZE);
 		for (var col = 0 ; col < BOARD_SIZE ; col++)
 		{
-			boardType[row][col] = board[row][col].type;
+			boardType[row][col] = puzzleGame.board[row][col].type;
 		}
 	}
 	
