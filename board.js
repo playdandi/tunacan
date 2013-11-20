@@ -185,8 +185,6 @@ board.findBlocks = function(state, rowColObject)
 		result = board.findBlocksFloodFill();
 	}
 	
-	//console.log('findBpuzzleGame.locks() done. (isFound, numOfFound) : (' + result.isFound + ', ' + result.numOfFound + ')');
-	
 	if (result.isFound)
 	{
 		// 터뜨릴 piece를 하나 이상 찾은 경우.
@@ -336,7 +334,7 @@ board.drop = function()
 board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: left, 2: right, 3: up, 4: down
 {	
 	puzzleGame.lock = true;
-	console.log('puzzleGame.lock acquired - in scroll()');
+	console.log('[board] puzzleGame.lock acquired - in scroll()');
 	puzzleGame.hintTime = 0;
 	
 	var new_icon;
@@ -376,8 +374,6 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 						else
 						{
 							puzzle.puzzleReleaseLock();
-							//puzzleGame.lock = false;
-							//console.log('puzzleGame.lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + isForBomb + ')');
 						}
 					}
 				});
@@ -423,8 +419,6 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 						}
 						else {
 							puzzle.puzzleReleaseLock();
-							//puzzleGame.lock = false;
-							//console.log('puzzleGame.lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + isForBomb + ')');
 						}
 					}
 				});
@@ -471,8 +465,6 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 						else
 						{
 							puzzle.puzzleReleaseLock();
-							//puzzleGame.lock = false;
-							//console.log('puzzleGame.lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + isForBomb + ')');
 						}
 					}	
 				});
@@ -519,8 +511,6 @@ board.moveLine = function(curRow, curCol, direction, isForBomb) // direct 1: lef
 						else
 						{
 							puzzle.puzzleReleaseLock();
-							//puzzleGame.lock = false;
-							//console.log('puzzleGame.lock released - in scroll(' + x + ', ' + y + ', ' + direct + ', ' + isForBomb + ')');
 						}
 					}	
 				});

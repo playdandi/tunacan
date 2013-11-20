@@ -233,10 +233,6 @@ function cmp(a, b)
 	return b.row - a.row;
 }
 
-
-/*
- * 
- */
 board.hasToBeReplaced = function()
 {
 	// initialize temp check array

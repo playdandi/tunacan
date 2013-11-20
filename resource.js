@@ -2,7 +2,21 @@ goog.provide('resource');
 
 goog.require('lime.fill.Image');
 goog.require('lime.fill.Frame');
+goog.require('lime.Sprite');
 
+function commonResources()
+{
+	// resources
+	this.heartImg;
+	
+	// resourece count
+	this.loadedResourceCnt;
+	
+	// sprite or frames
+	this.heart;
+	
+	return this;
+}
 
 function puzzleResources()
 {
@@ -47,7 +61,7 @@ resource.puzzleResourceInit = function()
 function puzzleResourceLoadComplete()
 {
 	puzzleGame.resource.loadedResourceCnt++;
-	if (puzzleGame.resource.loadedResourceCnt == TOTAL_RESOURCE_COUNT)
+	if (puzzleGame.resource.loadedResourceCnt == PUZZLE_TOTAL_RESOURCE_COUNT)
 	{
 		// make Sprites or Frames
 		var resImgElem = puzzleGame.resource.resImg.getImageElement();
@@ -61,8 +75,50 @@ function puzzleResourceLoadComplete()
 		}
 		
 		// finish loading page & start puzzle.
-		console.log('resource loading done');
+		console.log('[resource] puzzle resource loading done');
 		puzzle.puzzleStart();
 		board.create();
+	}
+}
+
+/*
+ * 
+ */
+resource.commonResourceInit = function()
+{
+	commonObject.resource = new commonResources();
+	
+	// load resources
+	commonObject.resource.loadedResourceCnt = 0;
+	commonObject.resource.heartImg = new lime.fill.Image('assets/heart.png').setSize(27, 27);
+	
+	// resource event listener
+	//commonObject.resource.heartImg.addEventListener('load', commonResourceLoadComplete, false);
+	
+	while (true)
+	{
+		if (commonObject.resource.heartImg.isLoaded)
+		{
+			break;
+		}
+	}
+	commonObject.resource.heart = new lime.Sprite().setFill(commonObject.resource.heartImg.initForSprite());
+	common.createWindow();
+};
+
+/*
+ * 
+ */
+function commonResourceLoadComplete()
+{
+	commonObject.resource.loadedResourceCnt++;
+	if (commonObject.resource.loadedResourceCnt == COMMON_TOTAL_RESOURCE_COUNT)
+	{
+		// make frames
+		commonObject.resource.heart = new lime.Sprite().setFill(commonObject.resource.heartImg);
+				
+		// finish loading page & start puzzle.
+		console.log('[resource] common resource loading done');
+		common.createWindow();
 	}
 }

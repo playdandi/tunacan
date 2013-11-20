@@ -34,14 +34,14 @@ board.findBlocksSpecial = function(row, col)
 
 function specialReplace(row, col)
 {
-	console.log('special : replace');
+	console.log('[board_al_sp] special : replace');
 	return {'isFound' : false, 'numOfFound' : 0};
 }
 
 function specialSingleLine(row, col)
 {
 	var numOfFound = 0;
-	console.log('special : single line');
+	console.log('[board_al_sp] special : single line');
 	if (Math.floor(Math.random()*2) == 0)
 	{
 		// vertical
@@ -77,7 +77,7 @@ function specialSingleLine(row, col)
 function specialDoubleLine(row, col)
 {
 	var numOfFound = 0;
-	console.log('special : double line');
+	console.log('[board_al_sp] special : double line');
 	if (Math.floor(Math.random()*2) == 0)
 	{ 
 		// 십자가
@@ -145,7 +145,7 @@ function specialDoubleLine(row, col)
 function specialSurround(row, col)
 {
 	var numOfFound = 0;
-	console.log('special : surround');
+	console.log('[board_al_sp] special : surround');
 	for (var i = row-1 ; i <= row+1 ; i++)
 	{
 		for (var j = col-1 ; j <= col+1 ; j++)
@@ -167,7 +167,7 @@ function specialSurround(row, col)
 function specialOneType(row, col)
 {
 	var numOfFound = 0;
-	console.log('special : one type');
+	console.log('[board_al_sp] special : one type');
 	var type = Math.floor(Math.random()*(NUM_OF_TYPES-1)) + 1;
 	
 	for (var i = 0 ; i < BOARD_SIZE ; i++)
@@ -192,7 +192,7 @@ function specialOneType(row, col)
 function specialTotal(row, col)
 {
 	var numOfFound = 0;
-	console.log('special : total');
+	console.log('[board_al_sp] special : total');
 	for (var i = 0 ; i < BOARD_SIZE ; i++)
 	{
 		for (var j = 0 ; j < BOARD_SIZE ; j++)
@@ -214,7 +214,7 @@ function specialTotal(row, col)
 
 function specialExpandTime(row, col)
 {
-	console.log('special : expand time 5 sec');
+	console.log('[board_al_sp] special : expand time 5 sec');
 	puzzleGame.currentTime += 5;
 	puzzleGame.currentTime = (puzzleGame.currentTime > puzzleGame.maxTime) ? puzzleGame.maxTime : puzzleGame.currentTime;
 		

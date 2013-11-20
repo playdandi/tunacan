@@ -17,7 +17,7 @@ userInput.puzzleInputEvent = function(shape)
 		
 		if (puzzleGame.lock == false)
 		{
-			console.log('touchLock acquired - in allowUserForceDrag()');
+			console.log('[userinput] touchLock acquired - in allowUserForceDrag()');
 			puzzleGame.touchLock = true;
 			
 			var posStart = this.localToParent(e.position);
@@ -29,7 +29,7 @@ userInput.puzzleInputEvent = function(shape)
 			e.swallow(['mouseup', 'touchend'], function(e)
 			{
 				puzzleGame.touchLock = false;
-				console.log('touchLock released - in allowUserForceDrag()');
+				console.log('[userinput] touchLock released - in allowUserForceDrag()');
 				
 				puzzle.removeHintTime();
 				

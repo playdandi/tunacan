@@ -15,8 +15,6 @@ var puzzleGame;
 function puzzleGame()
 {
 	// window
-	this.director = null;
-	this.scene = null;
 	this.mask = null;
 	this.infoLayer = null;
 	this.puzzleLayer = null;
@@ -64,32 +62,14 @@ function puzzleGame()
 }
 
 puzzle.init = function()
-{
-	console.log('puzzleInit');
-	
+{	
 	puzzleGame = new puzzleGame();
-	
-	//create window
-	puzzleGame.director = new lime.Director(document.body, SCREEN_WIDTH, SCREEN_HEIGHT);
-	puzzleGame.scene = new lime.Scene();
-	console.log('create window complete!');
-	
-	//bg Layer (temp)
-	var bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
-	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(SCREEN_WIDTH, SCREEN_HEIGHT).setFill("#000000");
-	bgLayer.appendChild(rect);
-	puzzleGame.scene.appendChild(bgLayer);
-	console.log('create bg_layer complete!');
-	
+		
 	//create User Interface
 	createInfoLayer();
-	console.log('create Info_layer complete!');
 	createBoardLayer();
-	console.log('create Board_layer complete!');
-
-	//replace scene	
-	puzzleGame.director.makeMobileWebAppCapable();	
-	puzzleGame.director.replaceScene(puzzleGame.scene);
+	
+	console.log('[puzzle] init (create infoLayer, boardLayer) done');
 	
 	//next step
 	resource.puzzleResourceInit();
@@ -97,20 +77,19 @@ puzzle.init = function()
 
 puzzle.puzzleStart = function()
 {
-	console.log('puzzleStart');
+	console.log('[puzzle] puzzleStart');
 	userInput.puzzleInputEvent(puzzleGame.mask);
 	lime.scheduleManager.scheduleWithDelay(puzzle.updateTime, this, puzzleGame.tick);
-	//board.findBlocks(null, null);
 };
 
 puzzle.puzzleEnd = function()
 {
-	console.log('puzzleEnd');
+	console.log('[puzzle] puzzleEnd');
 };
 
 puzzle.puzzleReleaseLock = function()
 {
-	console.log('puzzleReleaseLock');
+	console.log('[puzzle] puzzleReleaseLock');
 	puzzleGame.comboTime = 0;
 	puzzleGame.hintTime = 0;
 	puzzle.checkGauge();
@@ -121,6 +100,7 @@ puzzle.updateScore = function(s)
 {
 	puzzleGame.score += (s*100)*(puzzleGame.combo*puzzleGame.combo);
 	puzzleGame.scoreLabel.setText('SCORE : ' + puzzleGame.score);
+	
 };
 
 puzzle.updateCombo = function(c) 
@@ -265,7 +245,7 @@ puzzle.updateTime = function()
 	if (puzzleGame.comboTime >= 2000 && puzzleGame.combo > 0)
 	{
 		// combo가 0일 때는 굳이 이걸 실행할 이유가 없다.
-		console.log('combo canceled');
+		console.log('[puzzle] combo canceled');
 		puzzle.updateCombo(0);
 	}
 	
@@ -285,13 +265,13 @@ puzzle.removeHintTime = function()
 function createInfoLayer()
 {
 	puzzleGame.infoLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
-	puzzleGame.scene.appendChild(puzzleGame.infoLayer);
+	commonObject.scene.appendChild(puzzleGame.infoLayer);
 	
 	var outer, inner;
 	
 	//top animation Rect
-	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 175).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, 10).setRadius(5);
-	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 173).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, 11).setRadius(5);
+	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 139).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, 46).setRadius(5);
+	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 137).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, 47).setRadius(5);
 	puzzleGame.infoLayer.appendChild(outer);
 	puzzleGame.infoLayer.appendChild(inner);
 	
@@ -330,10 +310,10 @@ function createInfoLayer()
 function createBoardLayer()
 {
 	puzzleGame.puzzleLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(PUZZLE_X, PUZZLE_Y);
-	puzzleGame.scene.appendChild(puzzleGame.puzzleLayer);
+	commonObject.scene.appendChild(puzzleGame.puzzleLayer);
 	
 	puzzleGame.mask = new lime.Sprite().setAnchorPoint(0, 0).setSize(FRAME_WIDTH*BOARD_SIZE, FRAME_HEIGHT*BOARD_SIZE).setPosition(PUZZLE_X, PUZZLE_Y);
-	puzzleGame.scene.appendChild(puzzleGame.mask);
+	commonObject.scene.appendChild(puzzleGame.mask);
 	puzzleGame.puzzleLayer.setMask(puzzleGame.mask);
 }
 
