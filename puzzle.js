@@ -154,6 +154,8 @@ puzzle.puzzleEnd = function()
 	
 	puzzleGame.puzzleLayer.removeAllChildren();
 	commonObject.scene.removeChild(puzzleGame.puzzleLayer);
+	
+	commonObject.beforeScore = puzzleGame.score;
 
 	raise.init();
 };

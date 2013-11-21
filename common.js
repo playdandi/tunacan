@@ -19,6 +19,9 @@ function commonObject()
 	this.heartRemainTime = HEART_WAITING_TIME;
 	this.heartRemainTimeLable = null;
 	
+	// user information
+	this.beforeScore = null;
+	
 	return this;
 }
 
