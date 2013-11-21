@@ -158,16 +158,19 @@ puzzle.puzzleEnd = function()
 	commonObject.beforeScore = puzzleGame.score;
 	
 	// server connection
-	var nickName = 'Gandalf, Gay';
-	var socket = io.connect();
-	socket.emit('puzzleEnd', {
-		nickname : nickName,
-		score : puzzleGame.score
-	});
-	socket.on('tryDisconnect', function(data) {
-		console.log(data);
-		socket.disconnect();
-	});
+	if (!LOCAL_TEST)
+	{
+		var nickName = 'Gandalf, Gay';
+		var socket = io.connect();
+		socket.emit('puzzleEnd', {
+			nickname : nickName,
+			score : puzzleGame.score
+		});
+		socket.on('tryDisconnect', function(data) {
+			console.log(data);
+			socket.disconnect();
+		});
+	}
 	
 	raise.init();
 };
@@ -297,9 +300,10 @@ puzzle.updateTime = function()
     puzzleGame.currentTime -= (puzzleGame.tick/1000);
     
     // end game
-    if (puzzleGame.currentTime < 1)
+    if (puzzleGame.currentTime < (puzzleGame.tick/1000))
     {
-       puzzle.puzzleEnd();
+    	puzzle.setProgressBar(0/puzzleGame.maxTime);
+        puzzle.puzzleEnd();
     }
         
     // hint

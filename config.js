@@ -1,3 +1,6 @@
+// test
+var LOCAL_TEST = false;
+
 // puzzle pieces
 var NUM_OF_TYPES = 7;
 var PIECE_COW = 1;
