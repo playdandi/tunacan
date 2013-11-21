@@ -36,6 +36,20 @@ function puzzleResources()
 	return this;
 };
 
+function raiseResources()
+{
+	// resources
+	this.buttionStartPuzzleImg;
+	
+	// resources count
+	this.loadedResourceCnt;
+	
+	// sprite or frames
+	this.buttonStartPuzzle;
+	
+	return this;
+};
+
 /*
  * 
  */
@@ -115,5 +129,51 @@ function commonResourceLoadComplete()
 		
 		// next step
 		common.applyResource();
+	}
+}
+
+/*
+ * 
+ */
+resource.raiseResourceInit = function()
+{
+	raiseObject.resource = new raiseResources();
+	
+	// load resources
+	raiseObject.resource.loadedResourceCnt = 0;
+	raiseObject.resource.buttonStartPuzzleImg = new lime.fill.Image('assets/button_start_puzzle.png');
+	
+	// resource event listener
+	raiseObject.resource.buttonStartPuzzleImg.addEventListener('load', raiseResourceLoadComplete, false);
+};
+
+/*
+ * 
+ */
+resource.raiseResourceTerminate = function()
+{
+	raiseObject.resource.loadedResourceCnt = null;
+	raiseObject.resource.buttonStartPuzzleImg = null;
+	raiseObject.resource.buttonStartPuzzle = null;
+	
+	raiseObject.resource = null;
+};
+
+/*
+ * 
+ */
+function raiseResourceLoadComplete()
+{
+	raiseObject.resource.loadedResourceCnt++;
+	if (raiseObject.resource.loadedResourceCnt == RAISE_TOTAL_RESOURCE_COUNT)
+	{
+		/// make Sprites or Frames
+		raiseObject.resource.buttonStartPuzzle = new lime.Sprite().setFill(raiseObject.resource.buttonStartPuzzleImg);
+				
+		// finish loading page & start puzzle.
+		console.log('[resource] raise resource loading done');
+		
+		// next step
+		raise.applyResource();
 	}
 }

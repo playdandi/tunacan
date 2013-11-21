@@ -26,6 +26,7 @@ var SCREEN_HEIGHT = 768;
 // resources
 var PUZZLE_TOTAL_RESOURCE_COUNT = 3;
 var COMMON_TOTAL_RESOURCE_COUNT = 1;
+var RAISE_TOTAL_RESOURCE_COUNT = 1;
 var FRAME_WIDTH = 63;
 var FRAME_HEIGHT = 63;
 
@@ -36,9 +37,8 @@ var PUZZLE_Y = SCREEN_HEIGHT-100-(FRAME_HEIGHT*BOARD_SIZE);
 var DURATION_TIME = 0.2; // puzzle piece animation duration
 
 // common
-var MAX_HEART_NUM = 6;
+var MAX_HEART_NUM = 5;
 var HEART_WAITING_TIME = 60*12;
-
 
 // combo random messages.
 var comboMessage = new Array();

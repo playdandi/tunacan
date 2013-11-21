@@ -63,22 +63,24 @@ common.applyResource = function()
 	commonObject.bgLayer.appendChild(rect);
 	
 	// heart & remain time
-	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 30).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, 10).setRadius(5);
-	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 28).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, 11).setRadius(5);
+	var outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 30).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, 10).setRadius(5);
+	var inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 28).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, 11).setRadius(5);
 	commonObject.commonLayer.appendChild(outer);
 	commonObject.commonLayer.appendChild(inner);
 	// heart
-	common.updateHeart(1);
+	common.updateHeart(5);
 	// remain time
 	commonObject.heartRemainTimeLable = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, 12);
 	common.updateHeartRemainTime();
 	lime.scheduleManager.scheduleWithDelay(common.updateHeartRemainTime, this, 1000);
-	commonObject.commonLayer.appendChild(commonObject.heartRemainTimeLable);	
+	commonObject.commonLayer.appendChild(commonObject.heartRemainTimeLable);
+	
+	rect = outer = inner = null;	
 	
 	console.log('[common] apply resource done');
 		
 	//next step
-	puzzle.init();
+	raise.init();
 };
 
 common.updateHeart = function(h)

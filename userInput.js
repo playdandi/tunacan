@@ -83,3 +83,24 @@ userInput.puzzleInputEvent = function(shape)
 		}		
 	});
 };
+
+/*
+ * 
+ */
+userInput.raiseInputEvent = function(shape)
+{ 
+	// click OR touch event.
+	goog.events.listen(shape, ['mousedown', 'touchstart'], function(e)
+	{
+		// ends user input
+		e.swallow(['mouseup', 'touchend'], function(e)
+		{
+			raise.clickByStartPuzzle();
+		});
+		
+		// allows it to be dragged around
+		e.swallow(['mousemove', 'touchmove'], function(e)
+		{
+		});		
+	});
+};
