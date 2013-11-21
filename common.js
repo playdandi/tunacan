@@ -8,6 +8,7 @@ function commonObject()
 	// window
 	this.director = null;
 	this.scene = null;
+	this.bgLayer = null;
 	this.commonLayer = null;
 	
 	// resource
@@ -15,7 +16,8 @@ function commonObject()
 	
 	// heart
 	this.heartNum = 6;
-	this.heartRemainTime = 60*12;
+	this.heartRemainTime = HEART_WAITING_TIME;
+	this.heartRemainTimeLable = null;
 	
 	return this;
 }
@@ -27,7 +29,7 @@ common.init = function()
 	commonObject = new commonObject();
 	
 	//next step
-	resource.commonResourceInit();
+	common.createWindow();
 };
 
 common.createWindow = function()
@@ -37,45 +39,57 @@ common.createWindow = function()
 	commonObject.scene = new lime.Scene();
 	
 	// bg Layer (temp)
-	var bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
-	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(SCREEN_WIDTH, SCREEN_HEIGHT).setFill("#000000");
-	bgLayer.appendChild(rect);
-	commonObject.scene.appendChild(bgLayer);
-	
-	// replace scene	
-	commonObject.director.makeMobileWebAppCapable();	
-	commonObject.director.replaceScene(commonObject.scene);
+	commonObject.bgLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
+	commonObject.scene.appendChild(commonObject.bgLayer);
 	
 	//common Layer
 	commonObject.commonLayer = new lime.Layer().setAnchorPoint(0, 0).setPosition(0, 0);
-	commonObject.scene.appendChild(commonObject.commonLayer);
+	commonObject.scene.appendChild(commonObject.commonLayer);	
 	
-	// heart
+	// replace scene	
+	commonObject.director.makeMobileWebAppCapable();	
+	commonObject.director.replaceScene(commonObject.scene);	
+	
+	console.log('[common] create window done');
+	
+	//next step
+	resource.commonResourceInit();
+};
+
+common.applyResource = function()
+{
+	// background rect
+	var rect = new lime.RoundedRect().setAnchorPoint(0, 0).setSize(SCREEN_WIDTH, SCREEN_HEIGHT).setFill("#000000");
+	commonObject.bgLayer.appendChild(rect);
+	
+	// heart & remain time
 	outer = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE, 30).setAnchorPoint(0, 0).setFill('#ffffff').setPosition(PUZZLE_X, 10).setRadius(5);
 	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 28).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, 11).setRadius(5);
 	commonObject.commonLayer.appendChild(outer);
 	commonObject.commonLayer.appendChild(inner);
-	common.updateHeart(MAX_HEART_NUM);
+	// heart
+	common.updateHeart(1);
+	// remain time
+	commonObject.heartRemainTimeLable = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, 12);
+	common.updateHeartRemainTime();
+	lime.scheduleManager.scheduleWithDelay(common.updateHeartRemainTime, this, 1000);
+	commonObject.commonLayer.appendChild(commonObject.heartRemainTimeLable);	
 	
-	console.log('[common] create window done');	
-	
+	console.log('[common] apply resource done');
+		
 	//next step
-	//puzzle.init();
+	puzzle.init();
 };
 
 common.updateHeart = function(h)
 {
-	console.log('update_heart start');
 	commonObject.heartNum = h;
-	
-	commonObject.resource.heart.setAnchorPoint(0, 0).setPosition(PUZZLE_X+1, 12);
-	commonObject.commonLayer.appendChild(commonObject.resource.heart);
-	
-	/*for (var i = 0 ; i < MAX_HEART_NUM ; i++)
+		
+	for (var i = 0 ; i < MAX_HEART_NUM ; i++)
 	{
 		if (i < h)
 		{
-			//commonObject.commonLayer.appendChild(commonObject.resource.heart[i].setAnchorPoint(0, 0));//.setPosition(PUZZLE_X+1+(i*28), 11));
+			commonObject.commonLayer.appendChild(commonObject.resource.heart[i].setAnchorPoint(0, 0).setPosition(PUZZLE_X+1+(i*28), 12).setSize(27, 27));//.setPosition(PUZZLE_X+1+(i*28), 11));
 			
 		}
 		else
@@ -83,5 +97,25 @@ common.updateHeart = function(h)
 			commonObject.commonLayer.removeChild(commonObject.resource.heart[i]);
 		}
 	}
-	*/
+	
+	console.log('[common] update heart done - heartNum:', commonObject.heartNum);
+};
+
+common.updateHeartRemainTime = function()
+{
+	if (commonObject.heartRemainTime == 0)
+	{
+		commonObject.heartRemainTime = HEART_WAITING_TIME;
+		if (commonObject.heartNum+1 < MAX_HEART_NUM)
+		{
+			common.updateHeart(commonObject.heartNum+1);
+		}
+	}
+	var min, sec;
+	min = Math.floor((commonObject.heartRemainTime)/60);
+	sec = (commonObject.heartRemainTime)%60;
+	commonObject.heartRemainTimeLable.setText("Remain Time "+min+":"+(sec >= 10 ? sec : "0"+sec));
+	
+	commonObject.heartRemainTime--;
+	min = sec = null;
 };

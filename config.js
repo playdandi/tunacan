@@ -37,6 +37,7 @@ var DURATION_TIME = 0.2; // puzzle piece animation duration
 
 // common
 var MAX_HEART_NUM = 6;
+var HEART_WAITING_TIME = 60*12;
 
 
 // combo random messages.

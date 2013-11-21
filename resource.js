@@ -13,7 +13,7 @@ function commonResources()
 	this.loadedResourceCnt;
 	
 	// sprite or frames
-	this.heart;
+	this.heart = new Array(MAX_HEART_NUM);
 	
 	return this;
 }
@@ -90,20 +90,10 @@ resource.commonResourceInit = function()
 	
 	// load resources
 	commonObject.resource.loadedResourceCnt = 0;
-	commonObject.resource.heartImg = new lime.fill.Image('assets/heart.png').setSize(27, 27);
+	commonObject.resource.heartImg = new lime.fill.Image('assets/heart.png');
 	
 	// resource event listener
-	//commonObject.resource.heartImg.addEventListener('load', commonResourceLoadComplete, false);
-	
-	while (true)
-	{
-		if (commonObject.resource.heartImg.isLoaded)
-		{
-			break;
-		}
-	}
-	commonObject.resource.heart = new lime.Sprite().setFill(commonObject.resource.heartImg.initForSprite());
-	common.createWindow();
+	commonObject.resource.heartImg.addEventListener('load', commonResourceLoadComplete, false);
 };
 
 /*
@@ -114,11 +104,16 @@ function commonResourceLoadComplete()
 	commonObject.resource.loadedResourceCnt++;
 	if (commonObject.resource.loadedResourceCnt == COMMON_TOTAL_RESOURCE_COUNT)
 	{
-		// make frames
-		commonObject.resource.heart = new lime.Sprite().setFill(commonObject.resource.heartImg);
+		/// make Sprites or Frames
+		for (var i = 0 ; i < MAX_HEART_NUM ; i++)
+		{
+			commonObject.resource.heart[i] = new lime.Sprite().setFill(commonObject.resource.heartImg);
+		}
 				
 		// finish loading page & start puzzle.
 		console.log('[resource] common resource loading done');
-		common.createWindow();
+		
+		// next step
+		common.applyResource();
 	}
 }
