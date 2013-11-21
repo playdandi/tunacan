@@ -282,7 +282,7 @@ function createInfoLayer()
 	puzzleGame.infoLayer.appendChild(inner);	
 		
 	//score
-	puzzleGame.scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, PUZZLE_Y-31);
+	puzzleGame.scoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, PUZZLE_Y-31).setSize(250, 20).setAlign("right");
 	puzzleGame.infoLayer.appendChild(puzzleGame.scoreLabel);
 	puzzle.updateScore(0);
 	
@@ -296,7 +296,7 @@ function createInfoLayer()
 	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 63).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+26).setRadius(5);
 	puzzleGame.infoLayer.appendChild(outer);
 	puzzleGame.infoLayer.appendChild(inner);	
-	puzzleGame.messageLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32).setSize(FRAME_WIDTH*BOARD_SIZE).setMultiline(true);
+	puzzleGame.messageLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32).setSize(FRAME_WIDTH*BOARD_SIZE).setMultiline(true).setSize(SCREEN_WIDTH).setAlign("center");
 	puzzleGame.infoLayer.appendChild(puzzleGame.messageLabel);
 	puzzle.updateCombo(0);
 	
