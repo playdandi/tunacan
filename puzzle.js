@@ -98,7 +98,7 @@ puzzle.puzzleReleaseLock = function()
 
 puzzle.updateScore = function(s) 
 {
-	puzzleGame.score += (s*100)*(puzzleGame.combo*puzzleGame.combo);
+	puzzleGame.score += (s*BASIC_SCORE)*(puzzleGame.combo);
 	puzzleGame.scoreLabel.setText('SCORE : ' + puzzleGame.score);
 	
 };
@@ -144,13 +144,13 @@ puzzle.updateGauge = function(g)
 puzzle.checkGauge = function() 
 {
 	// full gauge
-	if (puzzleGame.gauge >= 100)
+	if (puzzleGame.gauge >= MAXIMUM_GAUGE)
 	{ 
 		var row, col, isExist;
 		var coord = new Array();
-		var numOfSpecialPieces = Math.floor(puzzleGame.gauge/100);
+		var numOfSpecialPieces = Math.floor(puzzleGame.gauge/MAXIMUM_GAUGE);
 
-		puzzleGame.gauge -= (100*numOfSpecialPieces);
+		puzzleGame.gauge -= (MAXIMUM_GAUGE*numOfSpecialPieces);
 		puzzleGame.gaugeLabel.setText(puzzleGame.gauge);
 		
 		for (var i = 0; i < numOfSpecialPieces; i++)

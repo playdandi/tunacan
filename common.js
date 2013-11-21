@@ -100,11 +100,19 @@ common.updateHeart = function(h)
 		}
 	}
 	
+	commonObject.heartRemainTime = HEART_WAITING_TIME;
+	
 	console.log('[common] update heart done - heartNum:', commonObject.heartNum);
 };
 
 common.updateHeartRemainTime = function()
 {
+	if (commonObject.heartNum >= MAX_HEART_NUM)
+	{
+		commonObject.heartRemainTimeLable.setText("M.A.X.");
+		return;
+	}
+	
 	if (commonObject.heartRemainTime == 0)
 	{
 		commonObject.heartRemainTime = HEART_WAITING_TIME;

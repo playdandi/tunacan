@@ -9,6 +9,10 @@ var PIECE_TOMATO = 6;
 var PIECE_SPECIAL = 7;
 var INGREDIENT_PROBABILITY = 10;
 
+// score Variable
+var BASIC_SCORE = 20;
+var MAXIMUM_GAUGE = 300;
+
 // special puzzle pieces
 var NUM_OF_SPECIAL_TYPES = 7;
 var SPECIAL_REPLACE = 0;
