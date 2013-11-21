@@ -9,6 +9,9 @@ var PIECE_TOMATO = 6;
 var PIECE_SPECIAL = 7;
 var INGREDIENT_PROBABILITY = 10;
 
+// puzzle common set
+var PUZZLE_PLAY_TIME = 10;
+
 // score Variable
 var BASIC_SCORE = 20;
 var MAXIMUM_GAUGE = 300;

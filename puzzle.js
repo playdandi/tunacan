@@ -46,8 +46,8 @@ function puzzleGame()
 	this.hintCoord = 0;
 	
 	// timer
-	this.maxTime = 60;
-	this.currentTime = 60;
+	this.maxTime = PUZZLE_PLAY_TIME;
+	this.currentTime = PUZZLE_PLAY_TIME;
 	this.tick = 100;
 	this.comboTime = 0;
 		
@@ -63,7 +63,14 @@ function puzzleGame()
 
 puzzle.init = function()
 {	
-	puzzleGame = new puzzleGame();
+	if (!puzzleResourceisLoaded)
+	{
+		puzzleGame = new puzzleGame();
+	}
+	else
+	{
+		puzzle.reInit();
+	}
 		
 	//create User Interface
 	createInfoLayer();
@@ -72,7 +79,59 @@ puzzle.init = function()
 	console.log('[puzzle] init (create infoLayer, boardLayer) done');
 	
 	//next step
-	resource.puzzleResourceInit();
+	if (!puzzleResourceisLoaded)
+	{
+		resource.puzzleResourceInit();
+	}
+	else
+	{
+		puzzle.puzzleStart();
+		board.create();
+	}
+};
+
+puzzle.reInit = function()
+{	
+	// window
+	puzzleGame.mask = null;
+	puzzleGame.infoLayer = null;
+	puzzleGame.puzzleLayer = null;
+	
+	// game info
+	puzzleGame.scoreLabel = null;
+	puzzleGame.score = 0;
+	puzzleGame.gaugeLabel = null;
+	puzzleGame.gauge = 0;
+	puzzleGame.messageLabel = null;
+	puzzleGame.combo = 0;
+	puzzleGame.progressBar = null;
+	
+	// lock
+	puzzleGame.lock = true;
+	puzzleGame.touchLock = false;
+	
+	// board
+	puzzleGame.board = null;
+		
+	// hint
+	puzzleGame.hintTime = 0;
+	puzzleGame.hintFlag = false;	
+	puzzleGame.hintDirection = 0;
+	puzzleGame.hintLine = 0;
+	puzzleGame.hintCoord = 0;
+	
+	// timer
+	puzzleGame.maxTime = PUZZLE_PLAY_TIME;
+	puzzleGame.currentTime = PUZZLE_PLAY_TIME;
+	puzzleGame.tick = 100;
+	puzzleGame.comboTime = 0;
+		
+	// get pieces (퍼즐 피스 종류마다 얻은 개수 보여주는 것)	
+	puzzleGame.numOfGetPieces = new Array(NUM_OF_TYPES+1);
+	for (var i = 0; i < NUM_OF_TYPES+1; i++)
+	{
+		puzzleGame.numOfGetPieces[i] = 0;
+	}
 };
 
 puzzle.puzzleStart = function()
@@ -85,6 +144,18 @@ puzzle.puzzleStart = function()
 puzzle.puzzleEnd = function()
 {
 	console.log('[puzzle] puzzleEnd');
+	
+	// stop event
+	lime.scheduleManager.unschedule(puzzle.updateTime, this);
+	
+	// terminate by raise
+	puzzleGame.infoLayer.removeAllChildren();
+	commonObject.scene.removeChild(puzzleGame.infoLayer);
+	
+	puzzleGame.puzzleLayer.removeAllChildren();
+	commonObject.scene.removeChild(puzzleGame.puzzleLayer);
+
+	raise.init();
 };
 
 puzzle.puzzleReleaseLock = function()
@@ -214,8 +285,7 @@ puzzle.updateTime = function()
     // end game
     if (puzzleGame.currentTime < 1)
     {
-       // puzzle.puzzleEnd();
-       puzzleGame.currentTime = puzzleGame.maxTime;
+       puzzle.puzzleEnd();
     }
         
     // hint

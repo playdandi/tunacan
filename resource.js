@@ -4,6 +4,10 @@ goog.require('lime.fill.Image');
 goog.require('lime.fill.Frame');
 goog.require('lime.Sprite');
 
+var commonResourceisLoaded = false;
+var puzzleResourceisLoaded = false;
+var raiseResourceisLoaded = false;
+
 function commonResources()
 {
 	// resources
@@ -72,6 +76,22 @@ resource.puzzleResourceInit = function()
 /*
  * 
  */
+resource.puzzleResourceTerminate = function()
+{
+	puzzleGame.resource.loadedResourceCnt = null;
+	puzzleGame.resource.resImg = null;
+	puzzleGame.resource.resImgIngre = null;
+	puzzleGame.resource.hintImg = null;
+	puzzleGame.resource.hint = null;
+	puzzleGame.resource.frames = null;
+	puzzleGame.resource.framesIngre = null;
+	
+	puzzleGame.resource = null;
+};
+
+/*
+ * 
+ */
 function puzzleResourceLoadComplete()
 {
 	puzzleGame.resource.loadedResourceCnt++;
@@ -87,6 +107,8 @@ function puzzleResourceLoadComplete()
 			puzzleGame.resource.frames[i] = new lime.fill.Frame(resImgElem, FRAME_WIDTH*(i-1), 0, FRAME_WIDTH, FRAME_HEIGHT);
 			puzzleGame.resource.framesIngre[i] = new lime.fill.Frame(resImgIngreElem, FRAME_WIDTH*(i-1), 0, FRAME_WIDTH, FRAME_HEIGHT);
 		}
+		
+		puzzleResourceisLoaded = true;
 		
 		// finish loading page & start puzzle.
 		console.log('[resource] puzzle resource loading done');
@@ -123,6 +145,8 @@ function commonResourceLoadComplete()
 		{
 			commonObject.resource.heart[i] = new lime.Sprite().setFill(commonObject.resource.heartImg);
 		}
+		
+		commonResourceisLoaded = true;
 				
 		// finish loading page & start puzzle.
 		console.log('[resource] common resource loading done');
@@ -169,9 +193,13 @@ function raiseResourceLoadComplete()
 	{
 		/// make Sprites or Frames
 		raiseObject.resource.buttonStartPuzzle = new lime.Sprite().setFill(raiseObject.resource.buttonStartPuzzleImg);
+		
+		raiseResourceisLoaded = true;
 				
 		// finish loading page & start puzzle.
 		console.log('[resource] raise resource loading done');
+		
+		raiseObject.resource.buttonStartPuzzleImg.removeEventListener('load', raiseResourceLoadComplete, false);
 		
 		// next step
 		raise.applyResource();

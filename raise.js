@@ -18,8 +18,11 @@ function raiseObject()
 raise.init = function()
 {
 	console.log('[raise] commonInit');
-	
-	raiseObject = new raiseObject();
+		
+	if (!raiseResourceisLoaded)
+	{
+		raiseObject = new raiseObject();
+	}
 	
 	//next step
 	raise.createWindow();
@@ -38,7 +41,14 @@ raise.createWindow = function()
 	console.log('[raise] create window done');
 	
 	//next step
-	resource.raiseResourceInit();
+	if (!raiseResourceisLoaded)
+	{
+		resource.raiseResourceInit();
+	}
+	else
+	{
+		raise.applyResource();
+	}
 };
 
 raise.applyResource = function()
@@ -65,7 +75,7 @@ raise.applyResource = function()
 	console.log('[raise] apply resource done');
 		
 	//next step
-	raise.standby();
+	raise.standby();	
 };
 
 raise.standby = function()
@@ -80,8 +90,8 @@ raise.clickByStartPuzzle = function()
 	commonObject.scene.removeChild(raiseObject.rankingLayer);
 	raiseObject.menuLayer.removeAllChildren();
 	commonObject.scene.removeChild(raiseObject.menuLayer);
-	resource.raiseResourceTerminate();
-	raiseObject.resource = null;
+	
+	goog.events.removeAll(raiseObject.resource.buttonStartPuzzle);
 	
 	// heart update
 	common.updateHeart(commonObject.heartNum-1);
