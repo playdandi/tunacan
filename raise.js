@@ -9,6 +9,10 @@ function raiseObject()
 	this.rankingLayer = null;
 	this.menuLayer = null;
 	
+	// ranking
+	this.resultScoreLabel = null;
+	this.rankingList = null;
+	
 	// resource
 	this.resource = null;
 		
@@ -69,7 +73,24 @@ raise.applyResource = function()
 	
 	// menu button
 	raiseObject.menuLayer.appendChild(raiseObject.resource.buttonStartPuzzle.setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, 723).setSize(250, 65));
-		
+	
+	// result score
+	raiseObject.resultScoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(30).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, 80).setSize(FRAME_WIDTH*BOARD_SIZE, 23).setMultiline(false).setAlign("center");
+	raiseObject.rankingLayer.appendChild(raiseObject.resultScoreLabel);
+	if (commonObject.beforeScore != null)
+	{
+		raiseObject.resultScoreLabel.setText("Your Score : "+commonObject.beforeScore);
+	}
+	else
+	{
+		raiseObject.resultScoreLabel.setText("");
+	}
+	
+	// ranking List
+	raiseObject.resultScoreLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0).setPosition(SCREEN_WIDTH/2, 220).setSize(FRAME_WIDTH*BOARD_SIZE-200, 300).setMultiline(true).setAlign("left");
+	raiseObject.rankingLayer.appendChild(raiseObject.resultScoreLabel);
+	raise.rankUpdate();
+	
 	outer = inner = null;	
 	
 	console.log('[raise] apply resource done');
@@ -98,4 +119,21 @@ raise.clickByStartPuzzle = function()
 	
 	// next step
 	puzzle.init();
+};
+
+raise.rankUpdate = function()
+{
+	var value = "";
+	value += "- Top Ranking -\n";
+	value += "1. aaaa / 10000\n";
+	value += "2. aasdfa / 9000\n";
+	value += "3. aaafdha / 8000\n";
+	value += "4. aadfaa / 700\n";
+	value += "5. aefwgfaaa / 600\n";
+	value += "6. aaadfa / 500\n";
+	value += "7. aadfaa / 400\n";
+	value += "8. aadfdfaa / 300\n";
+	value += "9. aaewaa / 200\n";
+	value += "10. werfaaaa / 100\n";
+	raiseObject.resultScoreLabel.setText(value);
 };

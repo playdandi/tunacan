@@ -73,7 +73,7 @@ common.applyResource = function()
 	// heart
 	common.updateHeart(5);
 	// remain time
-	commonObject.heartRemainTimeLable = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, 12);
+	commonObject.heartRemainTimeLable = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(1, 0).setPosition(PUZZLE_X+FRAME_WIDTH*BOARD_SIZE-10, 12).setSize(240, 20).setAlign("right");
 	common.updateHeartRemainTime();
 	lime.scheduleManager.scheduleWithDelay(common.updateHeartRemainTime, this, 1000);
 	commonObject.commonLayer.appendChild(commonObject.heartRemainTimeLable);
@@ -94,7 +94,7 @@ common.updateHeart = function(h)
 	{
 		if (i < h)
 		{
-			commonObject.commonLayer.appendChild(commonObject.resource.heart[i].setAnchorPoint(0, 0).setPosition(PUZZLE_X+1+(i*28), 12).setSize(27, 27));//.setPosition(PUZZLE_X+1+(i*28), 11));
+			commonObject.commonLayer.appendChild(commonObject.resource.heart[i].setAnchorPoint(0, 0).setPosition(PUZZLE_X+1+(i*28), 12).setSize(27, 27));
 			
 		}
 		else

@@ -10,11 +10,11 @@ var PIECE_SPECIAL = 7;
 var INGREDIENT_PROBABILITY = 10;
 
 // puzzle common set
-var PUZZLE_PLAY_TIME = 10;
+var PUZZLE_PLAY_TIME = 60;
 
 // score Variable
 var BASIC_SCORE = 20;
-var MAXIMUM_GAUGE = 300;
+var MAXIMUM_GAUGE = 250;
 
 // special puzzle pieces
 var NUM_OF_SPECIAL_TYPES = 7;
