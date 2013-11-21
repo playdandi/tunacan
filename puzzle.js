@@ -156,7 +156,19 @@ puzzle.puzzleEnd = function()
 	commonObject.scene.removeChild(puzzleGame.puzzleLayer);
 	
 	commonObject.beforeScore = puzzleGame.score;
-
+	
+	// server connection
+	var nickName = 'Gandalf, Gay';
+	var socket = io.connect();
+	socket.emit('puzzleEnd', {
+		nickname : nickName,
+		score : puzzleGame.score
+	});
+	socket.on('tryDisconnect', function(data) {
+		console.log(data);
+		socket.disconnect();
+	});
+	
 	raise.init();
 };
 

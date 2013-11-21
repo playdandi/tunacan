@@ -3,7 +3,14 @@ goog.provide('tunacan');
 
 // entry point
 tunacan.start = function() {
-	common.init();	
+	/*
+	// client web socket connection
+	var socket = io.connect();
+	socket.emit('iocheck', {
+		message : 'socket io good'
+	});
+	*/
+	common.init();
 };
 
 //this is required for outside access after code is compiled in ADVANCED_COMPILATIONS mode
