@@ -115,6 +115,7 @@ puzzle.updateCombo = function(c)
 	{
 		comboMsgIdx = Math.floor(Math.random()*comboMessage[0].length);
 		printMessage = comboMessage[0][comboMsgIdx];
+		puzzleGame.messageLabel.setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32);
 	}
 	else
 	{
@@ -128,6 +129,7 @@ puzzle.updateCombo = function(c)
 			comboMsgIdx = Math.floor(Math.random()*comboMessage[comboMessage.length-1].length);
 			printMessage += comboMessage[comboMessage.length-1][comboMsgIdx];
 		}
+		puzzleGame.messageLabel.setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32-12);
 	}
 	
 	puzzleGame.messageLabel.setText(printMessage);
@@ -296,7 +298,7 @@ function createInfoLayer()
 	inner = new lime.RoundedRect().setSize(FRAME_WIDTH*BOARD_SIZE-2, 63).setAnchorPoint(0, 0).setFill('#000000').setPosition(PUZZLE_X+1, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+26).setRadius(5);
 	puzzleGame.infoLayer.appendChild(outer);
 	puzzleGame.infoLayer.appendChild(inner);	
-	puzzleGame.messageLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32).setSize(FRAME_WIDTH*BOARD_SIZE, 23).setMultiline(true).setSize(SCREEN_WIDTH).setAlign("center");
+	puzzleGame.messageLabel = new lime.Label().setFontColor('#ffffff').setFontSize(20).setAnchorPoint(0.5, 0.5).setPosition(SCREEN_WIDTH/2, PUZZLE_Y+FRAME_HEIGHT*BOARD_SIZE+25+32).setSize(FRAME_WIDTH*BOARD_SIZE, 23).setMultiline(true).setAlign("center");
 	puzzleGame.infoLayer.appendChild(puzzleGame.messageLabel);
 	puzzle.updateCombo(0);
 	
