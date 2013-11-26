@@ -58,6 +58,9 @@ function puzzleGame()
 		this.numOfGetPieces[i] = 0;
 	}
 	
+	// last bomb flag
+	this.lastBombFlag = false;
+	
 	return this;
 }
 
@@ -132,6 +135,9 @@ puzzle.reInit = function()
 	{
 		puzzleGame.numOfGetPieces[i] = 0;
 	}
+	
+	// last bomb flag
+	puzzleGame.lastBombFlag = false;
 };
 
 puzzle.puzzleStart = function()
@@ -175,13 +181,38 @@ puzzle.puzzleEnd = function()
 	raise.init();
 };
 
+puzzle.lastBomb = function()
+{
+	puzzleGame.lastBombFlag = true;
+	puzzleGame.lock = true;
+	
+	for (var row = 0 ; row < BOARD_SIZE ; row++)
+	{
+		for (var col = 0 ; col < BOARD_SIZE ; col++)
+		{
+			if (puzzleGame.board[row][col].type == PIECE_SPECIAL)
+			{
+				// clicked special piece.
+				board.findBlocks('special', {'row' : row, 'col' : col});
+				return;
+			}
+		}
+	}
+	
+	puzzle.puzzleEnd();
+};
+
 puzzle.puzzleReleaseLock = function()
 {
 	console.log('[puzzle] puzzleReleaseLock');
 	puzzleGame.comboTime = 0;
 	puzzleGame.hintTime = 0;
-	//puzzle.checkGauge();
 	puzzleGame.lock = false;
+	
+	if (puzzleGame.lastBombFlag)
+	{
+		puzzle.lastBomb();
+	}
 };
 
 puzzle.updateScore = function(s) 
@@ -269,11 +300,6 @@ puzzle.checkGauge = function()
 				}
 			}
 			
-			console.log('here is special haha');
-			//puzzleGame.puzzleLayer.removeChild(puzzleGame.board[row][col]);
-			//puzzleGame.board[row][col] = null;
-			//puzzleGame.board[row][col] = board.createPiece(PIECE_SPECIAL, false, Math.floor(Math.random()*NUM_OF_SPECIAL_TYPES));
-			//puzzleGame.puzzleLayer.appendChild(puzzleGame.board[row][col].img.setPosition(col*FRAME_WIDTH, row*FRAME_HEIGHT));
 			puzzleGame.board[row][col].img.setFill(puzzleGame.resource.frames[PIECE_SPECIAL]);
 			puzzleGame.board[row][col].type = PIECE_SPECIAL;
 			puzzleGame.board[row][col].typeOfSpecial = Math.floor(Math.random()*NUM_OF_SPECIAL_TYPES);
@@ -297,7 +323,7 @@ puzzle.setProgressBar = function(value)
 
 puzzle.updateTime = function() 
 {
-	if (puzzleGame.lock) 
+	if (puzzleGame.lock || puzzleGame.lastBombFlag) 
 	{
 		return;
 	}
@@ -309,7 +335,7 @@ puzzle.updateTime = function()
     if (puzzleGame.currentTime < (puzzleGame.tick/1000))
     {
     	puzzle.setProgressBar(0/puzzleGame.maxTime);
-        puzzle.puzzleEnd();
+    	puzzle.lastBomb();
     }
         
     // hint
