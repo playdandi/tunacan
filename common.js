@@ -88,6 +88,10 @@ common.applyResource = function()
 
 common.updateHeart = function(h)
 {
+	if (commonObject.heartNum < h)
+	{
+		commonObject.heartRemainTime = HEART_WAITING_TIME;
+	}
 	commonObject.heartNum = h;
 		
 	for (var i = 0 ; i < MAX_HEART_NUM ; i++)
@@ -101,9 +105,7 @@ common.updateHeart = function(h)
 		{
 			commonObject.commonLayer.removeChild(commonObject.resource.heart[i]);
 		}
-	}
-	
-	commonObject.heartRemainTime = HEART_WAITING_TIME;
+	}	
 	
 	console.log('[common] update heart done - heartNum:', commonObject.heartNum);
 };

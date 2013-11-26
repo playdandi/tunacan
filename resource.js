@@ -28,12 +28,14 @@ function puzzleResources()
 	this.resImg;
 	this.resImgIngre;
 	this.hintImg;
+	this.hintSpImg;
 	
 	// resources count
 	this.loadedResourceCnt;
 	
 	// sprite or frames
 	this.hint;
+	this.hintSp;
 	this.frames = new Array(NUM_OF_TYPES+1);
 	this.framesIngre = new Array(NUM_OF_TYPES+1);
 	
@@ -66,9 +68,11 @@ resource.puzzleResourceInit = function()
 	puzzleGame.resource.resImg = new lime.fill.Image('assets/puzzle_icon.png');
 	puzzleGame.resource.resImgIngre = new lime.fill.Image('assets/puzzle_icon_ingredient.png');
 	puzzleGame.resource.hintImg = new lime.fill.Image('assets/hint.png');
+	puzzleGame.resource.hintSpImg = new lime.fill.Image('assets/hint_one.png');
 	
 	// resource event listener
 	puzzleGame.resource.hintImg.addEventListener('load', puzzleResourceLoadComplete, false);
+	puzzleGame.resource.hintSpImg.addEventListener('load', puzzleResourceLoadComplete, false);
 	puzzleGame.resource.resImg.addEventListener('load', puzzleResourceLoadComplete, false);
 	puzzleGame.resource.resImgIngre.addEventListener('load', puzzleResourceLoadComplete, false);
 };
@@ -81,6 +85,7 @@ resource.puzzleResourceTerminate = function()
 	puzzleGame.resource.loadedResourceCnt = null;
 	puzzleGame.resource.resImg = null;
 	puzzleGame.resource.resImgIngre = null;
+	puzzleGame.resource.hintSpImg = null;
 	puzzleGame.resource.hintImg = null;
 	puzzleGame.resource.hint = null;
 	puzzleGame.resource.frames = null;
@@ -100,7 +105,8 @@ function puzzleResourceLoadComplete()
 		// make Sprites or Frames
 		var resImgElem = puzzleGame.resource.resImg.getImageElement();
 		var resImgIngreElem = puzzleGame.resource.resImgIngre.getImageElement();
-		puzzleGame.resource.hint = new lime.Sprite().setFill(puzzleGame.resource.hintImg);
+		puzzleGame.resource.hint = new lime.Sprite().setFill(new lime.fill.Frame(puzzleGame.resource.hintImg.getImageElement(), 0, 0, 441, 63));		
+		puzzleGame.resource.hintSp = new lime.Sprite().setFill(new lime.fill.Frame(puzzleGame.resource.hintSpImg.getImageElement(), 0, 0, 63, 63));
 		
 		for (var i = 1; i <= NUM_OF_TYPES; i++)
 		{
@@ -143,7 +149,7 @@ function commonResourceLoadComplete()
 		/// make Sprites or Frames
 		for (var i = 0 ; i < MAX_HEART_NUM ; i++)
 		{
-			commonObject.resource.heart[i] = new lime.Sprite().setFill(commonObject.resource.heartImg);
+			commonObject.resource.heart[i] = new lime.Sprite().setFill(new lime.fill.Frame(commonObject.resource.heartImg.getImageElement(), 0, 0, 96, 83));
 		}
 		
 		commonResourceisLoaded = true;
@@ -192,7 +198,7 @@ function raiseResourceLoadComplete()
 	if (raiseObject.resource.loadedResourceCnt == RAISE_TOTAL_RESOURCE_COUNT)
 	{
 		/// make Sprites or Frames
-		raiseObject.resource.buttonStartPuzzle = new lime.Sprite().setFill(raiseObject.resource.buttonStartPuzzleImg);
+		raiseObject.resource.buttonStartPuzzle = new lime.Sprite().setFill(new lime.fill.Frame(raiseObject.resource.buttonStartPuzzleImg.getImageElement(), 0, 0, 250, 70));
 		
 		raiseResourceisLoaded = true;
 				

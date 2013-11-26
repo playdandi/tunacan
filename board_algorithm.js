@@ -244,8 +244,9 @@ board.hasToBeReplaced = function()
 		{
 			boardType[row][col] = puzzleGame.board[row][col].type;
 		}
+		//console.log(boardType[row][0], boardType[row][1],boardType[row][2],boardType[row][3],boardType[row][4],boardType[row][5],boardType[row][6]);
 	}
-	
+	//console.log("-----------------------");
 	puzzleGame.hintDirection = null; // direction for hint.
 	puzzleGame.hintLine = null; // n-th line for hint.
 	puzzleGame.hintCoord = null; // row, col coordinates for hint (only for special piece).
@@ -361,7 +362,7 @@ function checkMatchedBlocks(boardType)
 	{
 		for (var col = 0 ; col < BOARD_SIZE-2 ; col++)
 		{
-			if (boardType[row][col] == boardType[row][col+1] && boardType[row][col] == boardType[row][col+2])
+			if (boardType[row][col] != PIECE_SPECIAL && boardType[row][col] == boardType[row][col+1] && boardType[row][col] == boardType[row][col+2])
 			{
 				return true;
 			}
@@ -373,7 +374,7 @@ function checkMatchedBlocks(boardType)
 	{
 		for (var row = 0 ; row < BOARD_SIZE-2 ; row++)
 		{
-			if (boardType[row][col] == boardType[row+1][col] && boardType[row][col] == boardType[row+2][col])
+			if (boardType[row][col] != PIECE_SPECIAL && boardType[row][col] == boardType[row+1][col] && boardType[row][col] == boardType[row+2][col])
 			{
 				return true;
 			}

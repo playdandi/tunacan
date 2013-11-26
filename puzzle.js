@@ -180,7 +180,7 @@ puzzle.puzzleReleaseLock = function()
 	console.log('[puzzle] puzzleReleaseLock');
 	puzzleGame.comboTime = 0;
 	puzzleGame.hintTime = 0;
-	puzzle.checkGauge();
+	//puzzle.checkGauge();
 	puzzleGame.lock = false;
 };
 
@@ -268,6 +268,12 @@ puzzle.checkGauge = function()
 					break;
 				}
 			}
+			
+			console.log('here is special haha');
+			//puzzleGame.puzzleLayer.removeChild(puzzleGame.board[row][col]);
+			//puzzleGame.board[row][col] = null;
+			//puzzleGame.board[row][col] = board.createPiece(PIECE_SPECIAL, false, Math.floor(Math.random()*NUM_OF_SPECIAL_TYPES));
+			//puzzleGame.puzzleLayer.appendChild(puzzleGame.board[row][col].img.setPosition(col*FRAME_WIDTH, row*FRAME_HEIGHT));
 			puzzleGame.board[row][col].img.setFill(puzzleGame.resource.frames[PIECE_SPECIAL]);
 			puzzleGame.board[row][col].type = PIECE_SPECIAL;
 			puzzleGame.board[row][col].typeOfSpecial = Math.floor(Math.random()*NUM_OF_SPECIAL_TYPES);
@@ -286,7 +292,7 @@ puzzle.updateGetPieces = function(type)
 
 puzzle.setProgressBar = function(value) 
 {
-    puzzleGame.progressBar.inner.runAction(new lime.animation.Resize(puzzleGame.progressBar.width * value, puzzleGame.progressBar.inner.getSize().height).setDuration(0.04));
+    puzzleGame.progressBar.inner.runAction(new lime.animation.Resize(puzzleGame.progressBar.width*value, puzzleGame.progressBar.inner.getSize().height).setDuration(0.04));
 };
 
 puzzle.updateTime = function() 
@@ -315,17 +321,20 @@ puzzle.updateTime = function()
 		{
 			// horizontal
 			puzzleGame.resource.hint.setAnchorPoint(0, 0).setRotation(0).setPosition(0, puzzleGame.hintLine*FRAME_HEIGHT);
+			puzzleGame.puzzleLayer.appendChild(puzzleGame.resource.hint);
 		}
 		else if (puzzleGame.hintDirection == 1)
 		{
 			// vertical
 			puzzleGame.resource.hint.setAnchorPoint(0, 1).setRotation(-90).setPosition(puzzleGame.hintLine*FRAME_WIDTH, 0);
+			puzzleGame.puzzleLayer.appendChild(puzzleGame.resource.hint);
 		}
 		else
 		{
 			// some point for special piece.
-		}
-		puzzleGame.puzzleLayer.appendChild(puzzleGame.resource.hint);
+			puzzleGame.resource.hintSp.setAnchorPoint(0, 0).setRotation(0).setPosition(puzzleGame.hintCoord.col*FRAME_WIDTH, puzzleGame.hintCoord.row*FRAME_HEIGHT);
+			puzzleGame.puzzleLayer.appendChild(puzzleGame.resource.hintSp);
+		}		
 		
 		lime.scheduleManager.scheduleWithDelay(puzzle.removeHintTime, this, 1000, 1);
 	}
@@ -346,7 +355,14 @@ puzzle.removeHintTime = function()
 {
 	if (puzzleGame.hintFlag)
 	{
-		puzzleGame.puzzleLayer.removeChild(puzzleGame.resource.hint);
+		if (puzzleGame.hintDirection == 0 || puzzleGame.hintDirection == 1)
+		{
+			puzzleGame.puzzleLayer.removeChild(puzzleGame.resource.hint);
+		}
+		else
+		{
+			puzzleGame.puzzleLayer.removeChild(puzzleGame.resource.hintSp);
+		}
 		puzzleGame.hintFlag = false;
 		puzzleGame.hintTime = 0;
 	}

@@ -308,6 +308,7 @@ board.drop = function()
 			if (dropped == result.length)
 			{
 				//bomb(0, 0, 0); // re-check if there is a piece to be bombed.
+				puzzle.checkGauge();
 				board.findBlocks(null, null, null);
 			}
 		});
